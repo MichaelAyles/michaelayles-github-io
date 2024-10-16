@@ -1,0 +1,17 @@
+<sites>
+  <site>
+    <url>homeassistant.mikeayles.com</url>
+    <name>Home Assistant</name>
+    <type>link</type>
+  </site>
+  <site>
+    <url>https://github.com/MichaelAyles/hit-impact-android</url>
+    <name>Android App Project</name>
+    <type>link</type>
+  </site>
+  <site>
+    <url>tbc.github.com</url>
+    <name>Sample React Module</name>
+    <type>react</type>
+  </site>
+</sites>

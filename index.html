@@ -35,24 +35,39 @@
 <body>
   <div id="app"></div>
   <script>
-    const App = () => {
+    const fetchSites = async () => {
+      const response = await fetch('sites-config.xml');
+      const text = await response.text();
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(text, 'application/xml');
+      const siteElements = xmlDoc.getElementsByTagName('site');
+      const sites = Array.from(siteElements).map(site => ({
+        url: site.getElementsByTagName('url')[0].textContent,
+        name: site.getElementsByTagName('name')[0].textContent,
+        type: site.getElementsByTagName('type')[0].textContent
+      }));
+      return sites;
+    };
+
+    const App = ({ sites }) => {
       return (
-        <div className="grid-item">
-          <h2>React Component</h2>
-          <p>This is a placeholder for your React apps.</p>
+        <div id="grid">
+          {sites.map((site, index) => (
+            <div className="grid-item" key={index}>
+              <h2><a href={site.url} target="_blank" rel="noopener noreferrer">{site.name}</a></h2>
+              <p>Type: {site.type}</p>
+            </div>
+          ))}
         </div>
       );
     };
 
-    ReactDOM.render(
-      <div id="grid">
-        <App />
-        <App />
-        <App />
-        <App />
-      </div>,
-      document.getElementById('app')
-    );
+    fetchSites().then(sites => {
+      ReactDOM.render(
+        <App sites={sites} />,
+        document.getElementById('app')
+      );
+    });
   </script>
 </body>
 </html>
