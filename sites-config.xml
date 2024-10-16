@@ -1,6 +1,6 @@
 <sites>
   <site>
-    <url>homeassistant.mikeayles.com</url>
+    <url>https://homeassistant.mikeayles.com</url>
     <name>Home Assistant</name>
     <type>link</type>
   </site>
