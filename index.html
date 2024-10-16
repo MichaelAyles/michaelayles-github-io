@@ -1,9 +1,58 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Hello, World!</title>
+  <title>React Grid</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+    #app {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      width: 80%;
+      max-width: 1200px;
+    }
+    .grid-item {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+  </style>
+  <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
 </head>
 <body>
-  <h1>Hello, World!</h1>
+  <div id="app"></div>
+  <script>
+    const App = () => {
+      return (
+        <div className="grid-item">
+          <h2>React Component</h2>
+          <p>This is a placeholder for your React apps.</p>
+        </div>
+      );
+    };
+
+    ReactDOM.render(
+      <div id="grid">
+        <App />
+        <App />
+        <App />
+        <App />
+      </div>,
+      document.getElementById('app')
+    );
+  </script>
 </body>
 </html>
