@@ -14,4 +14,9 @@
     <name>Sample React Module</name>
     <type>react</type>
   </site>
+  <site>
+    <url>https://github.com/MichaelAyles/mqtt-duration-trigger</url>
+    <name>MQTT Duration Trigger for Homeassistant</name>
+    <type>link</type>
+  </site>
 </sites>
