@@ -44,7 +44,7 @@
   <site>
     <url>https://github.com/MichaelAyles/agent-tool</url>
     <name>Agent Tool</name>
-    <description>Web-based frontend for CLI tools & LLM web services with real-time streaming</description>
+    <description>Web-based frontend for CLI tools &amp; LLM web services with real-time streaming</description>
     <type>link</type>
   </site>
 </sites>
