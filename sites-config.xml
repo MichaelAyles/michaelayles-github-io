@@ -2,21 +2,43 @@
   <site>
     <url>https://homeassistant.mikeayles.com</url>
     <name>Home Assistant</name>
+    <description>Smart home automation platform</description>
     <type>link</type>
   </site>
   <site>
     <url>https://github.com/MichaelAyles/hit-impact-android</url>
-    <name>Android App Project</name>
+    <name>HIT Impact Android</name>
+    <description>Android application project</description>
     <type>link</type>
   </site>
   <site>
-    <url>tbc.github.com</url>
-    <name>Sample React Module</name>
-    <type>react</type>
+    <url>https://github.com/MichaelAyles/mqtt-duration-trigger</url>
+    <name>MQTT Duration Trigger</name>
+    <description>Home Assistant integration for MQTT-based duration triggers</description>
+    <type>link</type>
   </site>
   <site>
-    <url>https://github.com/MichaelAyles/mqtt-duration-trigger</url>
-    <name>MQTT Duration Trigger for Homeassistant</name>
+    <url>https://theduck.chat</url>
+    <name>The Duck Chat</name>
+    <description>AI-powered chat application</description>
+    <type>link</type>
+  </site>
+  <site>
+    <url>https://github.com/MichaelAyles/the-duck</url>
+    <name>The Duck (GitHub)</name>
+    <description>Source code for The Duck chat application</description>
+    <type>link</type>
+  </site>
+  <site>
+    <url>https://github.com/MichaelAyles/kicad-netlist-tool</url>
+    <name>KiCad Netlist Tool</name>
+    <description>Tool for processing and analyzing KiCad netlists</description>
+    <type>link</type>
+  </site>
+  <site>
+    <url>https://github.com/MichaelAyles/claude-code-comm-bot</url>
+    <name>Claude Code Comm Bot</name>
+    <description>Communication bot for Claude Code integration</description>
     <type>link</type>
   </site>
 </sites>
