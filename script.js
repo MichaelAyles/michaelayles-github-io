@@ -49,7 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     publicIndex++;
                 } else if (type === 'react') {
                     const card = createCard(name, 'React Component (Coming Soon)', '#', 'Preview');
-                    card.querySelector('a').onclick = (e) => e.preventDefault();
+                    const link = card.querySelector('a');
+                    link.onclick = (e) => e.preventDefault();
+                    link.style.cursor = 'not-allowed';
+                    link.style.opacity = '0.5';
                     card.style.animationDelay = `${publicIndex * 0.1}s`;
                     sitesGrid.appendChild(card);
                     publicIndex++;
@@ -97,6 +100,12 @@ function createCard(title, description, url, linkText) {
     link.className = 'card-link';
     link.textContent = linkText;
     link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    
+    // Ensure link is clickable
+    link.style.pointerEvents = 'auto';
+    link.style.cursor = 'pointer';
+    
     card.appendChild(link);
     
     return card;
