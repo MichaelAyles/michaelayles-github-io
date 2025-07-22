@@ -47,4 +47,10 @@
     <description>Web-based frontend for CLI tools &amp; LLM web services with real-time streaming</description>
     <type>link</type>
   </site>
+  <site>
+    <url>https://github.com/MichaelAyles/fuel_injector_characterizer</url>
+    <name>Fuel Injector Characterizer</name>
+    <description>Automotive fuel injector testing system with web interface &amp; data logging</description>
+    <type>link</type>
+  </site>
 </sites>
