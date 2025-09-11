@@ -59,4 +59,10 @@
     <description>Site to compare expensive branded 'supplements' against building a stack of store bought equivalents</description>
     <type>link</type>
   </site>
+  <site>
+    <url>https://github.com/MichaelAyles/fuel_injector_characterizer</url>
+    <name>Fuel Injector Characterizer</name>
+    <description>One and Done, Vibe Coded system for validating fuel injector performance. Arduino and Webserial.</description>
+    <type>link</type>
+  </site>
 </sites>
