@@ -48,9 +48,15 @@
     <type>link</type>
   </site>
   <site>
-    <url>https://github.com/MichaelAyles/fuel_injector_characterizer</url>
-    <name>Fuel Injector Characterizer</name>
-    <description>Automotive fuel injector testing system with web interface &amp; data logging</description>
+    <url>https://michaelayles.github.io/enginesim/</url>
+    <name>Engine Simulator [WIP]</name>
+    <description>Engine Simulator, using physics calculations, currently set up for diesel 6cyl</description>
+    <type>link</type>
+  </site>
+  <site>
+    <url>https://v0-supplement-stack-comparison.vercel.app/</url>
+    <name>Vitamin/Supplement Price Comparison [WIP]</name>
+    <description>Site to compare expensive branded 'supplements' against building a stack of store bought equivalents</description>
     <type>link</type>
   </site>
 </sites>
