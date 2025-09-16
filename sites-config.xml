@@ -8,7 +8,7 @@
   <site>
     <url>https://github.com/MichaelAyles/hit-impact-android</url>
     <name>HIT Impact Android</name>
-    <description>Android application project</description>
+    <description>Kotlin Android app project for HIT Impact V1 traumatic brain injury sensors</description>
     <type>link</type>
   </site>
   <site>
@@ -20,7 +20,7 @@
   <site>
     <url>https://theduck.chat</url>
     <name>The Duck Chat</name>
-    <description>AI-powered chat application</description>
+    <description>AI-powered chat application. Developed for Hackathon</description>
     <type>link</type>
   </site>
   <site>
@@ -32,13 +32,13 @@
   <site>
     <url>https://github.com/MichaelAyles/kicad-netlist-tool</url>
     <name>KiCad Netlist Tool</name>
-    <description>Tool for processing and analyzing KiCad netlists</description>
+    <description>Tool for reducing LLM token count from Kicad SCH files, to allow for automated documentation</description>
     <type>link</type>
   </site>
   <site>
     <url>https://github.com/MichaelAyles/claude-code-comm-bot</url>
     <name>Claude Code Comm Bot</name>
-    <description>Communication bot for Claude Code integration</description>
+    <description>Discord Communication bot for Claude Code, VS Code integration</description>
     <type>link</type>
   </site>
   <site>
