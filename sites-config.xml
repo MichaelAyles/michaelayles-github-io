@@ -30,6 +30,12 @@
     <type>link</type>
   </site>
   <site>
+    <url>https://github.com/MichaelAyles/bitwise-mcp</url>
+    <name>bitwise-mcp</name>
+    <description>MCP documentation server for embedded developers. Ingests PDF RMs, extracts register definitions, and provides fast semantic search with minimal token usage.</description>
+    <type>link</type>
+  </site>
+  <site>
     <url>https://github.com/MichaelAyles/kicad-netlist-tool</url>
     <name>KiCad Netlist Tool</name>
     <description>Tool for reducing LLM token count from Kicad SCH files, to allow for automated documentation</description>
