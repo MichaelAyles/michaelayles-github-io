@@ -6,6 +6,18 @@
     <type>link</type>
   </site>
   <site>
+    <url>https://circuitsnips.mikeayles.com/</url>
+    <name>CircuitSnips</name>
+    <description>Thingiverse, but for KiCad subcircuits.</description>
+    <type>link</type>
+  </site>
+  <site>
+    <url>https://github.com/MichaelAyles/kicad-library</url>
+    <name>CircuitSnips (GitHub)</name>
+    <description>Source Code for CircuitSnips</description>
+    <type>link</type>
+  </site>
+  <site>
     <url>https://github.com/MichaelAyles/hit-impact-android</url>
     <name>HIT Impact Android</name>
     <description>Kotlin Android app project for HIT Impact V1 traumatic brain injury sensors</description>
