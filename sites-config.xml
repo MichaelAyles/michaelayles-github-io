@@ -1,86 +1,163 @@
 <sites>
   <site>
-    <url>https://homeassistant.mikeayles.com</url>
     <name>Home Assistant</name>
     <description>Smart home automation platform</description>
+    <links>
+      <live>https://homeassistant.mikeayles.com</live>
+    </links>
+    <tags>
+      <tag>Home Automation</tag>
+      <tag>IoT</tag>
+    </tags>
     <type>link</type>
   </site>
   <site>
-    <url>https://circuitsnips.mikeayles.com/</url>
     <name>CircuitSnips</name>
     <description>Thingiverse, but for KiCad subcircuits.</description>
+    <links>
+      <live>https://circuitsnips.mikeayles.com/</live>
+      <github>https://github.com/MichaelAyles/kicad-library</github>
+      <writeup>blog/circuitsnips-writeup.md</writeup>
+    </links>
+    <tags>
+      <tag>KiCad</tag>
+      <tag>Electronics</tag>
+      <tag>Web</tag>
+    </tags>
+    <featured>true</featured>
     <type>link</type>
   </site>
   <site>
-    <url>https://github.com/MichaelAyles/kicad-library</url>
-    <name>CircuitSnips (GitHub)</name>
-    <description>Source Code for CircuitSnips</description>
-    <type>link</type>
-  </site>
-  <site>
-    <url>https://github.com/MichaelAyles/hit-impact-android</url>
     <name>HIT Impact Android</name>
     <description>Kotlin Android app project for HIT Impact V1 traumatic brain injury sensors</description>
+    <links>
+      <github>https://github.com/MichaelAyles/hit-impact-android</github>
+    </links>
+    <tags>
+      <tag>Kotlin</tag>
+      <tag>Android</tag>
+      <tag>Hardware</tag>
+    </tags>
     <type>link</type>
   </site>
   <site>
-    <url>https://github.com/MichaelAyles/mqtt-duration-trigger</url>
     <name>MQTT Duration Trigger</name>
     <description>Home Assistant integration for MQTT-based duration triggers</description>
+    <links>
+      <github>https://github.com/MichaelAyles/mqtt-duration-trigger</github>
+    </links>
+    <tags>
+      <tag>Python</tag>
+      <tag>Home Automation</tag>
+      <tag>MQTT</tag>
+    </tags>
     <type>link</type>
   </site>
   <site>
-    <url>https://theduck.chat</url>
     <name>The Duck Chat</name>
     <description>AI-powered chat application. Developed for Hackathon</description>
+    <links>
+      <live>https://theduck.chat</live>
+      <github>https://github.com/MichaelAyles/the-duck</github>
+    </links>
+    <tags>
+      <tag>AI</tag>
+      <tag>Chat</tag>
+      <tag>Web</tag>
+    </tags>
+    <featured>true</featured>
     <type>link</type>
   </site>
   <site>
-    <url>https://github.com/MichaelAyles/the-duck</url>
-    <name>The Duck (GitHub)</name>
-    <description>Source code for The Duck chat application</description>
-    <type>link</type>
-  </site>
-  <site>
-    <url>https://github.com/MichaelAyles/bitwise-mcp</url>
     <name>bitwise-mcp</name>
     <description>MCP documentation server for embedded developers. Ingests PDF RMs, extracts register definitions, and provides fast semantic search with minimal token usage.</description>
+    <links>
+      <github>https://github.com/MichaelAyles/bitwise-mcp</github>
+    </links>
+    <tags>
+      <tag>Python</tag>
+      <tag>MCP</tag>
+      <tag>Embedded</tag>
+      <tag>AI</tag>
+    </tags>
+    <featured>true</featured>
     <type>link</type>
   </site>
   <site>
-    <url>https://github.com/MichaelAyles/kicad-netlist-tool</url>
     <name>KiCad Netlist Tool</name>
     <description>Tool for reducing LLM token count from Kicad SCH files, to allow for automated documentation</description>
+    <links>
+      <github>https://github.com/MichaelAyles/kicad-netlist-tool</github>
+    </links>
+    <tags>
+      <tag>Python</tag>
+      <tag>KiCad</tag>
+      <tag>AI</tag>
+    </tags>
     <type>link</type>
   </site>
   <site>
-    <url>https://github.com/MichaelAyles/claude-code-comm-bot</url>
     <name>Claude Code Comm Bot</name>
     <description>Discord Communication bot for Claude Code, VS Code integration</description>
+    <links>
+      <github>https://github.com/MichaelAyles/claude-code-comm-bot</github>
+    </links>
+    <tags>
+      <tag>JavaScript</tag>
+      <tag>Discord</tag>
+      <tag>Bot</tag>
+    </tags>
     <type>link</type>
   </site>
   <site>
-    <url>https://github.com/MichaelAyles/agent-tool</url>
     <name>Agent Tool</name>
     <description>Web-based frontend for CLI tools &amp; LLM web services with real-time streaming</description>
+    <links>
+      <github>https://github.com/MichaelAyles/agent-tool</github>
+    </links>
+    <tags>
+      <tag>Web</tag>
+      <tag>AI</tag>
+      <tag>Streaming</tag>
+    </tags>
     <type>link</type>
   </site>
   <site>
-    <url>https://michaelayles.github.io/enginesim/</url>
     <name>Engine Simulator [WIP]</name>
     <description>Engine Simulator, using physics calculations, currently set up for diesel 6cyl</description>
+    <links>
+      <live>https://michaelayles.github.io/enginesim/</live>
+    </links>
+    <tags>
+      <tag>JavaScript</tag>
+      <tag>Physics</tag>
+      <tag>Simulation</tag>
+    </tags>
     <type>link</type>
   </site>
   <site>
-    <url>https://v0-supplement-stack-comparison.vercel.app/</url>
     <name>Vitamin/Supplement Price Comparison [WIP]</name>
     <description>Site to compare expensive branded 'supplements' against building a stack of store bought equivalents</description>
+    <links>
+      <live>https://v0-supplement-stack-comparison.vercel.app/</live>
+    </links>
+    <tags>
+      <tag>Web</tag>
+      <tag>React</tag>
+    </tags>
     <type>link</type>
   </site>
   <site>
-    <url>https://github.com/MichaelAyles/fuel_injector_characterizer</url>
     <name>Fuel Injector Characterizer</name>
     <description>One and Done, Vibe Coded system for validating fuel injector performance. Arduino and Webserial.</description>
+    <links>
+      <github>https://github.com/MichaelAyles/fuel_injector_characterizer</github>
+    </links>
+    <tags>
+      <tag>Arduino</tag>
+      <tag>Hardware</tag>
+      <tag>WebSerial</tag>
+    </tags>
     <type>link</type>
   </site>
 </sites>

@@ -7,6 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Markdown parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -382,18 +384,336 @@
             transform: translateY(-3px);
         }
         
+        /* Card Media */
+        .card-media {
+            width: calc(100% + 4rem);
+            margin: -2rem -2rem 1.5rem -2rem;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background: var(--surface-light);
+            position: relative;
+        }
+
+        .card-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-media img {
+            transform: scale(1.05);
+        }
+
+        /* Card Tags */
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--primary);
+            transition: all 0.2s ease;
+        }
+
+        .tag-badge:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: var(--primary);
+        }
+
+        /* Card Links Container */
+        .card-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: auto;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            pointer-events: auto;
+            z-index: 10;
+            position: relative;
+            border: 1px solid;
+        }
+
+        /* Live link styling */
+        .card-link-live {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .card-link-live:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        /* GitHub link styling */
+        .card-link-github {
+            background: transparent;
+            color: var(--text-primary);
+            border-color: var(--border);
+        }
+
+        .card-link-github:hover {
+            background: var(--surface-light);
+            border-color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        /* Writeup link styling */
+        .card-link-writeup {
+            background: transparent;
+            color: var(--accent);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .card-link-writeup:hover {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* Remove arrow from new link buttons */
+        .card-links .card-link::after {
+            content: none;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            max-width: 900px;
+            width: 100%;
+            margin: 2rem auto;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .modal-header h2 {
+            color: var(--text-primary);
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            padding-right: 3rem;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--surface-light);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 2rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* Markdown content styling */
+        .modal-body h1,
+        .modal-body h2,
+        .modal-body h3,
+        .modal-body h4,
+        .modal-body h5,
+        .modal-body h6 {
+            color: var(--text-primary);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .modal-body h1 { font-size: 2rem; }
+        .modal-body h2 { font-size: 1.5rem; }
+        .modal-body h3 { font-size: 1.25rem; }
+
+        .modal-body p {
+            margin-bottom: 1rem;
+        }
+
+        .modal-body a {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+
+        .modal-body a:hover {
+            border-bottom-color: var(--primary);
+        }
+
+        .modal-body code {
+            background: var(--surface-light);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: 'Consolas', 'Monaco', monospace;
+            color: var(--accent);
+        }
+
+        .modal-body pre {
+            background: var(--surface-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .modal-body pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-primary);
+        }
+
+        .modal-body ul,
+        .modal-body ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-body li {
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-body blockquote {
+            border-left: 3px solid var(--primary);
+            padding-left: 1.5rem;
+            margin: 1.5rem 0;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .modal-body img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .error {
+            text-align: center;
+            padding: 3rem;
+            color: #ef4444;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 3rem;
             }
-            
+
             .grid-section {
                 grid-template-columns: 1fr;
             }
-            
+
             .stats-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .modal {
+                padding: 1rem;
+            }
+
+            .modal-content {
+                margin: 1rem auto;
+            }
+
+            .modal-header,
+            .modal-body {
+                padding: 1.5rem;
+            }
+
+            .modal-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .card-links {
+                flex-direction: column;
+            }
+
+            .card-link {
+                width: 100%;
             }
         }
     </style>
@@ -473,6 +793,19 @@
         </div>
         <p style="color: var(--text-muted);">&copy; 2025 Michael Ayles. All rights reserved.</p>
     </footer>
+
+    <!-- Modal for Writeups -->
+    <div id="writeupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Project Writeup</h2>
+                <button class="modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalContent">
+                <div class="loading">Loading writeup...</div>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
