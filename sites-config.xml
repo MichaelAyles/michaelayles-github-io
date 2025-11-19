@@ -32,6 +32,7 @@
     <description>Kotlin Android app project for HIT Impact V1 traumatic brain injury sensors</description>
     <links>
       <github>https://github.com/MichaelAyles/hit-impact-android</github>
+      <writeup>blog/hit-impact-android.md</writeup>
     </links>
     <tags>
       <tag>Kotlin</tag>
@@ -45,6 +46,7 @@
     <description>Home Assistant integration for MQTT-based duration triggers</description>
     <links>
       <github>https://github.com/MichaelAyles/mqtt-duration-trigger</github>
+      <writeup>blog/mqtt-duration-trigger.md</writeup>
     </links>
     <tags>
       <tag>Python</tag>
@@ -59,6 +61,7 @@
     <links>
       <live>https://theduck.chat</live>
       <github>https://github.com/MichaelAyles/the-duck</github>
+      <writeup>blog/the-duck-chat.md</writeup>
     </links>
     <tags>
       <tag>AI</tag>
@@ -73,6 +76,7 @@
     <description>MCP documentation server for embedded developers. Ingests PDF RMs, extracts register definitions, and provides fast semantic search with minimal token usage.</description>
     <links>
       <github>https://github.com/MichaelAyles/bitwise-mcp</github>
+      <writeup>blog/bitwise-mcp.md</writeup>
     </links>
     <tags>
       <tag>Python</tag>
@@ -88,6 +92,7 @@
     <description>Tool for reducing LLM token count from Kicad SCH files, to allow for automated documentation</description>
     <links>
       <github>https://github.com/MichaelAyles/kicad-netlist-tool</github>
+      <writeup>blog/kicad-netlist-tool.md</writeup>
     </links>
     <tags>
       <tag>Python</tag>
@@ -101,6 +106,7 @@
     <description>Discord Communication bot for Claude Code, VS Code integration</description>
     <links>
       <github>https://github.com/MichaelAyles/claude-code-comm-bot</github>
+      <writeup>blog/claude-code-comm-bot.md</writeup>
     </links>
     <tags>
       <tag>JavaScript</tag>
@@ -127,6 +133,7 @@
     <description>Engine Simulator, using physics calculations, currently set up for diesel 6cyl</description>
     <links>
       <live>https://michaelayles.github.io/enginesim/</live>
+      <writeup>blog/engine-simulator.md</writeup>
     </links>
     <tags>
       <tag>JavaScript</tag>
@@ -140,6 +147,7 @@
     <description>Site to compare expensive branded 'supplements' against building a stack of store bought equivalents</description>
     <links>
       <live>https://v0-supplement-stack-comparison.vercel.app/</live>
+      <writeup>blog/supplement-comparison.md</writeup>
     </links>
     <tags>
       <tag>Web</tag>
@@ -152,6 +160,7 @@
     <description>One and Done, Vibe Coded system for validating fuel injector performance. Arduino and Webserial.</description>
     <links>
       <github>https://github.com/MichaelAyles/fuel_injector_characterizer</github>
+      <writeup>blog/fuel-injector-characterizer.md</writeup>
     </links>
     <tags>
       <tag>Arduino</tag>
