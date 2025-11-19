@@ -60,5 +60,5 @@ CircuitSnips demonstrates how sharing knowledge and proven designs can accelerat
 
 ---
 
-**Live Site**: [circuitsnips.mikeayles.com](https://circuitsnips.mikeayles.com/)
+**Live Site**: [circuitsnips.com](https://circuitsnips.com)
 **Source Code**: [GitHub](https://github.com/MichaelAyles/kicad-library)

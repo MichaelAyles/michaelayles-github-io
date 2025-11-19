@@ -15,7 +15,7 @@
     <name>CircuitSnips</name>
     <description>Thingiverse, but for KiCad subcircuits.</description>
     <links>
-      <live>https://circuitsnips.mikeayles.com/</live>
+      <live>https://circuitsnips.com</live>
       <github>https://github.com/MichaelAyles/kicad-library</github>
       <writeup>blog/circuitsnips-writeup.md</writeup>
     </links>
