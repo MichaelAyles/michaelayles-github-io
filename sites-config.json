@@ -1,0 +1,127 @@
+{
+  "sites": [
+    {
+      "name": "Home Assistant",
+      "description": "Smart home automation platform",
+      "links": {
+        "live": "https://homeassistant.mikeayles.com"
+      },
+      "tags": ["Home Automation", "IoT"],
+      "type": "link"
+    },
+    {
+      "name": "CircuitSnips.com",
+      "description": "Thingiverse, but for KiCad subcircuits.",
+      "links": {
+        "live": "https://circuitsnips.com",
+        "github": "https://github.com/MichaelAyles/kicad-library",
+        "writeup": "blog/circuitsnips-writeup.md"
+      },
+      "tags": ["KiCad", "Electronics", "Web"],
+      "featured": true,
+      "type": "link"
+    },
+    {
+      "name": "HIT Impact Android App",
+      "description": "Kotlin Android app project for HIT Impact V1 traumatic brain injury sensors",
+      "links": {
+        "github": "https://github.com/MichaelAyles/hit-impact-android",
+        "writeup": "blog/hit-impact-android.md"
+      },
+      "tags": ["Kotlin", "Android", "Hardware"],
+      "type": "link"
+    },
+    {
+      "name": "MQTT Duration Trigger",
+      "description": "Home Assistant integration for MQTT-based duration triggers",
+      "links": {
+        "github": "https://github.com/MichaelAyles/mqtt-duration-trigger",
+        "writeup": "blog/mqtt-duration-trigger.md"
+      },
+      "tags": ["Python", "Home Automation", "MQTT"],
+      "type": "link"
+    },
+    {
+      "name": "TheDuck.chat",
+      "description": "AI-powered chat application. Developed for the T3 Cloneathon.",
+      "links": {
+        "live": "https://theduck.chat",
+        "github": "https://github.com/MichaelAyles/the-duck",
+        "writeup": "blog/the-duck-chat.md"
+      },
+      "tags": ["AI", "Chat", "Web"],
+      "featured": true,
+      "type": "link"
+    },
+    {
+      "name": "bitwise-mcp",
+      "description": "MCP documentation server for embedded developers. Ingests PDF RMs, extracts register definitions, and provides fast semantic search with minimal token usage.",
+      "links": {
+        "github": "https://github.com/MichaelAyles/bitwise-mcp",
+        "writeup": "blog/bitwise-mcp.md"
+      },
+      "tags": ["Python", "MCP", "Embedded", "AI"],
+      "featured": true,
+      "type": "link"
+    },
+    {
+      "name": "KiCad Netlist Tool",
+      "description": "Tool for reducing LLM token count from Kicad SCH files, to allow for automated documentation",
+      "links": {
+        "github": "https://github.com/MichaelAyles/kicad-netlist-tool",
+        "writeup": "blog/kicad-netlist-tool.md"
+      },
+      "tags": ["Python", "KiCad", "AI"],
+      "type": "link"
+    },
+    {
+      "name": "Claude Code Comm Bot",
+      "description": "Discord Communication bot for Claude Code, VS Code integration",
+      "links": {
+        "github": "https://github.com/MichaelAyles/claude-code-comm-bot",
+        "writeup": "blog/claude-code-comm-bot.md"
+      },
+      "tags": ["JavaScript", "Discord", "Bot"],
+      "type": "link"
+    },
+    {
+      "name": "Agent Tool - deprecated",
+      "description": "Web-based frontend for CLI tools & LLM web services with real-time streaming",
+      "links": {
+        "github": "https://github.com/MichaelAyles/agent-tool"
+      },
+      "tags": ["Web", "AI", "Streaming"],
+      "type": "link"
+    },
+    {
+      "name": "Engine Simulator [WIP]",
+      "description": "Engine Simulator, using physics calculations, currently set up for diesel 6cyl",
+      "links": {
+        "live": "https://michaelayles.github.io/enginesim/",
+        "writeup": "blog/engine-simulator.md"
+      },
+      "tags": ["JavaScript", "Physics", "Simulation"],
+      "type": "link"
+    },
+    {
+      "name": "Vitamin/Supplement Price Comparison [WIP]",
+      "description": "Site to compare expensive branded 'supplements' against building a stack of store bought equivalents",
+      "links": {
+        "live": "https://v0-supplement-stack-comparison.vercel.app/",
+        "writeup": "blog/supplement-comparison.md"
+      },
+      "tags": ["Web", "React"],
+      "type": "link"
+    },
+    {
+      "name": "Fuel Injector Characterizer",
+      "description": "One and Done, Vibe Coded system for validating fuel injector performance. Arduino and Webserial.",
+      "links": {
+        "github": "https://github.com/MichaelAyles/fuel_injector_characterizer",
+        "writeup": "blog/fuel-injector-characterizer.md"
+      },
+      "tags": ["Arduino", "Hardware", "WebSerial"],
+      "type": "link"
+    }
+  ]
+}

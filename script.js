@@ -25,58 +25,15 @@ document.addEventListener('DOMContentLoaded', () => {
         privateToolsGrid.appendChild(card);
     });
 
-    // Load public projects from XML
-    fetch('sites-config.xml')
-        .then(response => response.text())
-        .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+    // Load public projects from JSON
+    fetch('sites-config.json')
+        .then(response => response.json())
         .then(data => {
-            const sites = data.getElementsByTagName('site');
             const sitesGrid = document.getElementById('sitesGrid');
             let publicIndex = 0;
 
-            Array.from(sites).forEach(site => {
-                const name = site.getElementsByTagName('name')[0].textContent;
-                const type = site.getElementsByTagName('type')[0].textContent;
-                const description = site.getElementsByTagName('description') &&
-                                  site.getElementsByTagName('description')[0] ?
-                                  site.getElementsByTagName('description')[0].textContent : '';
-
-                // Parse links
-                const linksElement = site.getElementsByTagName('links')[0];
-                const links = {};
-                if (linksElement) {
-                    const liveElement = linksElement.getElementsByTagName('live')[0];
-                    const githubElement = linksElement.getElementsByTagName('github')[0];
-                    const writeupElement = linksElement.getElementsByTagName('writeup')[0];
-
-                    if (liveElement) links.live = liveElement.textContent;
-                    if (githubElement) links.github = githubElement.textContent;
-                    if (writeupElement) links.writeup = writeupElement.textContent;
-                }
-
-                // Parse tags
-                const tags = [];
-                const tagsElement = site.getElementsByTagName('tags')[0];
-                if (tagsElement) {
-                    const tagElements = tagsElement.getElementsByTagName('tag');
-                    Array.from(tagElements).forEach(tag => {
-                        tags.push(tag.textContent);
-                    });
-                }
-
-                // Parse media
-                let media = null;
-                const mediaElement = site.getElementsByTagName('media')[0];
-                if (mediaElement) {
-                    media = mediaElement.textContent;
-                }
-
-                // Parse featured
-                let featured = false;
-                const featuredElement = site.getElementsByTagName('featured')[0];
-                if (featuredElement) {
-                    featured = featuredElement.textContent === 'true';
-                }
+            data.sites.forEach(site => {
+                const { name, type, description = '', links = {}, tags = [], media = null, featured = false } = site;
 
                 // Skip private items (Home Assistant is now in private tools)
                 if (links.live && links.live.includes('homeassistant.mikeayles.com')) {
@@ -115,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         })
         .catch(error => {
-            console.error('Error fetching or parsing XML:', error);
+            console.error('Error fetching or parsing JSON:', error);
             document.getElementById('sitesGrid').innerHTML = '<p style="color: var(--text-muted);">Error loading projects. Please try again later.</p>';
         });
 

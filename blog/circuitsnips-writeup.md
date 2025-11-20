@@ -1,8 +1,8 @@
-# CircuitSnips: Building a Thingiverse for KiCad
+# CircuitSnips.com: Building a Thingiverse for KiCad
 
 ## Overview
 
-CircuitSnips is a community-driven platform for sharing and discovering KiCad subcircuits. Think of it as "Thingiverse, but for electronics" - a place where engineers can share their proven circuit designs and help others avoid reinventing the wheel.
+CircuitSnips.com is a community-driven platform for sharing and discovering KiCad subcircuits. Think of it as "Thingiverse, but for electronics" - a place where engineers can share their proven circuit designs and help others avoid reinventing the wheel.
 
 ## The Problem
 
@@ -21,9 +21,9 @@ CircuitSnips allows users to:
 
 ### Stack
 
-- **Frontend**: Modern web framework with responsive design
-- **Backend**: RESTful API for circuit management
-- **Storage**: File-based storage for KiCad files with metadata indexing
+- **Frontend**: Modern web framework with responsive design. Hosted on Vercel
+- **Backend**: RESTful API for circuit management.
+- **Storage**: File-based storage for KiCad files with metadata indexing. Database, Buckets and Auth all using Supabase for convenience.
 - **Search**: Full-text search across circuit descriptions and component lists
 
 ### Key Features
@@ -37,11 +37,25 @@ CircuitSnips allows users to:
 
 ### KiCad File Format
 
-KiCad's file format is complex and version-dependent. Building a robust parser that handles different KiCad versions required careful testing and validation.
+Kicad uses S-Expressions for both its file storage and also it's clipboard data, which conveniently is one of the reasons this worked in the first place, however the KiCanvas viewer wasn't set up to handle 'snips'. When Snips are uploaded, they need to be wrapped in everything else that's required to make a kicad_sch file.
 
-### Component Normalization
+It was also necessary to block parts of the s-expression, such as references to components on other sheets to ensure compatability. 
 
-Different users might describe the same component differently (e.g., "LM317" vs "LM317T" vs "voltage regulator"). Implementing smart search and tagging was crucial for discoverability.
+### The KiCanvas viewer
+
+The KiCanvas viewer is an amazing bit of work, but wasn't quite set up for our needs. We have added the functionality to control themes from the page, which is required for the thumbnail generation flow. 
+
+We also added the functionality to do a box selection and directly copy subsections, whilst maintaining the 'copy' counter.
+
+### Initial Data
+
+This project would be useless with no example circuits to build momentum. Rightly or wrongly, the decision was made to scrape github for kicad_sch files, then classify them by their version, their license, determine attribution. 
+
+The kicad_sch s-expressions were then flattened using a tokenizer built for another project, and then the schematic file was fed into a fairly dumb, cheap LLM (Gemini Flash 2.5) to extract and rank subcircuits from the files.
+
+We are starting with 4230+ schematic files, with correct licenses and attribution, at a API cost of <£10.
+
+If the users do not wish for their schematics to be used, there is a one-click report, which doesn't require logon.
 
 ## Results
 
