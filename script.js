@@ -158,80 +158,61 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function createCard({ title, description, links = {}, tags = [], media = null, featured = false, linkText = null }) {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.style.animation = 'fadeInUp 0.8s ease-out forwards';
-    card.style.opacity = '0';
-
-    // Add media preview for featured projects
-    if (featured && media) {
-        const mediaContainer = document.createElement('div');
-        mediaContainer.className = 'card-media';
-        const img = document.createElement('img');
-        img.src = media;
-        img.alt = `${title} preview`;
-        img.loading = 'lazy';
-        mediaContainer.appendChild(img);
-        card.appendChild(mediaContainer);
-    }
-
-    const h3 = document.createElement('h3');
+    const item = document.createElement('div');
+    item.className = 'project-item';
+    item.style.animation = 'fadeInUp 0.5s ease-out forwards';
+    
+    // Title Column
+    const titleCol = document.createElement('div');
+    const h3 = document.createElement('div');
+    h3.className = 'project-title';
     h3.textContent = title;
-    card.appendChild(h3);
+    titleCol.appendChild(h3);
+    item.appendChild(titleCol);
 
-    if (description) {
-        const p = document.createElement('p');
-        p.textContent = description;
-        card.appendChild(p);
+    // Description Column
+    const descCol = document.createElement('div');
+    descCol.className = 'project-desc';
+    descCol.textContent = description;
+    item.appendChild(descCol);
+
+    // Links Column
+    const linksCol = document.createElement('div');
+    linksCol.className = 'project-links';
+
+    if (links.live) {
+        const liveLink = document.createElement('a');
+        liveLink.href = links.live;
+        liveLink.className = 'project-link';
+        liveLink.textContent = 'Live';
+        liveLink.target = '_blank';
+        linksCol.appendChild(liveLink);
     }
 
-    // Add tags if present
-    if (tags && tags.length > 0) {
-        const tagsContainer = document.createElement('div');
-        tagsContainer.className = 'card-tags';
-        tags.forEach(tag => {
-            const tagBadge = document.createElement('span');
-            tagBadge.className = 'tag-badge';
-            tagBadge.textContent = tag;
-            tagBadge.setAttribute('data-tag', tag);
-            tagsContainer.appendChild(tagBadge);
-        });
-        card.appendChild(tagsContainer);
+    if (links.github) {
+        const ghLink = document.createElement('a');
+        ghLink.href = links.github;
+        ghLink.className = 'project-link';
+        ghLink.textContent = 'Code';
+        ghLink.target = '_blank';
+        linksCol.appendChild(ghLink);
     }
 
-    // Add links container
-    const linksContainer = document.createElement('div');
-    linksContainer.className = 'card-links';
-
-    // If old style linkText is provided, use single link
-    if (linkText && links.live) {
-        const link = createLink(links.live, linkText, 'live');
-        linksContainer.appendChild(link);
-    } else {
-        // Create multiple link buttons
-        if (links.live) {
-            const liveLink = createLink(links.live, 'Live Site', 'live');
-            linksContainer.appendChild(liveLink);
-        }
-
-        if (links.github) {
-            const githubLink = createLink(links.github, 'GitHub', 'github');
-            linksContainer.appendChild(githubLink);
-        }
-
-        if (links.writeup) {
-            const writeupLink = createLink(links.writeup, 'Read Writeup', 'writeup');
-            writeupLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                openWriteup(links.writeup, title);
-            });
-            linksContainer.appendChild(writeupLink);
-        }
+    if (links.writeup) {
+        const writeupLink = document.createElement('a');
+        writeupLink.href = '#';
+        writeupLink.className = 'project-link';
+        writeupLink.textContent = 'Read More';
+        writeupLink.onclick = (e) => {
+            e.preventDefault();
+            openWriteup(links.writeup, title);
+        };
+        linksCol.appendChild(writeupLink);
     }
 
-    card.appendChild(linksContainer);
+    item.appendChild(linksCol);
 
-    return card;
+    return item;
 }
 
 function createLink(url, text, type) {
