@@ -1,6 +1,17 @@
 {
   "sites": [
     {
+      "name": "KiDoom",
+      "description": "Running DOOM on PCB traces - vector-based rendering of the classic 1993 shooter using KiCad's PCB editor at 10-25 FPS",
+      "links": {
+        "github": "https://github.com/MichaelAyles/KiDoom",
+        "writeup": "https://github.com/MichaelAyles/KiDoom/blob/main/BLOG.md"
+      },
+      "tags": ["Python", "KiCad", "DOOM", "Games"],
+      "featured": true,
+      "type": "link"
+    },
+    {
       "name": "Home Assistant",
       "description": "Smart home automation platform",
       "links": {

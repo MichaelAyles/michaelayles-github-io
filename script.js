@@ -201,11 +201,41 @@ async function openWriteup(writeupPath, title) {
     modal.classList.add('active');
 
     try {
+        // Check if external URL or local path
+        const isExternal = writeupPath.startsWith('http://') || writeupPath.startsWith('https://');
+        let fetchUrl = writeupPath;
+        let baseUrl = null;
+
+        // Convert GitHub blob URLs to raw URLs
+        if (isExternal && writeupPath.includes('github.com') && writeupPath.includes('/blob/')) {
+            fetchUrl = writeupPath
+                .replace('github.com', 'raw.githubusercontent.com')
+                .replace('/blob/', '/');
+            // Extract base URL for relative image paths
+            baseUrl = fetchUrl.substring(0, fetchUrl.lastIndexOf('/') + 1);
+        } else if (isExternal && writeupPath.includes('raw.githubusercontent.com')) {
+            baseUrl = fetchUrl.substring(0, fetchUrl.lastIndexOf('/') + 1);
+        }
+
         // Fetch markdown content
-        const response = await fetch(writeupPath);
+        const response = await fetch(fetchUrl);
         if (!response.ok) throw new Error('Failed to load writeup');
 
-        const markdown = await response.text();
+        let markdown = await response.text();
+
+        // Rewrite relative image/asset paths to absolute URLs for external sources
+        if (baseUrl) {
+            // Handle HTML img tags with relative src
+            markdown = markdown.replace(
+                /(<img\s+[^>]*src=["'])(?!http|\/\/)([^"']+)(["'])/gi,
+                (match, prefix, path, suffix) => `${prefix}${baseUrl}${path}${suffix}`
+            );
+            // Handle markdown image syntax ![alt](path)
+            markdown = markdown.replace(
+                /!\[([^\]]*)\]\((?!http|\/\/)([^)]+)\)/g,
+                (match, alt, path) => `![${alt}](${baseUrl}${path})`
+            );
+        }
 
         // Parse markdown to HTML using marked.js
         if (typeof marked !== 'undefined') {
