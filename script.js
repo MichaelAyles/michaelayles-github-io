@@ -1,3 +1,12 @@
+// Store project data for permalink lookups
+const projectsMap = new Map();
+
+function slugify(text) {
+    return text.toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Add private tools
     const privateToolsGrid = document.getElementById('privateTools');
@@ -40,6 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
+                // Store project data for permalink lookups
+                if (links.writeup) {
+                    const slug = slugify(name);
+                    projectsMap.set(slug, { writeup: links.writeup, title: name });
+                }
+
                 if (type === 'link') {
                     const card = createCard({
                         title: name,
@@ -70,6 +85,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     publicIndex++;
                 }
             });
+
+            // Check for permalink hash after projects are loaded
+            checkHashAndOpenWriteup();
         })
         .catch(error => {
             console.error('Error fetching or parsing JSON:', error);
@@ -112,13 +130,16 @@ document.addEventListener('DOMContentLoaded', () => {
             closeModal();
         }
     });
+
+    // Handle browser back/forward with hash changes
+    window.addEventListener('hashchange', checkHashAndOpenWriteup);
 });
 
 function createCard({ title, description, links = {}, tags = [], media = null, featured = false, linkText = null }) {
     const item = document.createElement('div');
     item.className = 'project-item';
     item.style.animation = 'fadeInUp 0.5s ease-out forwards';
-    
+
     // Title Column
     const titleCol = document.createElement('div');
     const h3 = document.createElement('div');
@@ -156,13 +177,14 @@ function createCard({ title, description, links = {}, tags = [], media = null, f
     }
 
     if (links.writeup) {
+        const slug = slugify(title);
         const writeupLink = document.createElement('a');
-        writeupLink.href = '#';
+        writeupLink.href = `#${slug}`;
         writeupLink.className = 'project-link';
         writeupLink.textContent = 'Read More';
         writeupLink.onclick = (e) => {
             e.preventDefault();
-            openWriteup(links.writeup, title);
+            openWriteup(links.writeup, title, slug);
         };
         linksCol.appendChild(writeupLink);
     }
@@ -190,10 +212,15 @@ function createLink(url, text, type) {
     return link;
 }
 
-async function openWriteup(writeupPath, title) {
+async function openWriteup(writeupPath, title, slug = null) {
     const modal = document.getElementById('writeupModal');
     const modalTitle = document.getElementById('modalTitle');
     const modalContent = document.getElementById('modalContent');
+
+    // Update URL hash for permalink (without triggering hashchange)
+    if (slug && window.location.hash !== `#${slug}`) {
+        history.pushState(null, '', `#${slug}`);
+    }
 
     // Show modal with loading state
     modalTitle.textContent = title;
@@ -254,4 +281,27 @@ async function openWriteup(writeupPath, title) {
 function closeModal() {
     const modal = document.getElementById('writeupModal');
     modal.classList.remove('active');
+
+    // Clear the hash without triggering page scroll
+    if (window.location.hash) {
+        history.pushState(null, '', window.location.pathname);
+    }
+}
+
+function checkHashAndOpenWriteup() {
+    const hash = window.location.hash.slice(1); // Remove the #
+    if (!hash) {
+        // No hash, close modal if open
+        const modal = document.getElementById('writeupModal');
+        if (modal && modal.classList.contains('active')) {
+            modal.classList.remove('active');
+        }
+        return;
+    }
+
+    // Look up project by slug
+    const project = projectsMap.get(hash);
+    if (project) {
+        openWriteup(project.writeup, project.title, hash);
+    }
 }
