@@ -12,6 +12,17 @@
       "type": "link"
     },
     {
+      "name": "ScopeDoom",
+      "description": "DOOM on an oscilloscope via sound card - using a MacBook's headphone jack as a dual-channel DAC to drive vector graphics at 4-8 Hz",
+      "links": {
+        "github": "https://github.com/MichaelAyles/ScopeDoom",
+        "writeup": "https://github.com/MichaelAyles/ScopeDoom/blob/main/BLOG.md"
+      },
+      "tags": ["Python", "DOOM", "Hardware", "Audio"],
+      "featured": true,
+      "type": "link"
+    },
+    {
       "name": "Home Assistant",
       "description": "Smart home automation platform",
       "links": {
