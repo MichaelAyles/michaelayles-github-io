@@ -176,6 +176,19 @@ function createCard({ title, description, links = {}, tags = [], media = null, f
         linksCol.appendChild(ghLink);
     }
 
+    if (links.featured) {
+        const slug = slugify(title);
+        const featuredLink = document.createElement('a');
+        featuredLink.href = `#${slug}`;
+        featuredLink.className = 'project-link';
+        featuredLink.textContent = 'Featured';
+        featuredLink.onclick = (e) => {
+            e.preventDefault();
+            openWriteup(links.featured, title, slug);
+        };
+        linksCol.appendChild(featuredLink);
+    }
+
     if (links.writeup) {
         const slug = slugify(title);
         const writeupLink = document.createElement('a');
