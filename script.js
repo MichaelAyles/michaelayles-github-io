@@ -50,9 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 // Store project data for permalink lookups
+                const slug = slugify(name);
                 if (links.writeup) {
-                    const slug = slugify(name);
                     projectsMap.set(slug, { writeup: links.writeup, title: name });
+                }
+                if (links.featured) {
+                    projectsMap.set(`${slug}-featured`, { writeup: links.featured, title: name });
                 }
 
                 if (type === 'link') {
@@ -178,13 +181,14 @@ function createCard({ title, description, links = {}, tags = [], media = null, f
 
     if (links.featured) {
         const slug = slugify(title);
+        const featuredSlug = `${slug}-featured`;
         const featuredLink = document.createElement('a');
-        featuredLink.href = `#${slug}`;
+        featuredLink.href = `#${featuredSlug}`;
         featuredLink.className = 'project-link';
         featuredLink.textContent = 'Featured';
         featuredLink.onclick = (e) => {
             e.preventDefault();
-            openWriteup(links.featured, title, slug);
+            openWriteup(links.featured, title, featuredSlug);
         };
         linksCol.appendChild(featuredLink);
     }
