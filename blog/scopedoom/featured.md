@@ -1,6 +1,6 @@
 # ScopeDoom: DOOM on an Oscilloscope
 
-![ScopeDoom Setup](assets/desk_setup.jpg)
+<img src="assets/desk_setup.jpg" alt="ScopeDoom Setup" width="800">
 
 *Playing DOOM on an oscilloscope by converting vector graphics to audio signals through a MacBook's headphone jack*
 
