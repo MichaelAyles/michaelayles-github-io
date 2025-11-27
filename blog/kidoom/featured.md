@@ -24,6 +24,7 @@ KiDoom reached **#1 on Hacker News** and stayed there for almost a full day, gen
 **Featured In:**
 - [Hackaday: "KiDoom Brings Classic Shooter to KiCad"](https://hackaday.com/2025/11/26/kidoom-brings-classic-shooter-to-kicad/)
 - [The Register: "DOOM on KiCad"](https://www.theregister.com/2025/11/26/doom_kicad/)
+- [Adafruit Blog: "KiDoom: Running DOOM on KiCad PCB Traces"](https://blog.adafruit.com/2025/11/26/kidoom-running-doom-on-kicad-pcb-traces/)
 - [Hacker News Discussion](https://news.ycombinator.com/item?id=46051449) - #1 trending for nearly 24 hours
 
 ## Why It Exists
