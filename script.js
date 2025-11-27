@@ -242,6 +242,9 @@ async function openWriteup(writeupPath, title, slug = null) {
             baseUrl = fetchUrl.substring(0, fetchUrl.lastIndexOf('/') + 1);
         } else if (isExternal && writeupPath.includes('raw.githubusercontent.com')) {
             baseUrl = fetchUrl.substring(0, fetchUrl.lastIndexOf('/') + 1);
+        } else if (!isExternal) {
+            // For local paths, extract the directory containing the blog.md file
+            baseUrl = writeupPath.substring(0, writeupPath.lastIndexOf('/') + 1);
         }
 
         // Fetch markdown content
@@ -250,7 +253,7 @@ async function openWriteup(writeupPath, title, slug = null) {
 
         let markdown = await response.text();
 
-        // Rewrite relative image/asset paths to absolute URLs for external sources
+        // Rewrite relative image/asset paths to absolute URLs
         if (baseUrl) {
             // Handle HTML img tags with relative src
             markdown = markdown.replace(
