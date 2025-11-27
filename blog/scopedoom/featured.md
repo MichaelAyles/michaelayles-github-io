@@ -2,23 +2,18 @@
 
 ![ScopeDoom Setup](assets/desk_setup.jpg)
 
-Playing DOOM on an oscilloscope by converting vector graphics to audio signals through a MacBook's headphone jack.
+*Playing DOOM on an oscilloscope by converting vector graphics to audio signals through a MacBook's headphone jack*
 
-## Key Features
+## The Concept
 
-- **Oscilloscope XY Mode** - Left/right audio channels control X/Y beam position
-- **Vector Graphics** - Line-based rendering perfect for oscilloscope displays
-- **Audio DAC Output** - Standard 3.5mm headphone jack drives the scope
-- **Shared Vector Pipeline** - Reuses KiDoom's DOOM geometry extraction code
+After KiDoom proved that DOOM's internal vectors could render on PCB traces, the natural question emerged: what other vector displays could work?
+
+Oscilloscopes in XY mode are classic vector displays. Audio cards are just DACs. Put them together, and you can draw DOOM with sound.
 
 ## How It Works
 
-The same vector extraction approach from KiDoom is repurposed to drive an oscilloscope in XY mode. Audio samples are generated to trace out walls and sprites, with the oscilloscope's electron beam drawing the game frame by frame at 4-8 Hz.
+The same vector extraction from KiDoom drives an oscilloscope in XY mode. Audio samples trace out walls and sprites at 4-8 Hz - the oscilloscope's electron beam literally drawing the game frame by frame.
 
-No specialized hardware needed - just DOOM, Python, and a dual-channel audio output.
+No specialized hardware required: just DOOM, Python, and a standard 3.5mm headphone jack.
 
-## A Natural Extension
-
-After proving that DOOM's internal vectors could render on PCB traces, the next question was obvious: what other vector displays could work? Oscilloscopes in XY mode are classic vector displays, and audio cards are just DACs.
-
-[Read Full Technical Writeup](blog.md)
+[Read Full Technical Writeup →](blog.md)
