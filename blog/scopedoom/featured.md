@@ -28,6 +28,15 @@ ScopeDoom was featured alongside KiDoom as part of the broader vector-rendering 
 **[Hackster: "I Always Thought Trace Routing Was Evil"](https://www.hackster.io/news/i-always-thought-trace-routing-was-evil-c4cfc1142f63)**
 > Nick Bild's coverage of the vector-based DOOM rendering projects
 
+**[Tom's Hardware: "Doom Gets Ported to Board Design App"](https://www.tomshardware.com/video-games/retro-gaming/doom-gets-ported-to-board-design-app-transforming-walls-into-pcb-traces-iconic-demons-into-64-pin-packages-and-ammo-into-3-pin-parts-fully-playable-kicad-editor-port-runs-at-up-to-25-fps-on-modern-systems)**
+> Coverage of the fully playable KiCad editor port running at up to 25 FPS
+
+**[XDA Developers: "Someone Ported Doom Into a Circuit Board Editor"](https://www.xda-developers.com/someone-ported-doom-into-a-circuit-board-editor-and-its-incredible/)**
+> In-depth look at how walls became PCB traces and demons became component packages
+
+**[Daily.dev: "Doom Hits KiCad as PCB Traces Become Demons and Doors"](https://app.daily.dev/posts/doom-hits-kicad-as-pcb-traces-become-demons-and-doors-ieiqagdsv)**
+> Community coverage of the creative technical achievement
+
 **[Hacker News Discussion](https://news.ycombinator.com/item?id=46051449)**
 > Community discussion covering both the PCB and oscilloscope implementations
 
