@@ -25,6 +25,9 @@ ScopeDoom was featured alongside KiDoom as part of the broader vector-rendering 
 **[Adafruit Blog: "KiDoom: Running DOOM on KiCad PCB Traces"](https://blog.adafruit.com/2025/11/26/kidoom-running-doom-on-kicad-pcb-traces/)**
 > Mentions ScopeDoom as part of the vector rendering exploration
 
+**[Hackster: "I Always Thought Trace Routing Was Evil"](https://www.hackster.io/news/i-always-thought-trace-routing-was-evil-c4cfc1142f63)**
+> Nick Bild's coverage of the vector-based DOOM rendering projects
+
 **[Hacker News Discussion](https://news.ycombinator.com/item?id=46051449)**
 > Community discussion covering both the PCB and oscilloscope implementations
 

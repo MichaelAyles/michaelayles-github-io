@@ -19,6 +19,9 @@ KiDoom reached **#1 on Hacker News** and stayed there for almost a full day, gen
 **[Adafruit Blog: "KiDoom: Running DOOM on KiCad PCB Traces"](https://blog.adafruit.com/2025/11/26/kidoom-running-doom-on-kicad-pcb-traces/)**
 > Maker community perspective on the project
 
+**[Hackster: "I Always Thought Trace Routing Was Evil"](https://www.hackster.io/news/i-always-thought-trace-routing-was-evil-c4cfc1142f63)**
+> Nick Bild's coverage of the vector rendering approach and PCB component representation
+
 **[Hacker News Discussion](https://news.ycombinator.com/item?id=46051449)**
 > #1 trending for nearly 24 hours with 500+ comments discussing the implementation
 
