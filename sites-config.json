@@ -39,7 +39,8 @@
       "links": {
         "live": "https://circuitsnips.com",
         "github": "https://github.com/MichaelAyles/kicad-library",
-        "writeup": "blog/circuitsnips-writeup/blog.md"
+        "writeup": "blog/circuitsnips-writeup/blog.md",
+        "featured": "blog/circuitsnips-writeup/featured.md"
       },
       "tags": ["KiCad", "Electronics", "Web"],
       "featured": true,
