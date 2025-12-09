@@ -47,6 +47,16 @@
       "type": "link"
     },
     {
+      "name": "TOKN",
+      "description": "Token-Optimised KiCad Notation - 92% token reduction format for LLM circuit generation, with benchmark suite and model comparison",
+      "links": {
+        "github": "https://github.com/MichaelAyles/tokn",
+        "writeup": "blog/tokn/blog.md"
+      },
+      "tags": ["Python", "KiCad", "AI", "LLM"],
+      "type": "link"
+    },
+    {
       "name": "HIT Impact Android App",
       "description": "Kotlin Android app project for HIT Impact V1 traumatic brain injury sensors",
       "links": {
@@ -54,28 +64,6 @@
         "writeup": "blog/hit-impact-android/blog.md"
       },
       "tags": ["Kotlin", "Android", "Hardware"],
-      "type": "link"
-    },
-    {
-      "name": "MQTT Duration Trigger",
-      "description": "Home Assistant integration for MQTT-based duration triggers",
-      "links": {
-        "github": "https://github.com/MichaelAyles/mqtt-duration-trigger",
-        "writeup": "blog/mqtt-duration-trigger/blog.md"
-      },
-      "tags": ["Python", "Home Automation", "MQTT"],
-      "type": "link"
-    },
-    {
-      "name": "TheDuck.chat",
-      "description": "AI-powered chat application. Developed for the T3 Cloneathon.",
-      "links": {
-        "live": "https://theduck.chat",
-        "github": "https://github.com/MichaelAyles/the-duck",
-        "writeup": "blog/the-duck-chat/blog.md"
-      },
-      "tags": ["AI", "Chat", "Web"],
-      "featured": true,
       "type": "link"
     },
     {
@@ -90,13 +78,13 @@
       "type": "link"
     },
     {
-      "name": "TOKN",
-      "description": "Token-Optimised KiCad Notation - 92% token reduction format for LLM circuit generation, with benchmark suite and model comparison",
+      "name": "MQTT Duration Trigger",
+      "description": "Home Assistant integration for MQTT-based duration triggers",
       "links": {
-        "github": "https://github.com/MichaelAyles/tokn",
-        "writeup": "blog/tokn/blog.md"
+        "github": "https://github.com/MichaelAyles/mqtt-duration-trigger",
+        "writeup": "blog/mqtt-duration-trigger/blog.md"
       },
-      "tags": ["Python", "KiCad", "AI", "LLM"],
+      "tags": ["Python", "Home Automation", "MQTT"],
       "type": "link"
     },
     {
@@ -120,7 +108,19 @@
       "type": "link"
     },
     {
-      "name": "Agent Tool - deprecated",
+      "name": "TheDuck.chat [Deprecated]",
+      "description": "AI-powered chat application. Developed for the T3 Cloneathon. DB currently inactive, demos available in repo.",
+      "links": {
+        "live": "https://theduck.chat",
+        "github": "https://github.com/MichaelAyles/the-duck",
+        "writeup": "blog/the-duck-chat/blog.md"
+      },
+      "tags": ["AI", "Chat", "Web"],
+      "featured": true,
+      "type": "link"
+    },
+    {
+      "name": "Agent Tool [Deprecated]",
       "description": "Web-based frontend for CLI tools & LLM web services with real-time streaming",
       "links": {
         "github": "https://github.com/MichaelAyles/agent-tool"
@@ -136,16 +136,6 @@
         "writeup": "blog/engine-simulator/blog.md"
       },
       "tags": ["JavaScript", "Physics", "Simulation"],
-      "type": "link"
-    },
-    {
-      "name": "Vitamin/Supplement Price Comparison [WIP]",
-      "description": "Site to compare expensive branded 'supplements' against building a stack of store bought equivalents",
-      "links": {
-        "live": "https://v0-supplement-stack-comparison.vercel.app/",
-        "writeup": "blog/supplement-comparison/blog.md"
-      },
-      "tags": ["Web", "React"],
       "type": "link"
     },
     {
