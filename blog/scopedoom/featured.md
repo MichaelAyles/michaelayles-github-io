@@ -38,7 +38,7 @@ ScopeDoom was featured alongside KiDoom as part of the broader vector-rendering 
 > Community coverage of the creative technical achievement
 
 **[Hacker News Discussion](https://news.ycombinator.com/item?id=46051449)**
-> Community discussion covering both the PCB and oscilloscope implementations
+> #1 on Hacker News for nearly a full day
 
 ---
 
