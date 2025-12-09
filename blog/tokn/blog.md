@@ -31,6 +31,12 @@ TOKN (Token-Optimised KiCad Notation) compresses KiCad schematics while preservi
 
 The compression comes from stripping formatting while keeping semantics. A KiCad symbol definition might be 200 lines of S-expressions. TOKN captures the same information in a few structured lines.
 
+<p align="center">
+  <img src="assets/comparison.png" alt="Round-trip comparison: Original KiCad schematic vs TOKN-reconstructed" width="800">
+  <br>
+  <em>Round-trip conversion: Original schematic (left) vs reconstructed from TOKN (right) — no loss of electrical information</em>
+</p>
+
 ---
 
 ## Format Structure
