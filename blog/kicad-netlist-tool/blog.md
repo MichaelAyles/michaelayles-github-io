@@ -1,220 +1,75 @@
-# KiCad Netlist Tool: Efficient Circuit Documentation for AI
+# KiCad Netlist Tool
 
-## Overview
+*Making KiCad schematics LLM-friendly*
 
-As electronics design becomes increasingly complex, leveraging AI assistance for documentation, review, and analysis is invaluable. However, KiCad schematic files are notoriously token-intensive, making them expensive and slow to process with large language models. The KiCad Netlist Tool solves this by extracting circuit information in an optimized format that achieves **96%+ token reduction** while preserving complete connectivity information.
+---
 
 ## The Problem
 
-KiCad's native `.kicad_sch` files are comprehensive but verbose:
-- 55KB file sizes are common
-- 25,000+ tokens required for processing
-- Mostly formatting and metadata
-- Difficult for LLMs to parse efficiently
+I wanted to use Claude to help document my circuits. Describe what each block does, generate a BOM, review the design. Simple stuff.
 
-When working with AI tools like Claude or GPT-4 for circuit documentation or review, these token costs add up quickly, making routine tasks prohibitively expensive.
+The problem: KiCad schematic files are massive. A modest circuit is 55KB and 25,000+ tokens. At Claude Opus rates, that's $0.50 per query just to read the schematic. Do that a few times during a design session and you've spent more on API calls than on the actual components.
+
+Most of those tokens are noise — UUIDs, coordinates, symbol graphics, metadata. The actual electrical information is maybe 2% of the file.
+
+---
 
 ## The Solution
 
-The KiCad Netlist Tool extracts essential circuit information into a compact text format:
+The KiCad Netlist Tool extracts just the electrical information and outputs a compact summary:
 
-**Example Reduction**:
-- Original: 26,000 tokens
-- Optimized: 453 tokens
-- **Savings: 98.3%**
-
-This dramatic reduction maintains all critical data:
-- Component references and values
-- Footprint assignments
-- Pin connections and net topology
-- Complete circuit connectivity
-
-## Key Features
-
-### Intelligent Extraction
-
-**Component Data**:
-- Reference designators (R1, C5, U3)
-- Component values (10kΩ, 100µF, STM32F407)
-- Footprint information
-- Pin-to-net mappings
-
-**Net Analysis**:
-- Complete connectivity graph
-- Connection count per component
-- Net names and relationships
-
-### Real-Time Monitoring
-
-The tool watches schematic files for changes with:
-- Configurable check intervals (5-300 seconds)
-- Intelligent change detection
-- Distinction between initial generation and modifications
-- Automatic changelog generation
-
-### Multiple Interfaces
-
-**System Tray Application**:
-- Background service runs silently
-- Native desktop notifications
-- Quick access menu
-- Minimal resource usage
-
-**Dedicated GUI**:
-- Live statistics panel
-- Real-time update display
-- Changelog viewer with timestamps
-- Component-level change tracking
-- Seamless state sync with tray app
-
-### Change Tracking
-
-The changelog system provides detailed history:
-- Timestamp for each change
-- Added/removed/modified components
-- Net topology changes
-- Value and footprint updates
-
-This enables:
-- Design review workflows
-- Collaboration with clear change visibility
-- Documentation of design evolution
-- Automated reporting
-
-## Technical Implementation
-
-### Architecture
-
-**Core Service**:
-- `NetlistService` manages all processing logic
-- File system monitoring with debouncing
-- Shared state model across UI components
-- Event-driven architecture
-
-**Processing Pipeline**:
-1. Parse KiCad schematic file
-2. Extract component and net information
-3. Build connectivity graph
-4. Generate optimized text output
-5. Compare with previous version
-6. Update changelog if changes detected
-
-**Output Files**:
-- `netlist_summary.txt` - Component list with nets and connections
-- `netlist_changelog.txt` - Timestamped change history
-
-### Cross-Platform Support
-
-Built with Python, the tool runs on:
-- Windows
-- macOS
-- Linux
-
-### Smart Detection
-
-The system distinguishes between:
-- **Initial Generation**: First-time file processing
-- **No Changes**: Regeneration without modifications
-- **Actual Changes**: Real circuit updates requiring logging
-
-This context-aware behavior prevents changelog noise and provides meaningful notifications.
-
-## Use Cases
-
-### AI-Assisted Documentation
-
-Generate comprehensive circuit documentation by providing optimized netlists to LLMs:
-- Component descriptions
-- Functional blocks
-- Interface documentation
-- Bill of materials
-
-**Token Savings**: Process entire schematics for the cost of a few paragraphs.
-
-### Design Review
-
-Automated change detection enables:
-- Peer review with clear change visibility
-- Client approval workflows
-- Regulatory compliance documentation
-- Version control integration
-
-### Collaboration
-
-Team members can:
-- Review design changes at component level
-- Track evolution over time
-- Generate reports for stakeholders
-- Maintain design history
-
-### Automated Workflows
-
-Integration with:
-- CI/CD pipelines
-- Documentation generators
-- Issue tracking systems
-- Automated testing tools
-
-## Real-World Example
-
-**Original Schematic**:
 ```
-File size: 55KB
-Tokens: 26,000
-Cost per query: $0.52 (with Claude Opus)
+Original: 26,000 tokens → Optimized: 453 tokens
+Savings: 98.3%
 ```
 
-**Optimized Netlist**:
-```
-File size: 2KB
-Tokens: 453
-Cost per query: $0.009
-```
+That $0.50 query becomes $0.009. Now I can iterate.
 
-**Savings**: 98.3% reduction in both size and cost.
+The output includes everything an LLM needs to understand the circuit:
+- Components with values and footprints
+- Pin-to-net connectivity
+- Net topology
 
-## Practical Benefits
+It strips everything it doesn't need: graphics, positions, UUIDs, formatting.
 
-**Development Speed**:
-- Instant feedback on design changes
-- No manual export steps
-- Background monitoring doesn't interrupt workflow
+---
 
-**Cost Efficiency**:
-- Dramatically reduced API costs
-- Process entire schematics affordably
-- Feasible for iterative design reviews
+## How It Works
 
-**Quality Improvement**:
-- Automated documentation
-- Consistent change tracking
-- Reduced human error
+The tool runs in the background and watches your schematic file. When you save in KiCad, it automatically regenerates the summary. No manual export steps, no context switching.
 
-**Collaboration**:
-- Clear change communication
-- Version history without manual tracking
-- Accessible format for non-engineers
+There's a system tray app for minimal footprint, or a GUI if you want to see the stats and changelog.
+
+**Change tracking** was surprisingly useful. The tool diffs each version and logs what changed — added components, modified values, new connections. Turns out that's handy for design reviews and documentation even without the LLM angle.
+
+---
+
+## What I Actually Use It For
+
+**Documentation**: Paste the netlist into Claude, ask for a functional description of each block. Works well for complex designs where I need to write up what I built.
+
+**Design review**: "Are there any obvious issues with this circuit?" catches missing pull-ups, floating pins, that kind of thing.
+
+**BOM generation**: The component list is already extracted, so generating a formatted BOM is trivial.
+
+**Change summaries**: When updating a design, the changelog gives me a quick "what did I actually modify" without digging through KiCad's UI.
+
+---
+
+## Future: Migration to TOKN
+
+The current output format works, but it's ad-hoc. I've since developed [TOKN](/blog/tokn/blog.md) — a proper token-optimised notation for KiCad schematics with a formal spec, round-trip conversion, and better structure for LLM consumption.
+
+Migrating this tool to output TOKN format is high priority. Same functionality, better format, and compatibility with the broader TOKN ecosystem.
+
+---
 
 ## Tech Stack
 
 - **Language**: Python
-- **GUI Framework**: Qt (PyQt/PySide)
+- **GUI**: Qt (PyQt/PySide)
 - **File Monitoring**: watchdog
-- **System Tray**: Platform-specific integration
-- **Parsing**: KiCad schematic format
-
-## Future Enhancements
-
-- Direct KiCad plugin integration
-- Multi-file project support
-- Visual diff visualization
-- Export to standard formats (JSON, CSV)
-- Cloud synchronization
-- Team collaboration features
-
-## Conclusion
-
-The KiCad Netlist Tool demonstrates how targeted optimization can unlock new workflows. By making circuit data LLM-friendly, it enables AI-assisted electronics design without prohibitive costs. Whether you're generating documentation, reviewing changes, or collaborating with team members, this tool ensures that schematic complexity doesn't limit your tooling options.
+- **Platforms**: Windows, macOS, Linux
 
 ---
 
