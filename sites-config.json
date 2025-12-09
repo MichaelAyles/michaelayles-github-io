@@ -90,6 +90,16 @@
       "type": "link"
     },
     {
+      "name": "TOKN",
+      "description": "Token-Optimised KiCad Notation - 92% token reduction format for LLM circuit generation, with benchmark suite and model comparison",
+      "links": {
+        "github": "https://github.com/MichaelAyles/tokn",
+        "writeup": "blog/tokn/blog.md"
+      },
+      "tags": ["Python", "KiCad", "AI", "LLM"],
+      "type": "link"
+    },
+    {
       "name": "KiCad Netlist Tool",
       "description": "Tool for reducing LLM token count from Kicad SCH files, to allow for automated documentation",
       "links": {
