@@ -1,74 +1,73 @@
 # KiCad Netlist Tool
 
-*Making KiCad schematics LLM-friendly*
+*Compact netlist extraction for LLM workflows*
 
 ---
 
 ## The Problem
 
-I wanted to use Claude to help document my circuits. Describe what each block does, generate a BOM, review the design. Simple stuff.
-
-The problem: KiCad schematic files are massive. A modest circuit is 55KB and 25,000+ tokens. At Claude Opus rates, that's $0.50 per query just to read the schematic. Do that a few times during a design session and you've spent more on API calls than on the actual components.
-
-Most of those tokens are noise — UUIDs, coordinates, symbol graphics, metadata. The actual electrical information is maybe 2% of the file.
+KiCad schematic files are mostly noise for LLM purposes. A modest circuit is 55KB and 25,000+ tokens. Most of that is UUIDs, coordinates, symbol graphics, and metadata. The actual electrical information is maybe 2% of the file.
 
 ---
 
-## The Solution
+## The Tool
 
-The KiCad Netlist Tool extracts just the electrical information and outputs a compact summary:
+Extracts just the electrical information and outputs it in [TOKN format](https://mikeayles.com/#tokn):
 
 ```
-Original: 26,000 tokens → Optimized: 453 tokens
-Savings: 98.3%
+Original: 1,509,037 tokens → TOKN: 51,443 tokens
+Reduction: 96.6%
 ```
 
-That $0.50 query becomes $0.009. Now I can iterate.
+![KiCad Netlist Tool](./assets/screenshot.png)
 
-The output includes everything an LLM needs to understand the circuit:
-- Components with values and footprints
-- Pin-to-net connectivity
-- Net topology
-
-It strips everything it doesn't need: graphics, positions, UUIDs, formatting.
-
----
-
-## How It Works
-
-The tool runs in the background and watches your schematic file. When you save in KiCad, it automatically regenerates the summary. No manual export steps, no context switching.
-
-There's a system tray app for minimal footprint, or a GUI if you want to see the stats and changelog.
-
-**Change tracking** was surprisingly useful. The tool diffs each version and logs what changed — added components, modified values, new connections. Turns out that's handy for design reviews and documentation even without the LLM angle.
+Features:
+- **Hierarchical sheet selection** — pick which sheets to include
+- **Copy to clipboard** — paste directly into your LLM
+- **File monitoring** — auto-regenerate when you save in KiCad
+- **Real-time stats** — token count before and after
 
 ---
 
-## What I Actually Use It For
+## TOKN Format
 
-**Documentation**: Paste the netlist into Claude, ask for a functional description of each block. Works well for complex designs where I need to write up what I built.
+The output is [TOKN v1.2](https://mikeayles.com/#tokn) — a compact format that preserves the electrical information:
 
-**Design review**: "Are there any obvious issues with this circuit?" catches missing pull-ups, floating pins, that kind of thing.
+```
+# TOKN v1
+title: Audio Preamp
 
-**BOM generation**: The component list is already extracted, so generating a formatted BOM is trivial.
+components[3]{ref,type,value,fp,x,y,w,h,a}:
+  U1,ECC83,ECC83-1,Valve,127.00,85.09,25.40,20.32,0
+  R1,R,1.5k,0805,149.86,85.09,7.62,0.00,90
+  C1,C,10uF,RadialD10,123.19,64.77,0.00,7.62,0
 
-**Change summaries**: When updating a design, the changelog gives me a quick "what did I actually modify" without digging through KiCad's UI.
+nets[2]{name,pins}:
+  VIN,U1.2,C1.1
+  VOUT,U1.7,R1.2
+```
+
+Components, values, footprints, positions, and net connectivity.
 
 ---
 
-## Future: Migration to TOKN
+## Use Cases
 
-The current output format works, but it's ad-hoc. I've since developed [TOKN](/blog/tokn/blog.md) — a proper token-optimised notation for KiCad schematics with a formal spec, round-trip conversion, and better structure for LLM consumption.
+**Documentation**: Generate functional descriptions of circuit blocks.
 
-Migrating this tool to output TOKN format is high priority. Same functionality, better format, and compatibility with the broader TOKN ecosystem.
+**Design review**: Catch missing pull-ups, floating pins, etc.
+
+**BOM generation**: Component list is already extracted.
+
+**Selective extraction**: Include only the sheets you need.
 
 ---
 
 ## Tech Stack
 
 - **Language**: Python
-- **GUI**: Qt (PyQt/PySide)
-- **File Monitoring**: watchdog
+- **GUI**: CustomTkinter
+- **Format**: TOKN v1.2
 - **Platforms**: Windows, macOS, Linux
 
 ---
