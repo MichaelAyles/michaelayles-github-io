@@ -36,7 +36,7 @@ KiDoom reached **#1 on Hacker News** and stayed there for almost a full day, gen
 
 ### Videos:
 
-**[YouTube Short](https://www.youtube.com/shorts/7IJEBFnCkok)** | **[Instagram](https://www.instagram.com/p/DR1zzqQlNc5/)**
+**[UFD Tech YouTube Short](https://www.youtube.com/shorts/7IJEBFnCkok)** | **[UFD Tech Instagram](https://www.instagram.com/p/DR1zzqQlNc5/)**
 
 ---
 

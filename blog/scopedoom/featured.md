@@ -42,7 +42,7 @@ ScopeDoom was featured alongside KiDoom as part of the broader vector-rendering 
 
 ### Videos:
 
-**[YouTube Short](https://www.youtube.com/shorts/7IJEBFnCkok)** | **[Instagram](https://www.instagram.com/p/DR1zzqQlNc5/)**
+**[UFD Tech YouTube Short](https://www.youtube.com/shorts/7IJEBFnCkok)** | **[UFD Tech Instagram](https://www.instagram.com/p/DR1zzqQlNc5/)**
 
 ---
 
