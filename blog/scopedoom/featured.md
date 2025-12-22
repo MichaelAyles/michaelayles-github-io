@@ -40,6 +40,10 @@ ScopeDoom was featured alongside KiDoom as part of the broader vector-rendering 
 **[Hacker News Discussion](https://news.ycombinator.com/item?id=46051449)**
 > #1 on Hacker News for nearly a full day
 
+### Videos:
+
+**[YouTube Short](https://www.youtube.com/shorts/7IJEBFnCkok)** | **[Instagram](https://www.instagram.com/p/DR1zzqQlNc5/)**
+
 ---
 
 ## How It Works
