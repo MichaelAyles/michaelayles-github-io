@@ -1,6 +1,17 @@
 {
   "sites": [
     {
+      "name": "Phaestus",
+      "description": "CI/CD for physical products - natural language to manufacturable PCB, enclosure, and firmware using constrained AI generation",
+      "links": {
+        "live": "https://phaestus.app",
+        "writeup": "blog/phaestus/blog.md"
+      },
+      "tags": ["AI", "Hardware", "KiCad", "IoT"],
+      "featured": true,
+      "type": "link"
+    },
+    {
       "name": "KiDoom",
       "description": "Running DOOM on PCB traces - vector-based rendering of the classic 1993 shooter using KiCad's PCB editor at 10-25 FPS",
       "links": {
