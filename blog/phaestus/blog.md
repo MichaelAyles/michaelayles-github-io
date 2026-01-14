@@ -1,6 +1,6 @@
 # Phaestus: CI/CD for Physical Products
 
-![Phaestus Logo](logo.png)
+<img src="logo.png" alt="Phaestus Logo" style="width: 100%; max-width: 800px;">
 
 I've been thinking about why hardware development still feels like 1995 while software has moved on. We've got CI/CD pipelines, package managers, automated testing. Meanwhile hardware engineers are still manually routing traces, tweaking enclosure dimensions by hand, and hoping their BOM doesn't have obsolete parts.
 
@@ -80,4 +80,4 @@ Medium term: make the full pipeline smoother. Right now there's still manual wor
 
 Long term: the same thing but for increasingly complex products. More block types, more enclosure options, more sophisticated firmware generation. The architecture scales, it's just a matter of filling in the pieces.
 
-If you want to try it: [phaestus.app](https://phaestus.app). Public login available soon, gallery and/or video walkthrough sooner if you want to follow along. And if you want to talk hardware automation, AI abstractions, or why IoT devices are still so annoying to build, drop me a message at [contact@phaestus.app](contact@phaestus.app).
+If you want to try it: [phaestus.app](https://phaestus.app). Public login available soon, gallery and/or video walkthrough sooner if you want to follow along. And if you want to talk hardware automation, AI abstractions, or why IoT devices are still so annoying to build, drop me a message at [contact@phaestus.app](mailto:contact@phaestus.app).
