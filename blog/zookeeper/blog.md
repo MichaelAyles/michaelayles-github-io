@@ -33,7 +33,7 @@ That's Zookeeper. A mobile app that turns zoo visits into a collection game. Sel
 
 ## Why We're Building This
 
-My girlfriend and I entered the Gemini 3 Hackathon together. $100,000 prize pool, Feb 10 deadline, and a requirement to build something *new* with the Gemini 3 API. We wanted something fun that we'd actually use ourselves.
+My girlfriend and I entered the Gemini 3 Hackathon together. Built for the requirement to build something *new* with the Gemini 3 API. We wanted something fun that we'd actually use ourselves.
 
 We both like zoos. We both have that collector-brain that enjoys checking things off lists. And we noticed that existing zoo apps are either glorified maps or membership card holders. Nobody had built the obvious thing: a Pokédex for real animals.
 
@@ -60,7 +60,7 @@ The checklist is generated once per zoo and cached. We're not hitting the API ev
 
 This is where Gemini actually shines. When you take a photo:
 
-1. The image goes to `gemini-2.0-flash-001` via OpenRouter
+1. The image goes to Gemini 3 Flash via OpenRouter
 2. The prompt includes the zoo's animal list as candidates
 3. Gemini returns either a confident match with a fun fact, or...
 4. A playful rejection explaining what it *did* see
@@ -77,7 +77,7 @@ We spent more time on the rejection messages than I'd like to admit. They're par
 
 | Layer | Choice | Why |
 |-------|--------|-----|
-| Frontend | React 19 + Vite | Fast, my girlfriend's team can read it |
+| Frontend | React 19 + Vite | Fast, pleasant to dev |
 | Styling | Tailwind v4 | Rapid iteration |
 | State | Zustand | No Redux boilerplate |
 | Backend | Cloudflare Pages Functions | Edge deployment, generous free tier |
@@ -130,7 +130,7 @@ This uses the Haversine formula for geographic distance. The result is that when
 
 ## What Gemini Actually Does
 
-Two integration points:
+Three integration points:
 
 ### 1. Text Generation — Animal List Generation
 
@@ -158,6 +158,51 @@ IF it's NOT: return a playful rejection message
 ```
 
 The candidate list constraint is important. Without it, Gemini might identify a "lion" when the zoo doesn't have lions. By providing the options upfront, we get matches that are actually useful.
+
+### 3. Data Pipeline — UK Zoo Scraper
+
+This one was surprisingly fun to build. We needed a comprehensive database of UK zoos with their animals. Wikipedia has a list of UK zoos, but no animal data. Zoo websites have animals, but inconsistent formats. The solution: a multi-source scraper that uses Gemini to do the heavy lifting.
+
+The pipeline:
+
+```
+Wikipedia (zoo list) ─┬─→ Dedupe ─→ Geocode ─→ Fetch Animals ─→ D1 Database
+BIAZA (zoo list)     ─┤                              ↑
+Google (discovery)   ─┘                              │
+                                               Gemini 3.0 Flash
+```
+
+The clever bit is how we prompt for animals. If you ask an LLM for "all mammals at Chester Zoo", you get maybe 20 highlights — the lions, elephants, giraffes. But Chester has 500+ species. We needed exhaustive lists.
+
+The fix: subcategory prompting. Instead of "mammals", we ask for:
+- Primates (monkeys, apes, lemurs)
+- Big cats and wild cats
+- Bears and raccoons
+- Hoofed animals (deer, antelope, giraffes, zebras)
+- Small mammals (meerkats, otters, mongoose)
+- ...and so on
+
+Each subcategory gets its own API call. The results get merged and deduplicated. The effect is dramatic — we went from ~40 animals per zoo to ~200.
+
+```typescript
+const MAMMAL_SUBCATEGORIES = [
+  'Primates (monkeys, apes, lemurs)',
+  'Big cats and wild cats',
+  'Bears and raccoons',
+  'Elephants and rhinos',
+  'Hoofed animals (deer, antelope, giraffes, zebras)',
+  // ... 5 more subcategories
+];
+
+for (const subcategory of MAMMAL_SUBCATEGORIES) {
+  const animals = await fetchAnimalsBySubcategory(zoo, 'Mammals', subcategory);
+  allAnimals.push(...animals);
+}
+```
+
+We also ask for 5 fun facts per animal. The prompt explicitly requests "genuinely fascinating, surprising facts" rather than basic information. The result is that when you spot an elephant, you learn something actually interesting — not just "elephants are the largest land mammals."
+
+The whole thing runs overnight, caches aggressively, and populates the D1 database. One-time cost to seed the data, then users get instant checklists.
 
 ---
 
@@ -193,7 +238,7 @@ What's left before submission:
 - [ ] 3-minute demo video
 - [ ] ~200 word project description
 - [ ] Final polish pass
-- [ ] Upgrade to Gemini 3 models when available on OpenRouter
+- [ ] Migrate from OpenRouter to Google's Gemini API directly
 
 The hackathon requires a public demo link. We're deployed on Cloudflare Pages at a URL I'll share once we've submitted.
 
@@ -205,16 +250,12 @@ Building for a hackathon with a partner is different from solo projects. You hav
 
 It's slower in some ways, faster in others. Slower because communication takes time. Faster because two people catch bugs twice as fast and the motivation to not let your partner down keeps you shipping.
 
-The Gemini integration was smoother than expected. The vision model is genuinely good at animal identification — better than I thought it would be. The main limitation is our prompt engineering, not the model's capability.
+The Gemini integration was smoother than expected, I've got quite a lot of experience building with it now. The vision model is genuinely good at animal identification — better than I thought it would be. The main limitation is our prompt engineering, not the model's capability.
 
 ---
 
 ## Try It
 
-The app will be live at [zookeeper.pages.dev](https://zookeeper.pages.dev) once we've submitted. In the meantime, the code is at [github.com/MichaelAyles/zookeeper](https://github.com/MichaelAyles/zookeeper).
+The app is live at [zookeeperapp.com](https://zookeeperapp.com). The code is at [github.com/MichaelAyles/zookeeper](https://github.com/MichaelAyles/zookeeper).
 
 If you're at a zoo and want to beta test, let me know. We need real-world usage data before the deadline.
-
----
-
-*Built for the Gemini 3 Hackathon. Because zoo visits should feel like adventures, not checklists.*
