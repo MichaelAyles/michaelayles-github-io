@@ -9,12 +9,24 @@
 <p align="center">
   <table>
     <tr>
-      <td><img src="welcome.png" alt="Welcome Screen" width="300"></td>
-      <td><img src="home.png" alt="Home Screen" width="300"></td>
+      <td><img src="Screenshot_20260115-141038.png" alt="Welcome Screen" width="200"></td>
+      <td><img src="Screenshot_20260115-141208.png" alt="Home Screen" width="200"></td>
+      <td><img src="Screenshot_20260115-141214.png" alt="Animal Checklist" width="200"></td>
     </tr>
     <tr>
       <td align="center"><em>Sign in with Google</em></td>
-      <td align="center"><em>Ready for your first adventure</em></td>
+      <td align="center"><em>Home dashboard</em></td>
+      <td align="center"><em>Animal checklist</em></td>
+    </tr>
+    <tr>
+      <td><img src="Screenshot_20260115-141232.png" alt="Zoo Map" width="200"></td>
+      <td><img src="Screenshot_20260115-141251.png" alt="Stats Page" width="200"></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td align="center"><em>Find a zoo nearby</em></td>
+      <td align="center"><em>Track your progress</em></td>
+      <td></td>
     </tr>
   </table>
 </p>
