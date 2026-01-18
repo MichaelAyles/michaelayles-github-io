@@ -46,4 +46,4 @@ Instead of rendering 64,000 pixels per frame (0.15 FPS), KiDoom extracts DOOM's 
 
 Enemies are rendered as real footprints: demons are intimidating 64-pin QFP packages, health packs are humble 3-pin SOT-23s.
 
-[Read Full Technical Writeup →](blog/kidoom/blog.md)
+[Read Full Technical Writeup →](#kidoom)

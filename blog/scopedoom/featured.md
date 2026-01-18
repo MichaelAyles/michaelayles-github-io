@@ -52,4 +52,4 @@ The same vector extraction from KiDoom drives an oscilloscope in XY mode. Audio 
 
 No specialized hardware required: just DOOM, Python, and a standard 3.5mm headphone jack.
 
-[Read Full Technical Writeup →](blog/scopedoom/blog.md)
+[Read Full Technical Writeup →](#scopedoom)

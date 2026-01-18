@@ -19,4 +19,4 @@ CircuitSnips lets you search for common subcircuits - LiPo chargers, voltage reg
 
 The initial 4,000+ circuits were gathered from open-source GitHub projects, classified by license and quality using Gemini Flash 2.5. Users can upload their own designs, and there's box-selection in the viewer to grab just the portion you need from larger schematics.
 
-[Read Full Technical Writeup →](blog/circuitsnips-writeup/blog.md)
+[Read Full Technical Writeup →](#circuitsnips-com)
