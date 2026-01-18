@@ -1,28 +1,21 @@
-// Theme management
+// Theme management - default light, toggle to dark
 (function initTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-        document.documentElement.setAttribute('data-theme', savedTheme);
+    if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
     }
 })();
 
 function toggleTheme() {
     const root = document.documentElement;
-    const currentTheme = root.getAttribute('data-theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = root.getAttribute('data-theme') === 'dark';
 
-    let newTheme;
-    if (currentTheme === 'dark') {
-        newTheme = 'light';
-    } else if (currentTheme === 'light') {
-        newTheme = 'dark';
+    if (isDark) {
+        root.removeAttribute('data-theme');
+        localStorage.removeItem('theme');
     } else {
-        // No explicit theme set, toggle from system preference
-        newTheme = prefersDark ? 'light' : 'dark';
+        root.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
     }
-
-    root.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
 }
 
 // Store project data for permalink lookups
