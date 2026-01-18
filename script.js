@@ -170,6 +170,15 @@ function createCard({ title, description, links = {}, tags = [], media = null, f
         linksCol.appendChild(liveLink);
     }
 
+    if (links.blog) {
+        const blogLink = document.createElement('a');
+        blogLink.href = links.blog;
+        blogLink.className = 'project-link';
+        blogLink.textContent = 'Blog';
+        blogLink.target = '_blank';
+        linksCol.appendChild(blogLink);
+    }
+
     if (links.github) {
         const ghLink = document.createElement('a');
         ghLink.href = links.github;
