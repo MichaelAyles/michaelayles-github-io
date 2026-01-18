@@ -5,6 +5,7 @@
       "description": "Compiler for physical products - natural language to manufacturable PCB, enclosure, and firmware using constrained AI generation",
       "links": {
         "live": "https://phaestus.app",
+        "blog": "https://phaestus.app/blog",
         "github": "https://github.com/MichaelAyles/heph",
         "writeup": "blog/phaestus/blog.md"
       },
