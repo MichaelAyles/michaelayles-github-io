@@ -1,3 +1,30 @@
+// Theme management
+(function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+})();
+
+function toggleTheme() {
+    const root = document.documentElement;
+    const currentTheme = root.getAttribute('data-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    let newTheme;
+    if (currentTheme === 'dark') {
+        newTheme = 'light';
+    } else if (currentTheme === 'light') {
+        newTheme = 'dark';
+    } else {
+        // No explicit theme set, toggle from system preference
+        newTheme = prefersDark ? 'light' : 'dark';
+    }
+
+    root.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+}
+
 // Store project data for permalink lookups
 const projectsMap = new Map();
 
@@ -8,6 +35,12 @@ function slugify(text) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
+
     // Add private tools
     const privateToolsGrid = document.getElementById('privateTools');
     const privateTools = [

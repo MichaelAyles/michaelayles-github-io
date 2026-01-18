@@ -27,6 +27,34 @@
             --text-primary: #111111;
             --text-secondary: #666666;
             --sidebar-width: 350px;
+            --modal-bg: rgba(255, 255, 255, 0.95);
+            --hover-bg: #fafafa;
+        }
+
+        [data-theme="dark"] {
+            --primary: #ffffff;
+            --secondary: #bbbbbb;
+            --background: #0a0a0a;
+            --surface: #141414;
+            --border: #2a2a2a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #999999;
+            --modal-bg: rgba(10, 10, 10, 0.95);
+            --hover-bg: #1a1a1a;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --primary: #ffffff;
+                --secondary: #bbbbbb;
+                --background: #0a0a0a;
+                --surface: #141414;
+                --border: #2a2a2a;
+                --text-primary: #f0f0f0;
+                --text-secondary: #999999;
+                --modal-bg: rgba(10, 10, 10, 0.95);
+                --hover-bg: #1a1a1a;
+            }
         }
 
         body {
@@ -163,7 +191,7 @@
         }
 
         .project-item:hover {
-            background: #fafafa;
+            background: var(--hover-bg);
             padding-left: 1rem;
             padding-right: 1rem;
             margin-left: -1rem;
@@ -248,7 +276,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--modal-bg);
             z-index: 1000;
             padding: 2rem;
         }
@@ -272,6 +300,61 @@
             border: none;
             background: none;
             cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 100;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--hover-bg);
+            border-color: var(--text-secondary);
+        }
+
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle .icon-sun,
+        .theme-toggle .icon-moon {
+            display: none;
+        }
+
+        /* Show moon icon in light mode (click to go dark) */
+        :root:not([data-theme="dark"]) .theme-toggle .icon-moon {
+            display: block;
+        }
+
+        /* Show sun icon in dark mode (click to go light) */
+        [data-theme="dark"] .theme-toggle .icon-sun {
+            display: block;
+        }
+
+        /* Handle system dark mode when no explicit theme set */
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]):not([data-theme="dark"]) .theme-toggle .icon-sun {
+                display: block;
+            }
+            :root:not([data-theme="light"]):not([data-theme="dark"]) .theme-toggle .icon-moon {
+                display: none;
+            }
         }
 
         /* Modal markdown content styling */
@@ -310,6 +393,16 @@
 </head>
 
 <body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+    </button>
+
     <div class="app-layout">
         <!-- Sidebar -->
         <aside class="sidebar">
