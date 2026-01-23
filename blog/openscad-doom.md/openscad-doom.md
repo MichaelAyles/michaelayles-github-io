@@ -2,6 +2,8 @@
 
 *Running id Software's 1993 classic in a CAD program was never supposed to work this well.*
 
+> **Note:** Better screenshots and a video coming soon - I've been improving the visuals.
+
 ---
 
 ## The Trilogy of Engineering Tool Abuse
