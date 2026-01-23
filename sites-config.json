@@ -26,6 +26,17 @@
       "type": "link"
     },
     {
+      "name": "OpenSCAD-DOOM",
+      "description": "DOOM in OpenSCAD at 30+ FPS - real-time 3D rendering in a parametric CAD tool using the Manifold geometry kernel",
+      "links": {
+        "github": "https://github.com/MichaelAyles/openSCAD-DOOM",
+        "writeup": "blog/openscad-doom.md/openscad-doom.md"
+      },
+      "tags": ["Python", "DOOM", "OpenSCAD", "CAD"],
+      "featured": true,
+      "type": "link"
+    },
+    {
       "name": "KiDoom",
       "description": "Running DOOM on PCB traces - vector-based rendering of the classic 1993 shooter using KiCad's PCB editor at 10-25 FPS",
       "links": {
@@ -46,17 +57,6 @@
         "featured": "blog/scopedoom/featured.md"
       },
       "tags": ["Python", "DOOM", "Hardware", "Audio"],
-      "featured": true,
-      "type": "link"
-    },
-    {
-      "name": "OpenSCAD-DOOM",
-      "description": "DOOM in OpenSCAD at 30+ FPS - real-time 3D rendering in a parametric CAD tool using the Manifold geometry kernel",
-      "links": {
-        "github": "https://github.com/MichaelAyles/openSCAD-DOOM",
-        "writeup": "blog/openscad-doom.md/openscad-doom.md"
-      },
-      "tags": ["Python", "DOOM", "OpenSCAD", "CAD"],
       "featured": true,
       "type": "link"
     },
