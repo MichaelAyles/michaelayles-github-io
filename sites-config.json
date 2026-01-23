@@ -50,6 +50,17 @@
       "type": "link"
     },
     {
+      "name": "OpenSCAD-DOOM",
+      "description": "DOOM in OpenSCAD at 30+ FPS - real-time 3D rendering in a parametric CAD tool using the Manifold geometry kernel",
+      "links": {
+        "github": "https://github.com/MichaelAyles/openSCAD-DOOM",
+        "writeup": "blog/openscad-doom.md/openscad-doom.md"
+      },
+      "tags": ["Python", "DOOM", "OpenSCAD", "CAD"],
+      "featured": true,
+      "type": "link"
+    },
+    {
       "name": "Home Assistant",
       "description": "Smart home automation platform",
       "links": {

@@ -1,4 +1,4 @@
-# Phaestus: CI/CD for Physical Products
+# Phaestus: Compiler for Physical Products
 
 <img src="logo.png" alt="Phaestus Logo" style="width: 100%; max-width: 800px;">
 
