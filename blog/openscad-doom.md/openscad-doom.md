@@ -36,7 +36,7 @@ Running DOOM on something is a surprisingly effective way to learn it deeply. Yo
 
 So yes, it's absurd. But it's also R&D disguised as entertainment.
 
-![OpenSCAD DOOM Screenshot](Screenshot%202026-01-23%20at%2022.53.40.png)
+<img src="Screenshot%202026-01-23%20at%2022.53.40.png" alt="OpenSCAD DOOM Screenshot" style="width: 100%; max-width: 100%;">
 
 ---
 
@@ -142,7 +142,7 @@ On a MacBook Pro M2:
 
 It's genuinely playable. You can walk through E1M1 (and any other DOOM level), open doors, see enemies, and watch it all render in a CAD program.
 
-![OpenSCAD 3D View](Screenshot%202026-01-23%20at%2023.04.00.png)
+<img src="Screenshot%202026-01-23%20at%2023.04.00.png" alt="OpenSCAD 3D View" style="width: 100%; max-width: 100%;">
 
 ---
 
