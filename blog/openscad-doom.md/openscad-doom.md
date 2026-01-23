@@ -8,11 +8,19 @@
 
 This is the third entry in an increasingly unhinged series of projects that answer the question: "Can I run DOOM on engineering tools that were absolutely not designed for games?"
 
+<br>
+
 | Project | Tool Abused | What It's Actually For | FPS |
-|---------|-------------|------------------------|-----|
+|:--------|:------------|:-----------------------|:---:|
+|  |  |  |  |
 | [KiDoom](https://github.com/MichaelAyles/kidoom) | KiCad PCB Editor | Designing circuit boards | 10-25 |
+|  |  |  |  |
 | [ScopeDoom](https://github.com/MichaelAyles/ScopeDoom) | Oscilloscope + Sound Card | Debugging electronics | 4-8 |
+|  |  |  |  |
 | **OpenSCAD-DOOM** | OpenSCAD | Parametric 3D modeling | 30-60 |
+|  |  |  |  |
+
+<br>
 
 KiDoom renders walls as copper traces and enemies as QFP-64 chip footprints. ScopeDoom pipes vector coordinates through a headphone jack into an oscilloscope's X-Y mode. And now OpenSCAD-DOOM exports geometry to a parametric CAD language designed for mechanical parts.
 
