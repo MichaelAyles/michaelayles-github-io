@@ -8,19 +8,36 @@
 
 This is the third entry in an increasingly unhinged series of projects that answer the question: "Can I run DOOM on engineering tools that were absolutely not designed for games?"
 
-<br>
-
-| Project | Tool Abused | What It's Actually For | FPS |
-|:--------|:------------|:-----------------------|:---:|
-|  |  |  |  |
-| [KiDoom](https://github.com/MichaelAyles/kidoom) | KiCad PCB Editor | Designing circuit boards | 10-25 |
-|  |  |  |  |
-| [ScopeDoom](https://github.com/MichaelAyles/ScopeDoom) | Oscilloscope + Sound Card | Debugging electronics | 4-8 |
-|  |  |  |  |
-| **OpenSCAD-DOOM** | OpenSCAD | Parametric 3D modeling | 30-60 |
-|  |  |  |  |
-
-<br>
+<table style="width: 100%; border-collapse: collapse; margin: 1.5em 0;">
+  <thead>
+    <tr style="border-bottom: 2px solid #ddd;">
+      <th style="padding: 12px 16px; text-align: left;">Project</th>
+      <th style="padding: 12px 16px; text-align: left;">Tool Abused</th>
+      <th style="padding: 12px 16px; text-align: left;">What It's Actually For</th>
+      <th style="padding: 12px 16px; text-align: center;">FPS</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding: 12px 16px;"><a href="https://github.com/MichaelAyles/kidoom">KiDoom</a></td>
+      <td style="padding: 12px 16px;">KiCad PCB Editor</td>
+      <td style="padding: 12px 16px;">Designing circuit boards</td>
+      <td style="padding: 12px 16px; text-align: center;">10-25</td>
+    </tr>
+    <tr>
+      <td style="padding: 12px 16px;"><a href="https://github.com/MichaelAyles/ScopeDoom">ScopeDoom</a></td>
+      <td style="padding: 12px 16px;">Oscilloscope + Sound Card</td>
+      <td style="padding: 12px 16px;">Debugging electronics</td>
+      <td style="padding: 12px 16px; text-align: center;">4-8</td>
+    </tr>
+    <tr>
+      <td style="padding: 12px 16px;"><strong>OpenSCAD-DOOM</strong></td>
+      <td style="padding: 12px 16px;">OpenSCAD</td>
+      <td style="padding: 12px 16px;">Parametric 3D modeling</td>
+      <td style="padding: 12px 16px; text-align: center;">30-60</td>
+    </tr>
+  </tbody>
+</table>
 
 KiDoom renders walls as copper traces and enemies as QFP-64 chip footprints. ScopeDoom pipes vector coordinates through a headphone jack into an oscilloscope's X-Y mode. And now OpenSCAD-DOOM exports geometry to a parametric CAD language designed for mechanical parts.
 
