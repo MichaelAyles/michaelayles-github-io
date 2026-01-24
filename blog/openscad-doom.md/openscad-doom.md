@@ -1,4 +1,4 @@
-# Playing DOOM in OpenSCAD at 30+ FPS
+# Playing DOOM in OpenSCAD at 10-20 FPS
 
 *Running id Software's 1993 classic in a CAD program was never supposed to work this well.*
 
@@ -36,12 +36,14 @@ This is the third entry in an increasingly unhinged series of projects that answ
       <td style="padding: 12px 16px;"><strong>OpenSCAD-DOOM</strong></td>
       <td style="padding: 12px 16px;">OpenSCAD</td>
       <td style="padding: 12px 16px;">Parametric 3D modeling</td>
-      <td style="padding: 12px 16px; text-align: center;">30-60</td>
+      <td style="padding: 12px 16px; text-align: center;">10-20</td>
     </tr>
   </tbody>
 </table>
 
 KiDoom renders walls as copper traces and enemies as QFP-64 chip footprints. ScopeDoom pipes vector coordinates through a headphone jack into an oscilloscope's X-Y mode. And now OpenSCAD-DOOM exports geometry to a parametric CAD language designed for mechanical parts.
+
+The first two both hit #1 on Hacker News, so apparently there's an audience for this sort of thing.
 
 Three professional tools. Three completely inappropriate applications. One demon-infested Mars base.
 
@@ -49,13 +51,9 @@ Three professional tools. Three completely inappropriate applications. One demon
 
 These projects look like pure silliness, but there's a reason I keep diving into PCB editors and CAD tools at the API level.
 
-I'm building [Phaestus](https://phaestus.app) - a compiler for physical products that generates schematics, PCB layouts, enclosures, and firmware from natural language. To automate file generation for KiCad and OpenSCAD, you need to understand how those tools actually work: their file formats, their Python APIs, their rendering pipelines, their performance characteristics.
-
-Running DOOM on something is a surprisingly effective way to learn it deeply. You can't fake real-time rendering. Either you understand the tool well enough to push geometry at 10+ FPS, or you don't. KiDoom taught me KiCad's Python scripting API and PCB object model. OpenSCAD-DOOM taught me the WASM rendering pipeline and Manifold backend. Both of those directly fed back into Phaestus.
+Running DOOM on something is a surprisingly effective way to learn it deeply. You can't fake real-time rendering. Either you understand the tool well enough to push geometry at 10+ FPS, or you don't. KiDoom taught me KiCad's Python scripting API and PCB object model. OpenSCAD-DOOM taught me the WASM rendering pipeline and Manifold backend. Both fed directly into [Phaestus](https://phaestus.app), a project I'm working on to generate PCBs, enclosures, and firmware from natural language.
 
 So yes, it's absurd. But it's also R&D disguised as entertainment.
-
-[Watch the demo on YouTube](https://www.youtube.com/watch?v=l9nnV-mO4wY)
 
 ---
 
@@ -83,7 +81,7 @@ The architecture:
 
 **What we use from DOOM:**
 - WAD file parsing (level geometry, BSP trees, thing positions)
-- The original map data, textures references, sector heights
+- The original map data, texture references, sector heights
 
 **What we built from scratch:**
 - Game loop and input handling
@@ -110,9 +108,9 @@ OpenSCAD's file watcher has a 200ms debounce timer - it waits for files to stop 
 
 The `$t` variable cycles 0→1, but we don't even use it - we just need the continuous render loop.
 
-### 2. OpenSCAD 2026 with Manifold
+### 2. OpenSCAD 2025 with Manifold
 
-This is where I need to credit some earlier work. I first attempted this DOOM project about a month ago, but it was unplayably slow. In the meantime, I was optimizing the OpenSCAD renderer for [Phaestus](https://phaestus.app) - a CI/CD system for physical products that generates schematics, PCBs, enclosures, and firmware from natural language. The enclosure stage was taking 2 minutes to render moderately complex designs.
+This is where I need to credit some earlier work. I first attempted this DOOM project about a month ago, but it was unplayably slow. In the meantime, I was optimizing the OpenSCAD renderer for [Phaestus](https://phaestus.app). The enclosure generation stage was taking 2 minutes to render moderately complex designs.
 
 The deep dive into that problem ([documented here](https://phaestus.app/blog/blog0031)) revealed the key insight: the npm `openscad-wasm` package was from 2022 and didn't include the Manifold geometry kernel. The `--enable=manifold` flag was being silently ignored. The fix was using the 2025 WASM build from the OpenSCAD Playground with `--backend=manifold`.
 
@@ -154,14 +152,14 @@ On a MacBook Pro M1:
 
 | Metric | Value |
 |--------|-------|
-| OpenSCAD FPS | 30-60 |
+| OpenSCAD FPS | 10-20 |
 | Visible walls | 100-200 |
 | File size | ~40KB |
 | Latency | <100ms |
 
 It's genuinely playable. You can walk through E1M1 (and any other DOOM level), open doors, see enemies, and watch it all render in a CAD program.
 
-<img src="Screenshot%202026-01-23%20at%2023.04.00.png" alt="OpenSCAD 3D View" style="width: 100%; max-width: 100%;">
+<img src="openscad-3d-view.png" alt="OpenSCAD 3D View" style="width: 100%; max-width: 100%;">
 
 ---
 
@@ -197,7 +195,9 @@ Each frame, we regenerate the `visible_walls()` module with only the geometry in
 
 ## Why?
 
-Because "can it run DOOM?" is the ultimate benchmark. And because there's something deeply satisfying about watching a CAD program designed for 3D printing render a 1993 shooter at playable framerates.
+Because "can it run DOOM?" is the ultimate benchmark for any system with a display output. But also because you can't fake real-time rendering. Either you understand the tool deeply enough to push geometry at playable framerates, or you don't. There's no way to bullshit your way to 10 FPS.
+
+Every one of these projects forced me to learn something I couldn't have learned any other way. KiDoom taught me KiCad's internals. This one taught me OpenSCAD's rendering pipeline. And there's something deeply satisfying about watching a CAD program designed for 3D printing render a 1993 shooter.
 
 OpenSCAD was never meant for this. But with the right hacks, it works surprisingly well.
 
@@ -207,12 +207,14 @@ OpenSCAD was never meant for this. But with the right hacks, it works surprising
 
 The code is on GitHub: [openSCAD-DOOM](https://github.com/MichaelAyles/openSCAD-DOOM)
 
+[Watch the demo on YouTube](https://www.youtube.com/watch?v=l9nnV-mO4wY)
+
 There's also a [browser-based version](https://github.com/MichaelAyles/openSCAD-DOOM-web) in progress - I wanted a friction-free demo but don't have time to commit to a silly side project right now.
 
 Requirements:
 - Python 3.10+
 - pygame
-- OpenSCAD 2026+ (with Manifold enabled)
+- OpenSCAD 2025+ (with Manifold enabled)
 - DOOM1.WAD (shareware works)
 
 ```bash
