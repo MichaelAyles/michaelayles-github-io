@@ -150,7 +150,7 @@ The main `game.scad` just includes the current frame file. We swap which frame f
 
 ## The Result
 
-On a MacBook Pro M2:
+On a MacBook Pro M1:
 
 | Metric | Value |
 |--------|-------|
@@ -206,6 +206,8 @@ OpenSCAD was never meant for this. But with the right hacks, it works surprising
 ## Try It Yourself
 
 The code is on GitHub: [openSCAD-DOOM](https://github.com/MichaelAyles/openSCAD-DOOM)
+
+There's also a [browser-based version](https://github.com/MichaelAyles/openSCAD-DOOM-web) in progress - I wanted a friction-free demo but don't have time to commit to a silly side project right now.
 
 Requirements:
 - Python 3.10+
