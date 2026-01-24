@@ -53,8 +53,6 @@ Running DOOM on something is a surprisingly effective way to learn it deeply. Yo
 
 So yes, it's absurd. But it's also R&D disguised as entertainment.
 
-<img src="Screenshot%202026-01-23%20at%2022.53.40.png" alt="OpenSCAD DOOM Screenshot" style="width: 100%; max-width: 100%;">
-
 <img src="demo.gif" alt="OpenSCAD DOOM Demo" style="width: 100%; max-width: 100%;">
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
