@@ -2,6 +2,8 @@
 
 *Running id Software's 1993 classic in a CAD program was never supposed to work this well.*
 
+<img src="demo.gif" alt="OpenSCAD DOOM Demo" style="width: 100%; max-width: 100%;">
+
 ---
 
 ## The Trilogy of Engineering Tool Abuse
@@ -53,11 +55,7 @@ Running DOOM on something is a surprisingly effective way to learn it deeply. Yo
 
 So yes, it's absurd. But it's also R&D disguised as entertainment.
 
-<img src="demo.gif" alt="OpenSCAD DOOM Demo" style="width: 100%; max-width: 100%;">
-
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
-  <iframe src="https://www.youtube.com/embed/l9nnV-mO4wY" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</div>
+[Watch the demo on YouTube](https://www.youtube.com/watch?v=l9nnV-mO4wY)
 
 ---
 
