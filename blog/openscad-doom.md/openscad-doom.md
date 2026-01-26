@@ -2,13 +2,15 @@
 
 *Running id Software's 1993 classic in a CAD program was never supposed to work this well.*
 
+**[Play it now in your browser at doom.mikeayles.com](https://doom.mikeayles.com)**
+
 <img src="demo.gif" alt="OpenSCAD DOOM Demo" style="width: 100%; max-width: 100%;">
 
 ---
 
-## The Trilogy of Engineering Tool Abuse
+## The Quadrilogy of Engineering Tool Abuse
 
-This is the third entry in an increasingly unhinged series of projects that answer the question: "Can I run DOOM on engineering tools that were absolutely not designed for games?"
+This is the third entry in an increasingly unhinged series of projects that answer the question: "Can I run DOOM on engineering tools that were absolutely not designed for games?" The fourth entry - a browser-based version - is now live.
 
 <table style="width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
@@ -38,14 +40,20 @@ This is the third entry in an increasingly unhinged series of projects that answ
       <td style="padding: 12px 16px;">Parametric 3D modeling</td>
       <td style="padding: 12px 16px; text-align: center;">10-20</td>
     </tr>
+    <tr>
+      <td style="padding: 12px 16px;"><a href="https://doom.mikeayles.com"><strong>OpenSCAD-DOOM Web</strong></a></td>
+      <td style="padding: 12px 16px;">Browser + Custom SCAD Parser</td>
+      <td style="padding: 12px 16px;">Showing people demos</td>
+      <td style="padding: 12px 16px; text-align: center;">60</td>
+    </tr>
   </tbody>
 </table>
 
-KiDoom renders walls as copper traces and enemies as QFP-64 chip footprints. ScopeDoom pipes vector coordinates through a headphone jack into an oscilloscope's X-Y mode. And now OpenSCAD-DOOM exports geometry to a parametric CAD language designed for mechanical parts.
+KiDoom renders walls as copper traces and enemies as QFP-64 chip footprints. ScopeDoom pipes vector coordinates through a headphone jack into an oscilloscope's X-Y mode. OpenSCAD-DOOM exports geometry to a parametric CAD language designed for mechanical parts. And now OpenSCAD-DOOM Web runs entirely in the browser with a custom SCAD parser.
 
 The first two both hit #1 on Hacker News, so apparently there's an audience for this sort of thing.
 
-Three professional tools. Three completely inappropriate applications. One demon-infested Mars base.
+Four professional tools. Four completely inappropriate applications. One demon-infested Mars base.
 
 ### The Method to the Madness
 
@@ -205,11 +213,17 @@ OpenSCAD was never meant for this. But with the right hacks, it works surprising
 
 ## Try It Yourself
 
+### Browser Version (Recommended)
+
+**[Play it now at doom.mikeayles.com](https://doom.mikeayles.com)** - no installation required.
+
+The web version runs at 60 FPS and includes full gameplay: movement, doors, enemies, weapons, and sound effects. Watch the OpenSCAD code update in real-time as you play.
+
+### Desktop Version
+
 The code is on GitHub: [openSCAD-DOOM](https://github.com/MichaelAyles/openSCAD-DOOM)
 
 [Watch the demo on YouTube](https://www.youtube.com/watch?v=l9nnV-mO4wY)
-
-There's also a [browser-based version](https://github.com/MichaelAyles/openSCAD-DOOM-web) in progress - I wanted a friction-free demo but don't have time to commit to a silly side project right now.
 
 Requirements:
 - Python 3.10+
@@ -228,4 +242,68 @@ python3 game/game_engine.py
 
 ---
 
-*Yes, it can run DOOM.*
+## OpenSCAD DOOM Web - Technical Deep Dive
+
+The browser version deserves its own explanation, because instead of just porting the renderer to JavaScript (boring), we kept the OpenSCAD pipeline intact.
+
+<img src="screenshot.png" alt="OpenSCAD DOOM Web" style="width: 100%; max-width: 100%;">
+
+### Architecture
+
+```
+Game Engine → SCAD Generator → Custom Parser → Three.js Renderer
+     ↓              ↓               ↓                ↓
+  Player       "cube([...])"     AST         Mesh pooling
+  Enemies      "cylinder(...)"   Transforms   Material cache
+  Doors        "$vpt=[...]"      Primitives   60 FPS
+```
+
+The game generates real OpenSCAD code. That code gets parsed by a custom TypeScript parser, evaluated into geometry primitives, and rendered via Three.js. The 3D view you see isn't rendered directly - it's parsed from SCAD code.
+
+### The Custom Parser
+
+We built a subset OpenSCAD parser in TypeScript that handles:
+
+- **Primitives**: `cube()`, `cylinder()`, `polygon()`
+- **Transforms**: `translate()`, `rotate()`, `color()`, `linear_extrude()`
+- **Modules**: `module name() { ... }` definitions and calls
+- **Viewport**: `$vpt`, `$vpr`, `$vpd`, `$vpf` camera variables
+
+The parser is intentionally limited - no CSG boolean operations, no `sphere()`, no `for` loops. This constraint keeps it fast enough for real-time rendering at 60 FPS.
+
+### Features
+
+- **Full DOOM Gameplay**: Walk around E1M1, open doors, shoot enemies, pick up items
+- **Live SCAD Generation**: Watch the OpenSCAD code update as you move
+- **Combat System**: Health, armor, weapons, ammo, enemy AI
+- **Sound Effects**: Weapon sounds, door sounds, enemy alerts
+- **HUD Overlay**: Health, armor, ammo display
+
+### Controls
+
+| Key | Action |
+|-----|--------|
+| **W / ↑** | Move forward |
+| **S / ↓** | Move backward |
+| **A** | Strafe left |
+| **D** | Strafe right |
+| **← →** | Turn |
+| **Mouse** | Look around (when captured) |
+| **E** | Use / Open doors |
+| **Space / Ctrl** | Fire weapon |
+| **1-7** | Switch weapons |
+
+Click the game area to capture the mouse. Press **ESC** to release.
+
+### Tech Stack
+
+- React + TypeScript
+- Vite
+- Three.js
+- Zustand
+
+Source: [openSCAD-DOOM-web](https://github.com/MichaelAyles/openSCAD-DOOM-web)
+
+---
+
+*Yes, it can run DOOM. In a browser. Through a CAD language. At 60 FPS.*
