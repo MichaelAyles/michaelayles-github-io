@@ -76,6 +76,24 @@ I build "Physical AI" systems. I don't just use AI to write code; I use AI to de
 
 ---
 
+### [OpenSCAD-DOOM](https://doom.mikeayles.com) — DOOM in a CAD Language at 60 FPS
+
+**Role:** Solo Developer
+
+**What it is:** DOOM rendered through OpenSCAD code — first as a desktop Python app exporting to OpenSCAD (10-20 FPS), then as a browser version with a custom SCAD parser (60 FPS). The game generates real `cube()` and `cylinder()` calls; the 3D view is parsed from SCAD code.
+
+**Technical approach (Desktop):** Custom DOOM engine in Python that exports geometry to OpenSCAD files in real-time. Exploited Animation mode to bypass the 200ms file watcher debounce. OpenSCAD 2025's Manifold backend was the key — took renders from minutes to milliseconds. Double-buffered file writes to avoid corruption.
+
+**Technical approach (Web):** Built a subset OpenSCAD parser in TypeScript — handles `cube()`, `cylinder()`, `translate()`, `rotate()`, `color()`, `linear_extrude()`, module definitions, and viewport variables (`$vpt`, `$vpr`). Intentionally limited (no CSG, no loops) to maintain 60 FPS. Three.js renders the parsed geometry with mesh pooling.
+
+**Stack:** Python/pygame (desktop), React/TypeScript/Three.js/Zustand (web), custom SCAD parser.
+
+**Why I built it:** Fourth entry in the "DOOM on engineering tools" series. Each project teaches something that couldn't be learned any other way — this one taught me OpenSCAD's WASM pipeline and Manifold backend, which directly fed into Phaestus's enclosure generation. R&D disguised as entertainment.
+
+**Play it:** [doom.mikeayles.com](https://doom.mikeayles.com)
+
+---
+
 ### [CircuitSnips](https://circuitsnips.com) — Thingiverse for KiCad
 
 **Role:** Founder / Solo Developer
