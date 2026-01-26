@@ -43,7 +43,7 @@ The result: a fully playable (10-25 FPS) technical demonstration where component
 
 ### What It ISN'T
 
-- **DOOM running IN KiCad** - Let's be clear: KiCad is only the display renderer. The actual DOOM engine runs as a separate C process, sending vectors over a socket. If we wanted DOOM truly running inside KiCad, we should have written it in KiCAD's Python scripting engine. But that ship has sailed and I'm not rewriting it.
+- **DOOM running IN KiCad** - Let's be clear: KiCad is only the display renderer. The actual DOOM engine runs as a separate C process, sending vectors over a socket. If I wanted DOOM truly running inside KiCad, I should have written it in KiCAD's Python scripting engine. But that ship has sailed and I'm not rewriting it.
 - **A pixel-perfect recreation** - This is wireframe/vector rendering, not texture-mapped graphics
 - **Smooth 60 FPS gaming** - KiCad's PCB refresh is the bottleneck; this is a tech demo, not a competitive gaming platform
 - **A practical use of your PCB editor** - This serves no purpose other than being delightfully absurd
@@ -64,7 +64,7 @@ The original concept was to render DOOM pixel-by-pixel using PCB pads:
 
 **Verdict: Completely unworkable.**
 
-The breakthrough: DOOM's engine already calculates visible geometry as vectors. PCB traces ARE vectors. Instead of 64,000 pixels, we need 100-300 line segments:
+The breakthrough: DOOM's engine already calculates visible geometry as vectors. PCB traces ARE vectors. Instead of 64,000 pixels, I need 100-300 line segments:
 
 ```
 ~200 traces x 0.1ms per trace = 20ms per frame
@@ -162,14 +162,14 @@ typedef struct vissprite_s {
 } vissprite_t;
 
 // r_things.c - Capture during R_ProjectSprite()
-vis->mobjtype = thing->type;  // Now we know what this sprite IS
+vis->mobjtype = thing->type;  // Now I know what this sprite IS
 ```
 
 The Python side maps 150+ entity types to three categories. The footprint pool pre-loads all packages at startup, so runtime is just position updates.
 
 ---
 
-## The Challenges We Solved
+## The Challenges I Solved
 
 ### Challenge 1: Socket Timing
 
@@ -235,7 +235,7 @@ screen_y = centeryfrac - FixedMul(world_height - viewz, scale)
 
 **Problem:** Green wall polygons filled gaps where you should see through.
 
-**Root cause:** DOOM's BSP creates portal walls (silhouette=0) for openings. We were rendering them as solid.
+**Root cause:** DOOM's BSP creates portal walls (silhouette=0) for openings. I was rendering them as solid.
 
 **Solution:** Filter by silhouette type:
 

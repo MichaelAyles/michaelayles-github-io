@@ -45,9 +45,9 @@ It was also necessary to block parts of the S-Expression, such as references to 
 
 ### The KiCanvas Viewer
 
-The KiCanvas viewer is an amazing bit of work, but wasn't quite set up for our needs. We added functionality to control themes from the page, which is required for the thumbnail generation flow.
+The KiCanvas viewer is an amazing bit of work, but wasn't quite set up for my needs. I added functionality to control themes from the page, which is required for the thumbnail generation flow.
 
-We also added the functionality to do a box selection and directly copy subsections, whilst maintaining the 'copy' counter. This is particularly useful for bulk-uploaded circuits that contain full sheets - users can select just the subcircuit they actually want rather than copying everything.
+I also added the functionality to do a box selection and directly copy subsections, whilst maintaining the 'copy' counter. This is particularly useful for bulk-uploaded circuits that contain full sheets - users can select just the subcircuit they actually want rather than copying everything.
 
 ### Initial Data: The Bootstrapping Problem
 
@@ -73,7 +73,7 @@ If AI companies wanted schematic data for training, they can do exactly what I d
 
 ### The Hug of Death
 
-The site exceeded Vercel's free tier rate limits after the Hackaday feature. We also had to migrate thumbnails from Supabase to Cloudflare R2 - 4,000+ circuits at two thumbnails each, roughly 120KB per image, resulted in 1.2GB of storage against a 1GB free tier limit. Things are stabilising now.
+The site exceeded Vercel's free tier rate limits after the Hackaday feature. I also had to migrate thumbnails from Supabase to Cloudflare R2 - 4,000+ circuits at two thumbnails each, roughly 120KB per image, resulted in 1.2GB of storage against a 1GB free tier limit. Things are stabilising now.
 
 ## Results
 

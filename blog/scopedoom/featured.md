@@ -6,7 +6,7 @@
 
 ## The Continuation
 
-ScopeDoom emerged as the natural next step after KiDoom's success. Once DOOM's internal vectors were proven to work on PCB traces, the question became: what other vector displays could we target?
+ScopeDoom emerged as the natural next step after KiDoom's success. Once DOOM's internal vectors were proven to work on PCB traces, the question became: what other vector displays could I target?
 
 Oscilloscopes in XY mode are classic vector displays. Audio cards are just DACs. Put them together, and you can draw DOOM with sound.
 

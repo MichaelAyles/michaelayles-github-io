@@ -97,7 +97,7 @@ macOS CoreAudio
 Sound Card DAC → Oscilloscope
 ```
 
-DOOM's engine already knows which wall segments and sprites are visible after BSP traversal. We intercept `drawsegs[]` (walls) and `vissprites[]` (entities), serialize them as JSON, and send them over a Unix socket. The Python side converts these to oscilloscope coordinates and streams them as audio samples.
+DOOM's engine already knows which wall segments and sprites are visible after BSP traversal. I intercept `drawsegs[]` (walls) and `vissprites[]` (entities), serialize them as JSON, and send them over a Unix socket. The Python side converts these to oscilloscope coordinates and streams them as audio samples.
 
 ### The Key Transformation
 

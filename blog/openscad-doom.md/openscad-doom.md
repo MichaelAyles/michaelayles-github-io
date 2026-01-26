@@ -87,11 +87,11 @@ The architecture:
                                         └─────────────────────────────┘
 ```
 
-**What we use from DOOM:**
+**What I use from DOOM:**
 - WAD file parsing (level geometry, BSP trees, thing positions)
 - The original map data, texture references, sector heights
 
-**What we built from scratch:**
+**What I built from scratch:**
 - Game loop and input handling
 - BSP traversal for visibility culling
 - Software renderer (pygame) for real-time preview
@@ -112,9 +112,9 @@ Getting acceptable performance required several tricks:
 
 OpenSCAD's file watcher has a 200ms debounce timer - it waits for files to stop changing before reloading. This limits you to ~5 FPS.
 
-**The hack:** OpenSCAD's Animation mode (`Window → Animate`) renders continuously at a user-specified framerate, re-evaluating the scene each frame. By setting FPS to 60 and Steps to 1000, we keep OpenSCAD rendering constantly while our file changes update the geometry.
+**The hack:** OpenSCAD's Animation mode (`Window → Animate`) renders continuously at a user-specified framerate, re-evaluating the scene each frame. By setting FPS to 60 and Steps to 1000, I keep OpenSCAD rendering constantly while my file changes update the geometry.
 
-The `$t` variable cycles 0→1, but we don't even use it - we just need the continuous render loop.
+The `$t` variable cycles 0→1, but I don't even use it - I just need the continuous render loop.
 
 ### 2. OpenSCAD 2025 with Manifold
 
@@ -126,11 +126,11 @@ That optimization took Phaestus from 2-minute renders to 2 seconds. Carrying tha
 
 For desktop OpenSCAD, enable it: `Preferences → Advanced → 3D Rendering → Backend → Manifold`
 
-This alone took us from slideshow to playable. It's still ugly, but it's fast.
+This alone took it from slideshow to playable. It's still ugly, but it's fast.
 
 ### 3. Double-Buffered File Writes
 
-Writing to a file while OpenSCAD reads it causes corruption. We use double-buffering:
+Writing to a file while OpenSCAD reads it causes corruption. I use double-buffering:
 
 ```python
 # Write to back buffer
@@ -143,7 +143,7 @@ with open(f"frame_{next_buffer}.scad", 'w') as f:
 self._write_main_file(f"frame_{next_buffer}.scad")
 ```
 
-The main `game.scad` just includes the current frame file. We swap which frame file it points to after each write completes.
+The main `game.scad` just includes the current frame file. I swap which frame file it points to after each write completes.
 
 ### 4. Geometry Optimizations
 
@@ -197,7 +197,7 @@ $vpd = 50;                       // Distance
 $vpf = 110;                      // FOV
 ```
 
-Each frame, we regenerate the `visible_walls()` module with only the geometry in the player's field of view.
+Each frame, I regenerate the `visible_walls()` module with only the geometry in the player's field of view.
 
 ---
 
