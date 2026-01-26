@@ -1,5 +1,6 @@
 # robots.txt for mikeayles.com
 User-agent: *
+Content-Signal: search=yes,ai-input=yes,ai-train=no
 Allow: /
 
 # LLM context file
