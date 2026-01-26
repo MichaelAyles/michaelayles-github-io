@@ -244,7 +244,7 @@ python3 game/game_engine.py
 
 ## OpenSCAD DOOM Web - Technical Deep Dive
 
-The browser version deserves its own explanation, because instead of just porting the renderer to JavaScript (boring), we kept the OpenSCAD pipeline intact.
+The browser version deserves its own explanation, because instead of just porting the renderer to JavaScript (boring), I kept the OpenSCAD pipeline intact.
 
 <img src="screenshot.png" alt="OpenSCAD DOOM Web" style="width: 100%; max-width: 100%;">
 
@@ -262,7 +262,7 @@ The game generates real OpenSCAD code. That code gets parsed by a custom TypeScr
 
 ### The Custom Parser
 
-We built a subset OpenSCAD parser in TypeScript that handles:
+I built a subset OpenSCAD parser in TypeScript that handles:
 
 - **Primitives**: `cube()`, `cylinder()`, `polygon()`
 - **Transforms**: `translate()`, `rotate()`, `color()`, `linear_extrude()`
