@@ -1,0 +1,7 @@
+# robots.txt for mikeayles.com
+User-agent: *
+Allow: /
+
+# LLM context file
+# See https://llmstxt.org for specification
+# llms.txt: https://mikeayles.com/llms.txt

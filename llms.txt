@@ -1,0 +1,49 @@
+# Michael Ayles
+
+> Electronics & Embedded Systems Engineer. Designs engine control units and the tools that design them. 7 years shipping production automotive hardware and firmware. Currently exploring LLM-driven hardware development automation.
+
+## Contact
+
+- Email: mike@mikeayles.com
+- GitHub: https://github.com/MichaelAyles
+- LinkedIn: https://linkedin.com/in/mayles
+- Website: https://mikeayles.com
+
+## Skills
+
+C/C++, Python, React, TypeScript, ECU development, IoT, KiCad, embedded systems
+
+## Projects
+
+### Featured
+
+- [Phaestus](https://phaestus.app) - Compiler for physical products: natural language to manufacturable PCB, enclosure, and firmware using constrained AI generation
+- [Zookeeper](https://zookeeperapp.com) - Pokedex for real zoo animals: AI-powered collection game using Gemini vision identification
+- [KiDoom](https://github.com/MichaelAyles/KiDoom) - DOOM running on PCB traces via KiCad's editor at 10-25 FPS
+- [ScopeDoom](https://github.com/MichaelAyles/ScopeDoom) - DOOM on oscilloscope via MacBook headphone jack as dual-channel DAC
+- [CircuitSnips](https://circuitsnips.com) - Thingiverse for KiCad subcircuits: searchable library of reusable circuit blocks
+- [bitwise-mcp](https://github.com/MichaelAyles/bitwise-mcp) - MCP server for embedded docs: PDF ingestion, register extraction, semantic search
+
+### Tools & Libraries
+
+- [TOKN](https://github.com/MichaelAyles/tokn) - Token-Optimised KiCad Notation: 92% token reduction for LLM circuit generation
+- [KiCad Netlist Tool](https://github.com/MichaelAyles/kicad-netlist-tool) - Reduces LLM token count from KiCad schematic files
+- [MQTT Duration Trigger](https://github.com/MichaelAyles/mqtt-duration-trigger) - Home Assistant integration for MQTT-based duration triggers
+- [Claude Code Comm Bot](https://github.com/MichaelAyles/claude-code-comm-bot) - Discord bot for Claude Code / VS Code integration
+
+### Hardware
+
+- [HIT Impact Android](https://github.com/MichaelAyles/hit-impact-android) - Kotlin app for traumatic brain injury sensors
+- [Fuel Injector Characterizer](https://github.com/MichaelAyles/fuel_injector_characterizer) - Arduino + WebSerial system for validating injector performance
+- [Engine Simulator](https://michaelayles.github.io/enginesim/) - Physics-based diesel 6-cylinder engine simulation
+
+### Archived
+
+- [TheDuck.chat](https://github.com/MichaelAyles/the-duck) - AI chat app (T3 Cloneathon entry, DB inactive)
+- [Agent Tool](https://github.com/MichaelAyles/agent-tool) - Web frontend for CLI tools with real-time streaming
+
+## Stats
+
+- 3 ECUs developed
+- 10+ years experience
+- 28.5M+ miles driven on production systems
