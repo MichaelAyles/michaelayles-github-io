@@ -1,7 +1,7 @@
 {
   "sites": [
     {
-      "name": "Phaestus [WIP]",
+      "name": "Phaestus",
       "description": "Compiler for physical products - natural language to manufacturable PCB, enclosure, and firmware using constrained AI generation",
       "links": {
         "live": "https://phaestus.app",
@@ -14,7 +14,7 @@
       "type": "link"
     },
     {
-      "name": "Zookeeper [WIP]",
+      "name": "Zookeeper",
       "description": "Pokédex for real zoo animals - AI-powered collection game that turns zoo visits into adventures with Gemini vision identification",
       "links": {
         "live": "https://zookeeperapp.com/",
