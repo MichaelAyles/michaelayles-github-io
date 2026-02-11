@@ -46,6 +46,8 @@ When the grid is fixed and the buses are standard, "connecting blocks" becomes a
 
 This is the technical moat. The enclosure generation and firmware scaffolding are useful, but they're not where competitors will struggle. The grid system is what makes reliable AI-driven PCB design possible, and PCBs are the hardest part of physical product development to get right.
 
+<img src="pcb-closeup.jpg" alt="Phaestus PCB close-up showing the Seeed XIAO ESP32 module and grid-based block layout" style="width: 100%; max-width: 800px;">
+
 ## Making the Library Self-Expanding
 
 The block library currently has around 10 validated modules: ESP32-C6 MCU, various sensors, power supplies, outputs, displays, input controls. That's enough to build a surprising range of IoT devices, with more in progress.
@@ -55,6 +57,8 @@ But the interesting bit is how the library grows. New blocks can be LLM-generate
 This is where constraints really pay off. Because every block follows the same grid and bus conventions, validation is tractable. You can check interface compatibility programmatically. You can verify power requirements sum correctly. The constraints that make LLM outputs reliable also make automated validation possible.
 
 ## Current Status
+
+<img src="exploded-view.jpg" alt="Phaestus Bluetooth remote - enclosure halves, PCB, and assembled unit" style="width: 100%; max-width: 800px;">
 
 Phaestus generates complete hardware designs from natural language today. I have a Bluetooth remote control designed by Phaestus in under 5 minutes, manufactured and assembled by JLCPCB, with a 3D-printed enclosure and firmware flashed from the browser. It works.
 
@@ -68,6 +72,8 @@ The output pipeline is closed end-to-end. Phaestus produces:
 Firmware is generated end-to-end: Phaestus writes the source, compiles it via a firmware compilation microservice, and returns the binary. The web app includes a WebSerial ESP32 flasher so users can plug in the board and flash firmware directly from the browser with no toolchain install.
 
 The first users have set up accounts. I'm reaching out individually to walk through their experiences before opening up more broadly.
+
+<img src="remote-powered-on.jpg" alt="Phaestus Bluetooth remote powered on in 3D-printed enclosure" style="width: 100%; max-width: 800px;">
 
 ## The Meta-Point
 
