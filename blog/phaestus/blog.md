@@ -14,7 +14,7 @@ A physical product isn't just a PCB. It's schematics, board layout, enclosure, f
 
 Phaestus tries to handle all of this. You describe what you want to build in plain English, and it generates the whole stack. Schematics, PCB layout, parametric enclosure, firmware skeleton. Not as separate outputs but as a coherent system where the pieces actually fit.
 
-The tagline I've been using is "CI/CD for Physical Products." Push a spec, get a manufacturable design. The same reliability we expect from software deployments, but for atoms instead of bits.
+The tagline I've been using is "Compiler for Physical Products." Push a spec, get a manufacturable design. The same reliability we expect from software deployments, but for atoms instead of bits.
 
 ## The Standard AI Approach (And Why It Doesn't Work)
 
@@ -48,7 +48,7 @@ This is the technical moat. The enclosure generation and firmware scaffolding ar
 
 ## Making the Library Self-Expanding
 
-The block library currently has about 21 validated modules. ESP32-C6 MCU, various sensors, power supplies, outputs, displays, input controls. That's enough to build a surprising range of IoT devices.
+The block library currently has around 10 validated modules: ESP32-C6 MCU, various sensors, power supplies, outputs, displays, input controls. That's enough to build a surprising range of IoT devices, with more in progress.
 
 But the interesting bit is how the library grows. New blocks can be LLM-generated, then validated through simulation and interface checking. If a block passes validation, it joins the library. The system gets more capable over time without manual intervention.
 
@@ -56,9 +56,18 @@ This is where constraints really pay off. Because every block follows the same g
 
 ## Current Status
 
-I need roughly 10 more blocks for what I'd consider a complete demo. More display options, some audio stuff, maybe LoRa for longer range wireless. Once those are in, I'm planning to order the first real prototype. An actual physical board designed entirely through natural language, manufactured, assembled, powered on.
+Phaestus generates complete hardware designs from natural language today. I have a Bluetooth remote control designed by Phaestus in under 5 minutes, manufactured and assembled by JLCPCB, with a 3D-printed enclosure and firmware flashed from the browser. It works.
 
-That's the goal, anyway. Hardware has a way of humbling you.
+The output pipeline is closed end-to-end. Phaestus produces:
+
+- Gerbers, pick-and-place files, and BOM
+- Firmware source and compiled binary (via a PlatformIO compilation microservice)
+- Enclosure STL and PCB model STLs
+- Concept images and a manufacturing instruction document
+
+Firmware is generated end-to-end: Phaestus writes the source, compiles it via a firmware compilation microservice, and returns the binary. The web app includes a WebSerial ESP32 flasher so users can plug in the board and flash firmware directly from the browser with no toolchain install.
+
+The first users have set up accounts. I'm reaching out individually to walk through their experiences before opening up more broadly.
 
 ## The Meta-Point
 
@@ -74,10 +83,10 @@ I suspect a lot of AI applications are stuck at this stage. Waiting for better m
 
 ## What's Next
 
-Short term: finish the block library, order the first board, see what breaks.
+Short term: expand the block library and get the product into more users' hands. More display options, audio, LoRa for longer-range wireless.
 
-Medium term: make the full pipeline smoother. Right now there's still manual work getting from generated designs to actual manufacturing files. That should be one click.
+Medium term: bring down the per-generation cost enough to open a public alpha. Each generation currently costs roughly £1 in model spend, which is healthy on a subscription but blocks free experimentation.
 
-Long term: the same thing but for increasingly complex products. More block types, more enclosure options, more sophisticated firmware generation. The architecture scales, it's just a matter of filling in the pieces.
+Long term: a build tier that handles ordering, assembly, and shipping of completed products. Describe what you want, get a box in the post.
 
-If you want to try it: [phaestus.app](https://phaestus.app). Public login available soon, gallery and/or video walkthrough sooner if you want to follow along. And if you want to talk hardware automation, AI abstractions, or why IoT devices are still so annoying to build, drop me a message at [contact@phaestus.app](mailto:contact@phaestus.app).
+If you want to try it: [phaestus.app](https://phaestus.app). And if you want to talk hardware automation, AI abstractions, or why IoT devices are still so annoying to build, drop me a message at [contact@phaestus.app](mailto:contact@phaestus.app).

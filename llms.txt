@@ -40,9 +40,9 @@ I build "Physical AI" systems. I don't just use AI to write code; I use AI to de
 
 **Technical approach:** Solved LLM hallucination in circuit design by treating hardware blocks like npm packages. Instead of asking an LLM to design circuits from scratch (70% accuracy = useless), the system uses a library of pre-validated blocks on a fixed 12.7mm grid with standardised bus structures. The LLM's job becomes selection and integration — essentially classification, which is reliable.
 
-**Stack:** Cloudflare D1 (SQL), React Flow, Custom KiCad S-Expression Parser, Marathon Agent orchestration.
+**Stack:** React 19 + TypeScript, Tailwind CSS 4, Zustand, TanStack Query, Cloudflare Pages Functions/D1/R2, Gemini, LangGraph, Zod, PlatformIO compilation microservice, WebSerial ESP32 flasher.
 
-**Status:** Boards have gone into manufacturing. Validated the core hypothesis that constrained AI generation produces manufacturable hardware.
+**Status:** Working product. A Bluetooth remote control designed by Phaestus in under 5 minutes has been manufactured by JLCPCB, assembled, and flashed from the browser. Full end-to-end output: Gerbers, BOM, pick-and-place, firmware source + compiled binary, enclosure STL, PCB model STLs, concept images, and manufacturing docs. First users onboarded.
 
 **Why I built it:** Hardware development still feels like 1995 while software has CI/CD, package managers, and automated testing. The bottleneck isn't better AI models — it's better abstractions. The grid system is that abstraction.
 
