@@ -108,7 +108,7 @@ function SankeyPathway({ steps, yCenter, lossDir, color, animPhase, svgWidth, no
                   y={yCenter + lossDir * (prev.fH * 0.5 + lossH + 22)}
                   textAnchor="middle" fill={COLORS.red}
                   fontFamily={mono} fontSize={9} fontWeight={600} opacity={0.75}
-                >{"\u2212"}{lossKWh.toFixed(1)}</text>
+                >{"−"}{lossKWh.toFixed(1)}</text>
               </g>
             )}
           </g>
@@ -140,7 +140,7 @@ function SankeyPathway({ steps, yCenter, lossDir, color, animPhase, svgWidth, no
               <text x={node.cx} y={yCenter - node.fH / 2 - 7} textAnchor="middle"
                 fill={node.eff >= 0.9 ? COLORS.green : node.eff >= 0.7 ? COLORS.yellow : COLORS.red}
                 fontFamily={mono} fontSize={9} fontWeight={600}>
-                {"\u00D7"}{node.eff.toFixed(2)}</text>
+                {"×"}{node.eff.toFixed(2)}</text>
             )}
           </g>
         );
@@ -228,7 +228,7 @@ export default function EnergySankey() {
               <rect x={W - 78} y={(bevY + h2Y) / 2 - 13} width={54} height={26} rx={4}
                 fill={COLORS.surface} stroke={COLORS.accent} strokeWidth={1} />
               <text x={W - 51} y={(bevY + h2Y) / 2 + 4} textAnchor="middle" fill={COLORS.accent}
-                fontFamily={mono} fontSize={14} fontWeight={700}>{ratio}{"\u00D7"}</text>
+                fontFamily={mono} fontSize={14} fontWeight={700}>{ratio}{"×"}</text>
             </g>
           )}
         </svg>
@@ -238,7 +238,7 @@ export default function EnergySankey() {
         {[
           { label: "Battery Electric", val: `${bevFinal.toFixed(0)} kWh`, sub: `${(100 - bevFinal).toFixed(0)} kWh lost (${(100 - bevFinal).toFixed(0)}%)`, c: COLORS.green },
           { label: "Hydrogen Fuel Cell", val: `${h2Final.toFixed(0)} kWh`, sub: `${(100 - h2Final).toFixed(0)} kWh lost (${(100 - h2Final).toFixed(0)}%)`, c: COLORS.purple },
-          { label: "BEV Advantage", val: `${ratio}\u00D7`, sub: "more useful work per kWh", c: COLORS.accent },
+          { label: "BEV Advantage", val: `${ratio}×`, sub: "more useful work per kWh", c: COLORS.accent },
         ].map(({ label, val, sub, c }) => (
           <div key={label} style={{ background: COLORS.bg, borderRadius: 6, padding: 14, textAlign: "center", border: `1px solid ${COLORS.border}` }}>
             <div style={{ fontFamily: mono, fontSize: 10, color: COLORS.textMuted, textTransform: "uppercase", marginBottom: 6 }}>{label}</div>

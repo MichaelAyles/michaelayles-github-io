@@ -57,10 +57,10 @@ const Stat = ({ value, unit, label, color = COLORS.accent }) => (
 );
 
 const presets = {
-  green_current: { label: "Green H\u2082 (current)", electricity: 28, efficiency: 66, overhead: 20, color: COLORS.green },
-  green_2030: { label: "Green H\u2082 (2030 target)", electricity: 15, efficiency: 75, overhead: 15, color: COLORS.cyan },
-  grey: { label: "Grey H\u2082 (SMR)", electricity: 0, efficiency: 100, overhead: 5, color: COLORS.textMuted },
-  blue: { label: "Blue H\u2082 (SMR+CCS)", electricity: 0, efficiency: 100, overhead: 15, color: COLORS.blue },
+  green_current: { label: "Green H₂ (current)", electricity: 28, efficiency: 66, overhead: 20, color: COLORS.green },
+  green_2030: { label: "Green H₂ (2030 target)", electricity: 15, efficiency: 75, overhead: 15, color: COLORS.cyan },
+  grey: { label: "Grey H₂ (steam methane reforming)", electricity: 0, efficiency: 100, overhead: 5, color: COLORS.textMuted },
+  blue: { label: "Blue H₂ (reforming + carbon capture)", electricity: 0, efficiency: 100, overhead: 15, color: COLORS.blue },
 };
 
 export default function HydrogenProductionCalc() {
@@ -109,7 +109,7 @@ export default function HydrogenProductionCalc() {
   const comparisonData = [
     { name: "Battery Electric", cost: bevCostPer100Miles, color: COLORS.green },
     { name: "Diesel", cost: dieselCostPer100Miles, color: COLORS.textMuted },
-    { name: `H\u2082 Fuel Cell`, cost: h2CostPer100Miles, color: COLORS.accent },
+    { name: "H₂ Fuel Cell", cost: h2CostPer100Miles, color: COLORS.accent },
   ].sort((a, b) => a.cost - b.cost);
 
   return (
@@ -150,9 +150,9 @@ export default function HydrogenProductionCalc() {
 
       {/* Key stats */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 16, marginBottom: 24 }}>
-        <Stat value={kWhWithOverhead.toFixed(1)} unit="kWh" label="Electricity per kg H\u2082" color={COLORS.blue} />
-        <Stat value={`\u00A3${costPerKgH2.toFixed(2)}`} unit="" label="Cost per kg H\u2082" color={COLORS.accent} />
-        <Stat value={`${(costPerkWhH2 * 100).toFixed(1)}p`} unit="" label="Cost per kWh (H\u2082)" color={COLORS.red} />
+        <Stat value={kWhWithOverhead.toFixed(1)} unit="kWh" label="Electricity per kg H₂" color={COLORS.blue} />
+        <Stat value={`£${costPerKgH2.toFixed(2)}`} unit="" label="Cost per kg H₂" color={COLORS.accent} />
+        <Stat value={`${(costPerkWhH2 * 100).toFixed(1)}p`} unit="" label="Cost per kWh (H₂)" color={COLORS.red} />
         <Stat value={`${(dieselCostPerKWh * 100).toFixed(1)}p`} unit="" label="Cost per kWh (diesel)" color={COLORS.textMuted} />
       </div>
 
@@ -165,7 +165,7 @@ export default function HydrogenProductionCalc() {
           <BarChart data={comparisonData} layout="vertical" margin={{ top: 5, right: 50, left: 100, bottom: 5 }}>
             <XAxis type="number" domain={[0, Math.max(200, h2CostPer100Miles + 20)]}
               tick={{ fill: COLORS.textMuted, fontFamily: mono, fontSize: 10 }}
-              tickFormatter={(v) => `\u00A3${v.toFixed(0)}`} />
+              tickFormatter={(v) => `£${v.toFixed(0)}`} />
             <YAxis type="category" dataKey="name" width={95}
               tick={{ fill: COLORS.textMuted, fontFamily: mono, fontSize: 11 }} />
             <Tooltip content={({ payload }) => {
@@ -173,7 +173,7 @@ export default function HydrogenProductionCalc() {
               return (
                 <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 6, padding: 8 }}>
                   <span style={{ fontFamily: mono, fontSize: 12, color: COLORS.text }}>
-                    {payload[0].payload.name}: \u00A3{payload[0].value.toFixed(2)} per 100 miles
+                    {payload[0].payload.name}: £{payload[0].value.toFixed(2)} per 100 miles
                   </span>
                 </div>
               );
@@ -190,8 +190,8 @@ export default function HydrogenProductionCalc() {
         padding: "12px 16px", background: COLORS.bg, borderRadius: 6, lineHeight: 1.5
       }}>
         {isElectrolysis
-          ? `At ${electricityRate}p/kWh electricity and ${efficiency}% electrolyser efficiency, green hydrogen costs \u00A3${costPerKgH2.toFixed(2)}/kg. That's ${(costPerkWhH2 / dieselCostPerKWh).toFixed(1)}\u00D7 more expensive than diesel per unit of energy. Per 100 miles, a fuel cell truck costs \u00A3${h2CostPer100Miles.toFixed(0)} vs \u00A3${dieselCostPer100Miles.toFixed(0)} for diesel and \u00A3${bevCostPer100Miles.toFixed(0)} for battery electric.`
-          : `${presets[activePreset]?.label || 'This pathway'} produces hydrogen without electrolysis. Grey hydrogen at ~\u00A3${greyH2Cost}/kg is cheapest but emits ~10kg CO\u2082 per kg H\u2082. Blue adds carbon capture at ~\u00A3${blueH2Cost}/kg. Adjust to green hydrogen presets to see the electrolysis economics.`
+          ? `At ${electricityRate}p/kWh electricity and ${efficiency}% electrolyser efficiency, green hydrogen costs £${costPerKgH2.toFixed(2)}/kg. That's ${(costPerkWhH2 / dieselCostPerKWh).toFixed(1)}× more expensive than diesel per unit of energy. Per 100 miles, a fuel cell truck costs £${h2CostPer100Miles.toFixed(0)} vs £${dieselCostPer100Miles.toFixed(0)} for diesel and £${bevCostPer100Miles.toFixed(0)} for battery electric.`
+          : `${presets[activePreset]?.label || 'This pathway'} produces hydrogen without electrolysis. Grey hydrogen at ~£${greyH2Cost}/kg is cheapest but emits ~10kg CO₂ per kg H₂. Blue adds carbon capture at ~£${blueH2Cost}/kg. Adjust to green hydrogen presets to see the electrolysis economics.`
         }
       </div>
     </div>
