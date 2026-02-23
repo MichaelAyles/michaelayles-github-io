@@ -9,29 +9,39 @@ import { cleanSlug, formatDate } from '../utils';
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const sorted = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const featuredPost = sorted.find(p => p.data.featured) || sorted[0];
-const recentPosts = sorted.filter(p => p.id !== featuredPost.id).slice(0, 8);
+const heroPosts = sorted.slice(0, 5);
+const heroIds = new Set(heroPosts.map(p => p.id));
+const recentPosts = sorted.filter(p => !heroIds.has(p.id)).slice(0, 8);
 ---
 
 <BaseLayout title="Michael Ayles" description="Blog & Portfolio - Electronics & Embedded Systems Engineer">
   <Nav current="blog"><ThemeToggle /></Nav>
 
   <main class="main">
-    <!-- Hero Featured Post -->
+    <!-- Hero Carousel -->
     <section class="hero">
-      <a href={`/blog/${cleanSlug(featuredPost.id)}`} class="hero-card">
-        <span class="hero-badge">Featured</span>
-        <h1 class="hero-title">{featuredPost.data.title}</h1>
-        <p class="hero-desc">{featuredPost.data.description}</p>
-        <div class="hero-meta">
-          <time>{formatDate(featuredPost.data.date)}</time>
-          <span class="hero-tags">
-            {featuredPost.data.tags.slice(0, 3).map(tag => (
-              <span class="tag">{tag}</span>
-            ))}
-          </span>
-        </div>
-      </a>
+      <div class="carousel">
+        {heroPosts.map((post, i) => (
+          <a href={`/blog/${cleanSlug(post.id)}`} class={`hero-card ${i === 0 ? 'active' : ''}`} data-slide={i}>
+            <span class="hero-badge">Latest</span>
+            <h1 class="hero-title">{post.data.title}</h1>
+            <p class="hero-desc">{post.data.description}</p>
+            <div class="hero-meta">
+              <time>{formatDate(post.data.date)}</time>
+              <span class="hero-tags">
+                {post.data.tags.slice(0, 3).map(tag => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+      <div class="carousel-dots">
+        {heroPosts.map((_, i) => (
+          <button class={`dot ${i === 0 ? 'active' : ''}`} data-dot={i} aria-label={`Go to slide ${i + 1}`} />
+        ))}
+      </div>
     </section>
 
     <!-- Recent Posts Grid -->
@@ -64,9 +74,14 @@ const recentPosts = sorted.filter(p => p.id !== featuredPost.id).slice(0, 8);
     padding: 0 2rem;
   }
 
-  /* Hero */
+  /* Hero Carousel */
   .hero {
     padding: 3rem 0;
+  }
+
+  .carousel {
+    position: relative;
+    overflow: hidden;
   }
 
   .hero-card {
@@ -76,13 +91,51 @@ const recentPosts = sorted.filter(p => p.id !== featuredPost.id).slice(0, 8);
     padding: 3rem;
     border: 1px solid var(--border);
     border-radius: 8px;
-    transition: all 0.2s ease;
+    transition: opacity 0.4s ease, transform 0.4s ease;
     background: var(--surface);
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  .hero-card.active {
+    opacity: 1;
+    pointer-events: auto;
+    position: relative;
   }
 
   .hero-card:hover {
     border-color: var(--text-secondary);
     background: var(--hover-bg);
+  }
+
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid var(--text-secondary);
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .dot.active {
+    background: var(--text-secondary);
+  }
+
+  .dot:hover {
+    background: var(--text-secondary);
   }
 
   .hero-badge {
@@ -202,3 +255,44 @@ const recentPosts = sorted.filter(p => p.id !== featuredPost.id).slice(0, 8);
     }
   }
 </style>
+
+<script>
+  const slides = document.querySelectorAll<HTMLElement>('.hero-card');
+  const dots = document.querySelectorAll<HTMLElement>('.dot');
+  let current = 0;
+  let timer: ReturnType<typeof setInterval>;
+
+  function goTo(index: number) {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = index;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+  }
+
+  function advance() {
+    goTo((current + 1) % slides.length);
+  }
+
+  function startTimer() {
+    timer = setInterval(advance, 5000);
+  }
+
+  function resetTimer() {
+    clearInterval(timer);
+    startTimer();
+  }
+
+  startTimer();
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      goTo(i);
+      resetTimer();
+    });
+  });
+
+  const carousel = document.querySelector('.carousel')!;
+  carousel.addEventListener('mouseenter', () => clearInterval(timer));
+  carousel.addEventListener('mouseleave', () => startTimer());
+</script>
