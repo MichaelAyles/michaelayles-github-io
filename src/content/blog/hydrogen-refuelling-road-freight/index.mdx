@@ -1,0 +1,211 @@
+---
+title: "The Hydrogen Truck Problem Isn't the Truck"
+description: "Hydrogen fuel cell trucks exist. They work. The problem is everything around them: production efficiency, infrastructure economics, and a competitor called 'the grid' that's already everywhere."
+date: 2026-02-23
+tags: ["Transport", "Hydrogen", "Economics"]
+draft: false
+---
+
+import HydrogenProductionCalc from '@/components/blog/HydrogenProductionCalc';
+import EnergySankey from '@/components/blog/EnergySankey';
+import InfrastructureGap from '@/components/blog/InfrastructureGap';
+import EnergyDensityChart from '@/components/blog/EnergyDensityChart';
+import HeatingCostLadder from '@/components/blog/HeatingCostLadder';
+
+The previous post [coming soon] dealt with on-vehicle hydrogen generation: splitting water with the truck's own alternator and feeding the hydrogen back into the engine. That's a thermodynamic impossibility. The energy chain is a closed loop that loses at every step.
+
+This post is about "real" hydrogen. Produced externally, at scale, using dedicated energy sources. Stored on the vehicle in high-pressure or cryogenic tanks. Consumed in a fuel cell that produces electricity to drive the wheels. No exhaust but water vapour.
+
+This technology works. Hyundai has 165 XCIENT fuel cell trucks running commercially across Switzerland, Germany, France, the Netherlands and Austria, with another 63 in North America. The European fleet hit 20 million kilometres in January 2026. They haul food, beverages, textiles, and construction materials. They refuel in 10-20 minutes. They carry meaningful payloads over real distances.
+
+None of them operate in the UK. That fact alone tells you something about where the problem lies.
+
+The truck is not the problem. The problem is everything around it.
+
+## The 50kWh question
+
+The theoretical minimum energy to split water into hydrogen and oxygen is 39.4 kWh per kilogram of hydrogen. Real-world electrolysers need 50-60 kWh/kg, depending on technology and age.
+
+That kilogram of hydrogen contains 33.33 kWh of chemical energy.
+
+This is the fundamental ratio that defines hydrogen economics: you put in 50 kWh of electricity and get out 33 kWh of fuel. Before you compress it, transport it, store it, or use it. The conversion deficit is baked in at the first step.
+
+From there, the losses compound.
+
+<HydrogenProductionCalc client:visible />
+
+### Production pathways
+
+Not all hydrogen is created equal, and the industry has developed a colour-coding system that tells you more about the economics than the chemistry.
+
+**Grey hydrogen** is produced by steam methane reforming of natural gas. It's the cheapest route at roughly £2-3/kg, and it accounts for about 95% of all hydrogen produced globally. The catch: every kilogram of grey hydrogen releases approximately 10 kilograms of CO₂. If the point of hydrogen trucks is decarbonisation, grey hydrogen defeats the purpose before the truck leaves the depot.
+
+**Blue hydrogen** adds carbon capture and storage to the reforming process, pushing costs to £3-5/kg. Capture rates of 85-95% sound impressive until you account for upstream methane leakage from gas extraction and processing. A detailed analysis of the lifecycle emissions (the kind covered in a future post [coming soon]) often finds the climate benefit is smaller than the headline numbers suggest.
+
+**Green hydrogen** uses electrolysis powered by renewable electricity. This is the only route that's genuinely low-carbon. It currently costs $3.50-8.00/kg depending on region and scale, with European production costs toward the higher end of that range. It requires enormous amounts of renewable electricity, and it raises the question that sits at the core of this entire post:
+
+If you have a megawatt-hour of renewable electricity, is converting it to hydrogen the best use?
+
+## Count the conversion steps
+
+Every energy conversion loses efficiency. This isn't an engineering failure. It's thermodynamics. The question is how many conversions sit between your primary energy source and the wheels on the road.
+
+Start both pathways with the same 100 kWh of renewable electricity. Watch what happens.
+
+<EnergySankey client:visible />
+
+### Hydrogen fuel cell truck (green H₂)
+
+Start with renewable electricity. You've already generated it. Now:
+
+1. Electrolysis: electricity to hydrogen. ~66% efficient.
+2. Compression to 700 bar or liquefaction to -253°C. ~85-90% efficient.
+3. Transport and dispensing. ~95% efficient.
+4. Fuel cell: hydrogen to electricity. ~55-60% efficient.
+5. Electric motor to wheel. ~90% efficient.
+
+Multiply those together: roughly **25-30%** of the original renewable electricity reaches the wheels.
+
+### Battery electric truck
+
+Same starting point. Same renewable electricity.
+
+1. Grid transmission. ~95% efficient.
+2. Charging. ~90% efficient.
+3. Battery round-trip. ~90% efficient.
+4. Motor to wheel. ~90% efficient.
+
+Overall: roughly **70-75%** reaches the wheels.
+
+### What this means
+
+The battery electric pathway delivers 2.5-3x more useful work per kWh of renewable electricity. To move the same freight the same distance, hydrogen needs 2.5-3x more wind turbines, solar panels, or nuclear capacity than plugging in directly.
+
+In a world where renewable electricity is the scarce resource (and it is, across every grid on the planet), this matters enormously. Every MWh diverted into an electrolyser instead of displacing gas generation on the UK grid is a missed decarbonisation opportunity.
+
+This is not a minor efficiency gap that better engineering will close. The extra conversion steps are inherent to the hydrogen pathway. Better electrolysers and better fuel cells will help at the margins, but the fundamental architecture of convert-store-reconvert will always lose to the directness of generate-transmit-use.
+
+## Infrastructure reality
+
+This is where the theoretical argument meets the ground.
+
+<InfrastructureGap client:visible />
+
+As of early 2026, the UK has approximately 11 public hydrogen refuelling stations. Some sources count as many as 16 if you include those restricted to specific fleet operators or those intermittently operational. The number has actually *decreased* from a peak of around 16 in recent years, as early prototype stations have closed.
+
+In the same country, there are over 88,500 public EV charging devices across 45,000+ locations, with 18,000+ of those rated at 50kW or above (rapid and ultra-rapid). The network grew by 19% in 2025 alone.
+
+And there are approximately 8,380 petrol and diesel filling stations.
+
+The infrastructure gap isn't a gap. It's a chasm. And it creates the classic chicken-and-egg problem: nobody builds hydrogen stations without trucks to use them, and nobody buys hydrogen trucks without stations to refuel at.
+
+Electric charging doesn't have this problem because the grid is already everywhere. Adding charging capacity means upgrading a transformer and installing equipment at a location that already has road access and electricity supply. Building a hydrogen station means either installing on-site electrolysis (with its own substantial electricity demand plus water supply) or establishing cryogenic delivery logistics from a centralised production facility. Each station costs £2-5 million.
+
+The chicken-and-egg problem isn't theoretical. In December 2025, the UK government [pulled funding from HyHaul](https://www.fleetnews.co.uk/news/innovate-uk-and-dft-pull-plug-on-hydrogen-truck-project), its flagship hydrogen HGV programme. The project was supposed to deploy up to 30 hydrogen fuel cell trucks along the M4 corridor with three dedicated refuelling stations, backed by £31.8 million in government grants. It was cancelled because fleets wouldn't commit to buying the trucks. Despite engaging over 100 potential customers representing 192 vehicles, the project couldn't convert letters of intent into signed contracts. The project director cited "diesel price parity and the phased readiness of large-scale green hydrogen adoption": in other words, hydrogen couldn't beat diesel on cost, and the infrastructure wasn't ready. The Road Haulage Association called it a "set-back" and warned that costs and lack of infrastructure "continue to hold back transition."
+
+This is the chicken-and-egg problem with a £31.8 million price tag and a real-world outcome.
+
+Other plans exist. Aegis Energy secured £100 million to build 30 multi-energy refuelling hubs by 2030. Element 2 won £8 million for four new stations. These are real investments. But they're measured in tens of stations against a need for hundreds, in a country where the EV network adds roughly 14,000 new charging devices per year.
+
+For a fleet operator making a purchasing decision today, the question is stark: do you bet on a refuelling network that might exist in meaningful form in ten years, or one that exists now and is expanding daily?
+
+## The truck itself
+
+Credit where it's due. The vehicles work and the technology is maturing.
+
+The Hyundai XCIENT uses twin 90kW fuel cell stacks driving a 350kW electric motor with 1,650 lb-ft of torque. Ten high-pressure hydrogen tanks carry up to 70kg of fuel, giving a claimed range of up to 450 miles. Refuelling takes 10-20 minutes. The 2025 model includes upgraded ADAS and has been through four years of real-world testing across multiple climates.
+
+The largest single deployment is the NorCAL ZERO project at the Ports of Oakland, where 30 XCIENTs hauling containers with zero tailpipe emissions since 2023. In Georgia, 21 units handle nearly half of inbound and outbound logistics at Hyundai's own manufacturing plant. Across Europe, the trucks serve supermarket distribution in Germany, retail logistics in France, and refrigerated transport in Austria.
+
+These aren't demonstration vehicles in a press photo. They're hauling freight commercially, accumulating real mileage, across five European countries and three North American regions. The operators report that they work.
+
+Range: competitive with diesel. Refuelling time: competitive with diesel. Payload penalty: moderate, as hydrogen tanks are lighter than batteries for equivalent range, but still heavier than a diesel tank. The truck does everything a fleet operator needs a truck to do.
+
+Which is exactly why the infrastructure and economics arguments matter so much. If the truck didn't work, we could dismiss the whole proposition. Because it *does* work, we have to honestly assess whether the ecosystem around it can catch up.
+
+## The "just use the electricity directly" argument
+
+This is the core problem for hydrogen in road transport, and it can be stated simply.
+
+If you build a wind farm, every MWh it produces can either:
+
+- Go directly into the grid, charge a battery truck, and deliver ~75% to the wheels
+- Go into an electrolyser, become hydrogen, get compressed, transported, dispensed, and run through a fuel cell, delivering ~25-30% to the wheels
+
+The first option delivers 2.5-3x more transport per MWh of renewable generation.
+
+The UK grid is currently around 55-60% low-carbon (renewables plus nuclear), with gas making up most of the remainder. Every MWh of renewable electricity that goes into hydrogen production instead of displacing gas generation is a missed opportunity. The opportunity cost isn't zero; it's measured in tonnes of CO₂ that didn't get displaced.
+
+Hydrogen for road freight doesn't just need to beat diesel. It needs to beat battery electric. And on efficiency, infrastructure readiness, and current economics, it doesn't.
+
+<HeatingCostLadder client:visible />
+
+## Where hydrogen actually makes sense
+
+This isn't "hydrogen is useless." It's "hydrogen for road transport faces a competitor that's already winning." Hydrogen has legitimate, important applications where direct electrification genuinely can't reach.
+
+**Steel production.** Replacing coking coal with hydrogen as a reducing agent in steelmaking is one of the most important decarbonisation pathways in heavy industry. You can't electrolyse iron ore. You need a chemical reducing agent, and hydrogen is the clean alternative to carbon.
+
+**Ammonia and chemicals.** Hydrogen is a feedstock, not just a fuel. The Haber-Bosch process needs hydrogen to make ammonia, which feeds roughly half the world's population through fertiliser. This hydrogen currently comes from natural gas. Switching it to green hydrogen is a direct, no-regrets substitution.
+
+**Seasonal energy storage.** Batteries are excellent for hours-to-days storage. For storing surplus summer renewable electricity to use in winter, over weeks to months of duration, hydrogen (or hydrogen derivatives like ammonia) may be the only viable option at scale.
+
+**Maritime shipping.** Very long voyages where battery weight and volume are prohibitive, and refuelling infrastructure is concentrated at ports rather than distributed across a road network.
+
+**Aviation fuels.** Synthetic kerosene produced from hydrogen and captured CO₂ may be the only route to decarbonising long-haul aviation, where the energy density requirements of flight make batteries physically impossible for the foreseeable future.
+
+The common thread: hydrogen makes sense where you can't use electricity directly and the application justifies the conversion losses. For road transport, battery electric is viable for the majority of use cases and more efficient for all of them.
+
+## The long-haul counterargument
+
+The strongest case for hydrogen trucks is the long-haul trunk route where:
+
+- Range exceeds 300 miles without opportunity to charge
+- Payload penalty from batteries is unacceptable
+- Refuelling time matters because driver hours regulations are tight
+
+This is a real gap. But it's narrowing from both sides.
+
+Battery energy density improves year on year. The average range of a new electric car hit 300 miles in 2026, up from 235 miles in 2024. Commercial vehicle battery packs are following the same trajectory. Megawatt Charging Systems (MCS) are in development for sub-30-minute charges on heavy commercial vehicles.
+
+And the definition of "long haul" deserves scrutiny. EU driving hours regulations (EC 561/2006) require a 45-minute break after 4.5 hours of continuous driving. At 56 mph, that's 252 miles. The mandatory break provides a charging window that aligns remarkably well with current battery truck capabilities.
+
+The percentage of UK freight that genuinely requires 500+ mile non-stop range, with no opportunity to charge during mandatory rest periods, is smaller than the hydrogen industry's pitch decks imply.
+
+The question isn't whether hydrogen *can* do long haul. It's whether the remaining use case, after battery electric takes every route it can serve, is large enough to justify the infrastructure investment of a parallel national refuelling network.
+
+## The economics today
+
+Run the numbers on cost per mile and the picture sharpens.
+
+A diesel truck burning 30 litres per hour at highway speed, with diesel at £1.15/L, costs roughly £34.50/hr in fuel. Per mile at 56 mph: about 62p.
+
+A battery electric truck consuming approximately 1.5-2.0 kWh per mile, charging at commercial electricity rates of 15-25p/kWh, costs roughly 23-50p per mile. Even at the expensive end of commercial charging, it's competitive with diesel. At depot charging on overnight rates, it wins decisively.
+
+A hydrogen fuel cell truck consuming roughly 8-10 kg of hydrogen per 100 miles, at current European hydrogen prices of £8-12/kg, costs 64p-£1.20 per mile. More expensive than diesel, sometimes significantly so.
+
+The hydrogen cost per mile needs to roughly halve to reach diesel parity, and fall further to compete with battery electric. The industry's roadmaps project green hydrogen at $2/kg by 2030-2035. Even at that price, which many analysts consider optimistic, hydrogen trucks would be roughly at parity with diesel on fuel cost alone, without accounting for higher vehicle purchase prices. Battery electric would still be cheaper per mile.
+
+## Where this is heading
+
+The hydrogen truck narrative has shifted over the past few years. Early projections had hydrogen dominating heavy freight by 2035. The reality has been more sobering.
+
+BP withdrew from its H2Teesside hydrogen project in favour of building an AI data centre on the same site. The UK's flagship hydrogen HGV programme, HyHaul, was cancelled after fleets wouldn't sign contracts. Globally, roughly half of announced hydrogen projects have been delayed or cancelled against forecasts made in 2023. The investment is real but the pace is slower than the ambition, and the ambition keeps being revised downward.
+
+Meanwhile, battery electric trucks from Mercedes, Volvo, DAF, Scania, and MAN are entering serial production. Charging networks are scaling. The grid is cleaning up. Every year the grid gets cleaner, the well-to-wheel advantage of battery electric over hydrogen widens further, because the BEV pathway has fewer conversion losses between the grid and the wheels.
+
+Hydrogen fuel cell trucks will likely find a role. That role looks increasingly like a niche: the heaviest payloads, the longest routes, specific corridor operations where dedicated infrastructure can be justified. Not the backbone of freight decarbonisation, but a complement to electrification in the corners it can't reach.
+
+## Conclusion
+
+The right question about hydrogen trucks isn't "can they work?" They can, and they do. Hyundai has proved it across 20 million kilometres of commercial operation.
+
+The right question is: "Should we use 2.5-3x more renewable electricity to do the same job?"
+
+The truck works. The production economics are brutal. The infrastructure barely exists. The efficiency gap with battery electric is structural, not temporary. And the competitor, plugging into a grid that's already everywhere and getting cleaner every year, has a head start measured in tens of thousands of charging points against a handful of hydrogen stations.
+
+Hydrogen has important work to do in steel, chemicals, and seasonal storage. For road freight, the physics, the economics, and the infrastructure all point the same way: most trucks will plug in.
+
+---
+
+*This post is part of a series on fleet fuel economy and freight decarbonisation. The [first post](/blog/heavy-haulage-basics) covers the physics and economics foundations. Previous: on-vehicle hydrogen generation [coming soon]. Next: evaluating fuel economy claims [coming soon].*
