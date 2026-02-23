@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import TechBadges from '../components/TechBadges.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout title="About" description="About Michael Ayles - Electronics & Embedded Systems Engineer">
+  <ThemeToggle />
+  <Nav current="about" />
+
+  <main class="main">
+    <h1 class="page-title">About</h1>
+
+    <div class="about-content">
+      <section class="bio">
+        <h2>Michael Ayles</h2>
+        <p class="subtitle">Electronics & Embedded Systems</p>
+        <p>I design engine control units and the tools that design them. 7 years shipping production automotive hardware and firmware. Currently exploring how far you can push LLMs to automate hardware development.</p>
+        <p>Working on something in this space? I like talking about it. <a href="mailto:mike@mikeayles.com">mike@mikeayles.com</a></p>
+      </section>
+
+      <section class="stats-section">
+        <div class="stats-row">
+          <div class="stat-item">
+            <span class="number">3</span>
+            <span class="label">ECUs Developed</span>
+          </div>
+          <div class="stat-item">
+            <span class="number">10+</span>
+            <span class="label">Years Exp.</span>
+          </div>
+          <div class="stat-item">
+            <span class="number">28.5M+</span>
+            <span class="label">Miles Driven</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="section-title">Tech Stack</h3>
+        <TechBadges />
+      </section>
+
+      <section class="social-section">
+        <h3 class="section-title">Connect</h3>
+        <SocialLinks />
+      </section>
+    </div>
+
+    <Footer />
+  </main>
+</BaseLayout>
+
+<style>
+  .main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 3rem;
+  }
+
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .bio h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .bio .subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+
+  .bio p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .bio a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 4rem;
+  }
+
+  .stat-item .number {
+    font-size: 2rem;
+    font-weight: 700;
+    display: block;
+  }
+
+  .stat-item .label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .social-section {
+    margin-top: 1rem;
+  }
+</style>

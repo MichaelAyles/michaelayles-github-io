@@ -1,0 +1,18 @@
+{
+  "name": "ScopeDoom",
+  "description": "DOOM on an oscilloscope via sound card - using a MacBook's headphone jack as a dual-channel DAC to drive vector graphics at 4-8 Hz",
+  "tags": [
+    "Python",
+    "DOOM",
+    "Hardware",
+    "Audio"
+  ],
+  "featured": true,
+  "links": {
+    "live": null,
+    "github": "https://github.com/MichaelAyles/ScopeDoom",
+    "blog": null
+  },
+  "blogPost": "scopedoom",
+  "order": 4
+}

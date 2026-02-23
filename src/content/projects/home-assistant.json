@@ -1,0 +1,16 @@
+{
+  "name": "Home Assistant",
+  "description": "Smart home automation platform",
+  "tags": [
+    "Home Automation",
+    "IoT"
+  ],
+  "featured": false,
+  "links": {
+    "live": "https://homeassistant.mikeayles.com",
+    "github": null,
+    "blog": null
+  },
+  "blogPost": null,
+  "order": 5
+}

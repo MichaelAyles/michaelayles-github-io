@@ -1,0 +1,17 @@
+{
+  "name": "CircuitSnips.com",
+  "description": "Thingiverse, but for KiCad subcircuits.",
+  "tags": [
+    "KiCad",
+    "Electronics",
+    "Web"
+  ],
+  "featured": true,
+  "links": {
+    "live": "https://circuitsnips.com",
+    "github": "https://github.com/MichaelAyles/kicad-library",
+    "blog": null
+  },
+  "blogPost": "circuitsnips-writeup",
+  "order": 6
+}

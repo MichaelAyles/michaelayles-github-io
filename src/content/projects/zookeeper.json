@@ -1,0 +1,18 @@
+{
+  "name": "Zookeeper",
+  "description": "Pokédex for real zoo animals - AI-powered collection game that turns zoo visits into adventures with Gemini vision identification",
+  "tags": [
+    "AI",
+    "React",
+    "Gemini",
+    "Mobile"
+  ],
+  "featured": true,
+  "links": {
+    "live": "https://zookeeperapp.com/",
+    "github": "https://github.com/MichaelAyles/zookeeper",
+    "blog": null
+  },
+  "blogPost": "zookeeper",
+  "order": 1
+}

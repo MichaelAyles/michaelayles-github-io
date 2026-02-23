@@ -1,0 +1,17 @@
+{
+  "name": "HIT Impact Android App",
+  "description": "Kotlin Android app project for HIT Impact V1 traumatic brain injury sensors",
+  "tags": [
+    "Kotlin",
+    "Android",
+    "Hardware"
+  ],
+  "featured": false,
+  "links": {
+    "live": null,
+    "github": "https://github.com/MichaelAyles/hit-impact-android",
+    "blog": null
+  },
+  "blogPost": "hit-impact-android",
+  "order": 8
+}

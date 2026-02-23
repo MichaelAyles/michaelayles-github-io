@@ -1,0 +1,165 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import ThemeToggle from '../../components/ThemeToggle.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection, render } from 'astro:content';
+import { cleanSlug, formatDate } from '../../utils';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map(post => ({
+    params: { slug: cleanSlug(post.id) },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+// Find related project
+const allProjects = await getCollection('projects');
+const slug = cleanSlug(post.id);
+const relatedProject = allProjects.find(p => p.data.blogPost === slug);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <ThemeToggle />
+  <Nav current="blog" />
+
+  <main class="main">
+    <article class="article">
+      <header class="article-header">
+        <time class="article-date">{formatDate(post.data.date)}</time>
+        <h1 class="article-title">{post.data.title}</h1>
+        <p class="article-desc">{post.data.description}</p>
+        <div class="article-tags">
+          {post.data.tags.map(tag => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      </header>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      {relatedProject && (
+        <aside class="related-project">
+          <h3>Related Project</h3>
+          <p class="rp-name">{relatedProject.data.name}</p>
+          <p class="rp-desc">{relatedProject.data.description}</p>
+          <div class="rp-links">
+            {relatedProject.data.links.live && (
+              <a href={relatedProject.data.links.live} target="_blank">Live</a>
+            )}
+            {relatedProject.data.links.github && (
+              <a href={relatedProject.data.links.github} target="_blank">Code</a>
+            )}
+          </div>
+        </aside>
+      )}
+    </article>
+
+    <Footer />
+  </main>
+</BaseLayout>
+
+<style>
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .article-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .article-date {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .article-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+
+  .article-desc {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .article-tags {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-secondary);
+  }
+
+  .related-project {
+    margin-top: 4rem;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+  }
+
+  .related-project h3 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+  }
+
+  .rp-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .rp-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+  }
+
+  .rp-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .rp-links a {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+
+  .rp-links a:hover {
+    border-bottom-color: var(--text-primary);
+  }
+
+  @media (max-width: 700px) {
+    .article-title {
+      font-size: 1.8rem;
+    }
+  }
+</style>

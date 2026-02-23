@@ -1,0 +1,18 @@
+{
+  "name": "Phaestus",
+  "description": "Compiler for physical products - natural language to manufacturable PCB, enclosure, and firmware using constrained AI generation",
+  "tags": [
+    "AI",
+    "Hardware",
+    "KiCad",
+    "IoT"
+  ],
+  "featured": true,
+  "links": {
+    "live": "https://phaestus.app",
+    "github": "https://github.com/MichaelAyles/heph",
+    "blog": "https://phaestus.app/blog"
+  },
+  "blogPost": "phaestus",
+  "order": 0
+}

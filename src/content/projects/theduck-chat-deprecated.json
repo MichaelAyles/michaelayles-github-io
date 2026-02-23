@@ -1,0 +1,17 @@
+{
+  "name": "TheDuck.chat [Deprecated]",
+  "description": "AI-powered chat application. Developed for the T3 Cloneathon. DB currently inactive, demos available in repo.",
+  "tags": [
+    "AI",
+    "Chat",
+    "Web"
+  ],
+  "featured": true,
+  "links": {
+    "live": "https://theduck.chat",
+    "github": "https://github.com/MichaelAyles/the-duck",
+    "blog": null
+  },
+  "blogPost": "the-duck-chat",
+  "order": 13
+}

@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+const allProjects = await getCollection('projects');
+const sorted = allProjects.sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Projects" description="Selected projects by Michael Ayles">
+  <ThemeToggle />
+  <Nav current="projects" />
+
+  <main class="main">
+    <h1 class="page-title">Projects</h1>
+
+    <div class="project-list">
+      {sorted.map(project => (
+        <div class="project-item">
+          <div class="project-title-col">
+            <span class="project-name">{project.data.name}</span>
+            {project.data.featured && <span class="featured-dot" title="Featured"></span>}
+          </div>
+          <div class="project-desc">{project.data.description}</div>
+          <div class="project-links">
+            {project.data.links.live && (
+              <a href={project.data.links.live} target="_blank" class="project-link">Live</a>
+            )}
+            {project.data.links.github && (
+              <a href={project.data.links.github} target="_blank" class="project-link">Code</a>
+            )}
+            {project.data.blogPost && (
+              <a href={`/blog/${project.data.blogPost}`} class="project-link">Read</a>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <Footer />
+  </main>
+</BaseLayout>
+
+<style>
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 3rem;
+  }
+
+  .project-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .project-item {
+    display: grid;
+    grid-template-columns: 220px 1fr auto;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: all 0.2s ease;
+    align-items: baseline;
+  }
+
+  .project-item:hover {
+    background: var(--hover-bg);
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+
+  .project-title-col {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .project-name {
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+
+  .featured-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-secondary);
+    flex-shrink: 0;
+  }
+
+  .project-desc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+  }
+
+  .project-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .project-link {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+
+  .project-link:hover {
+    border-bottom-color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  @media (max-width: 800px) {
+    .project-item {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+</style>

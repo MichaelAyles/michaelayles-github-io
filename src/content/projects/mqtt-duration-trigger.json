@@ -1,0 +1,17 @@
+{
+  "name": "MQTT Duration Trigger",
+  "description": "Home Assistant integration for MQTT-based duration triggers",
+  "tags": [
+    "Python",
+    "Home Automation",
+    "MQTT"
+  ],
+  "featured": false,
+  "links": {
+    "live": null,
+    "github": "https://github.com/MichaelAyles/mqtt-duration-trigger",
+    "blog": null
+  },
+  "blogPost": "mqtt-duration-trigger",
+  "order": 10
+}

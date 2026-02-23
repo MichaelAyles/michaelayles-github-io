@@ -1,0 +1,18 @@
+{
+  "name": "OpenSCAD-DOOM",
+  "description": "DOOM in OpenSCAD at 10-20 FPS - real-time 3D rendering in a parametric CAD tool using the Manifold geometry kernel",
+  "tags": [
+    "Python",
+    "DOOM",
+    "OpenSCAD",
+    "CAD"
+  ],
+  "featured": true,
+  "links": {
+    "live": "https://doom.mikeayles.com/",
+    "github": "https://github.com/MichaelAyles/openSCAD-DOOM",
+    "blog": null
+  },
+  "blogPost": "openscad-doom",
+  "order": 2
+}

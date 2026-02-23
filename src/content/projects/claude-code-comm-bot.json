@@ -1,0 +1,17 @@
+{
+  "name": "Claude Code Comm Bot",
+  "description": "Discord Communication bot for Claude Code, VS Code integration",
+  "tags": [
+    "JavaScript",
+    "Discord",
+    "Bot"
+  ],
+  "featured": false,
+  "links": {
+    "live": null,
+    "github": "https://github.com/MichaelAyles/claude-code-comm-bot",
+    "blog": null
+  },
+  "blogPost": "claude-code-comm-bot",
+  "order": 12
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Fuel Injector Characterizer",
+  "description": "One and Done, Vibe Coded system for validating fuel injector performance. Arduino and Webserial.",
+  "tags": [
+    "Arduino",
+    "Hardware",
+    "WebSerial"
+  ],
+  "featured": false,
+  "links": {
+    "live": null,
+    "github": "https://github.com/MichaelAyles/fuel_injector_characterizer",
+    "blog": null
+  },
+  "blogPost": "fuel-injector-characterizer",
+  "order": 16
+}

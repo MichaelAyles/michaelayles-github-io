@@ -1,0 +1,15 @@
+{
+  "name": "mikeayles-portfolio",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "migrate": "node migrate.mjs"
+  },
+  "dependencies": {
+    "@rollup/rollup-win32-x64-msvc": "^4.59.0",
+    "astro": "^5.5.0"
+  }
+}

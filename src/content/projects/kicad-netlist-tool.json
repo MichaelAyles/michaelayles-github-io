@@ -1,0 +1,17 @@
+{
+  "name": "KiCad Netlist Tool",
+  "description": "Tool for reducing LLM token count from Kicad SCH files, to allow for automated documentation",
+  "tags": [
+    "Python",
+    "KiCad",
+    "AI"
+  ],
+  "featured": false,
+  "links": {
+    "live": null,
+    "github": "https://github.com/MichaelAyles/kicad-netlist-tool",
+    "blog": null
+  },
+  "blogPost": "kicad-netlist-tool",
+  "order": 11
+}

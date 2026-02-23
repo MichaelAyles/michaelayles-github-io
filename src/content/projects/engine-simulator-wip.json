@@ -1,0 +1,17 @@
+{
+  "name": "Engine Simulator [WIP]",
+  "description": "Engine Simulator, using physics calculations, currently set up for diesel 6cyl",
+  "tags": [
+    "JavaScript",
+    "Physics",
+    "Simulation"
+  ],
+  "featured": false,
+  "links": {
+    "live": "https://michaelayles.github.io/enginesim/",
+    "github": null,
+    "blog": null
+  },
+  "blogPost": "engine-simulator",
+  "order": 15
+}
