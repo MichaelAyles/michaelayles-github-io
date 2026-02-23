@@ -1,6 +1,6 @@
-/** Strip .md extension from content collection IDs for clean URLs */
+/** Strip .md/.mdx extension from content collection IDs for clean URLs */
 export function cleanSlug(id: string): string {
-  return id.replace(/\/index\.md$/, '').replace(/\.md$/, '');
+  return id.replace(/\/index\.mdx?$/, '').replace(/\.mdx?$/, '');
 }
 
 export function formatDate(date: Date): string {
