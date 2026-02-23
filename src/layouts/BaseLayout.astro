@@ -22,6 +22,32 @@ const pageTitle = title === 'Michael Ayles' ? title : `${title} | Michael Ayles`
     if (localStorage.getItem('theme') === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
     }
+    (function() {
+      var h = location.hash.slice(1);
+      if (!h) return;
+      var m = {
+        'phaestus': '/blog/phaestus/',
+        'zookeeper': '/blog/zookeeper/',
+        'openscad-doom': '/blog/openscad-doom/',
+        'kidoom': '/blog/kidoom/',
+        'scopedoom': '/blog/scopedoom/',
+        'circuitsnips-com': '/blog/circuitsnips-writeup/',
+        'tokn': '/blog/tokn/',
+        'hit-impact-android-app': '/blog/hit-impact-android/',
+        'bitwise-mcp': '/blog/bitwise-mcp/',
+        'mqtt-duration-trigger': '/blog/mqtt-duration-trigger/',
+        'kicad-netlist-tool': '/blog/kicad-netlist-tool/',
+        'claude-code-comm-bot': '/blog/claude-code-comm-bot/',
+        'theduck-chat-deprecated': '/blog/the-duck-chat/',
+        'engine-simulator-wip': '/blog/engine-simulator/',
+        'fuel-injector-characterizer': '/blog/fuel-injector-characterizer/',
+        'openscad-doom-featured': '/featured/openscad-doom/',
+        'kidoom-featured': '/featured/kidoom/',
+        'scopedoom-featured': '/featured/scopedoom/',
+        'circuitsnips-com-featured': '/featured/circuitsnips-com/'
+      };
+      if (m[h]) location.replace(m[h]);
+    })();
   </script>
 </head>
 <body>
