@@ -10,8 +10,7 @@ const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const sorted = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const heroPosts = sorted.slice(0, 5);
-const heroIds = new Set(heroPosts.map(p => p.id));
-const recentPosts = sorted.filter(p => !heroIds.has(p.id)).slice(0, 8);
+const recentPosts = sorted.slice(0, 8);
 ---
 
 <BaseLayout title="Michael Ayles" description="Blog & Portfolio - Electronics & Embedded Systems Engineer">
