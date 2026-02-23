@@ -7,7 +7,7 @@
     "Gemini",
     "Mobile"
   ],
-  "featured": true,
+  "featured": false,
   "links": {
     "live": "https://zookeeperapp.com/",
     "github": "https://github.com/MichaelAyles/zookeeper",

@@ -7,7 +7,7 @@
     "KiCad",
     "IoT"
   ],
-  "featured": true,
+  "featured": false,
   "links": {
     "live": "https://phaestus.app",
     "github": "https://github.com/MichaelAyles/heph",

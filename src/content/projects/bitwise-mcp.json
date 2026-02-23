@@ -7,7 +7,7 @@
     "Embedded",
     "AI"
   ],
-  "featured": true,
+  "featured": false,
   "links": {
     "live": null,
     "github": "https://github.com/MichaelAyles/bitwise-mcp",

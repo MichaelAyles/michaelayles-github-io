@@ -6,7 +6,7 @@
     "Chat",
     "Web"
   ],
-  "featured": true,
+  "featured": false,
   "links": {
     "live": "https://theduck.chat",
     "github": "https://github.com/MichaelAyles/the-duck",
