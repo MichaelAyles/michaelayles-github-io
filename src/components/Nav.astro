@@ -8,10 +8,13 @@ const { current = '' } = Astro.props;
 <nav class="nav">
   <div class="nav-inner">
     <a href="/" class="nav-brand">Michael Ayles</a>
-    <div class="nav-links">
-      <a href="/" class:list={['nav-link', { active: current === 'blog' }]}>Blog</a>
-      <a href="/projects" class:list={['nav-link', { active: current === 'projects' }]}>Projects</a>
-      <a href="/about" class:list={['nav-link', { active: current === 'about' }]}>About</a>
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="/" class:list={['nav-link', { active: current === 'blog' }]}>Blog</a>
+        <a href="/projects" class:list={['nav-link', { active: current === 'projects' }]}>Projects</a>
+        <a href="/about" class:list={['nav-link', { active: current === 'about' }]}>About</a>
+      </div>
+      <slot />
     </div>
   </div>
 </nav>
@@ -40,6 +43,12 @@ const { current = '' } = Astro.props;
     color: var(--text-primary);
     text-decoration: none;
     letter-spacing: -0.02em;
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
   }
 
   .nav-links {

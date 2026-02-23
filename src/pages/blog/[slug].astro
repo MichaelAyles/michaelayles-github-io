@@ -24,8 +24,7 @@ const relatedProject = allProjects.find(p => p.data.blogPost === slug);
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
-  <ThemeToggle />
-  <Nav current="blog" />
+  <Nav current="blog"><ThemeToggle /></Nav>
 
   <main class="main">
     <article class="article">

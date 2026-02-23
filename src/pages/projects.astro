@@ -10,8 +10,7 @@ const sorted = allProjects.sort((a, b) => a.data.order - b.data.order);
 ---
 
 <BaseLayout title="Projects" description="Selected projects by Michael Ayles">
-  <ThemeToggle />
-  <Nav current="projects" />
+  <Nav current="projects"><ThemeToggle /></Nav>
 
   <main class="main">
     <h1 class="page-title">Projects</h1>
@@ -21,18 +20,21 @@ const sorted = allProjects.sort((a, b) => a.data.order - b.data.order);
         <div class="project-item">
           <div class="project-title-col">
             <span class="project-name">{project.data.name}</span>
-            {project.data.featured && <span class="featured-dot" title="Featured"></span>}
+            {project.data.featured && <span class="featured-badge">Featured</span>}
           </div>
           <div class="project-desc">{project.data.description}</div>
           <div class="project-links">
             {project.data.links.live && (
               <a href={project.data.links.live} target="_blank" class="project-link">Live</a>
             )}
+            {project.data.links.blog && (
+              <a href={project.data.links.blog} target="_blank" class="project-link">Blog</a>
+            )}
             {project.data.links.github && (
               <a href={project.data.links.github} target="_blank" class="project-link">Code</a>
             )}
             {project.data.blogPost && (
-              <a href={`/blog/${project.data.blogPost}`} class="project-link">Read</a>
+              <a href={`/blog/${project.data.blogPost}`} class="project-link">Read More</a>
             )}
           </div>
         </div>
@@ -91,11 +93,14 @@ const sorted = allProjects.sort((a, b) => a.data.order - b.data.order);
     font-weight: 600;
   }
 
-  .featured-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--text-secondary);
+  .featured-badge {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
     flex-shrink: 0;
   }
 

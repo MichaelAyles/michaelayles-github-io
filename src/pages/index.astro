@@ -14,8 +14,7 @@ const recentPosts = sorted.filter(p => p.id !== featuredPost.id).slice(0, 8);
 ---
 
 <BaseLayout title="Michael Ayles" description="Blog & Portfolio - Electronics & Embedded Systems Engineer">
-  <ThemeToggle />
-  <Nav current="blog" />
+  <Nav current="blog"><ThemeToggle /></Nav>
 
   <main class="main">
     <!-- Hero Featured Post -->
