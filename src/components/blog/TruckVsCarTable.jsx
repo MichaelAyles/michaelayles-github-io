@@ -18,7 +18,7 @@ const rows = [
   { label: "Motorway speed limit", car: "70 mph", truck: "56 mph", note: "EU limiter (90 km/h)" },
   { label: "Fuel consumption (cruise)", car: "~45 mpg", truck: "~8.5 mpg", note: "5× more per mile" },
   { label: "Fuel burn rate at cruise", car: "~3 L/hr", truck: "~30 L/hr", note: "10× the flow rate", highlight: true },
-  { label: "Braking distance (from limit)", car: "~73 m", truck: "~150+ m", note: "2× or more" },
+  { label: "Stopping distance (from limit)", car: "~73 m", truck: "~150+ m", note: "Incl. thinking time" },
   { label: "Annual fuel consumption", car: "~1,300 L", truck: "~43,000 L", note: "33× more", highlight: true },
   { label: "Annual fuel cost", car: "~£1,500", truck: "~£50,000", note: "" },
   { label: "Annual CO₂", car: "~3.4 t", truck: "~113 t", note: "But carries 29t of freight" },
@@ -128,7 +128,7 @@ export default function TruckVsCarTable() {
         marginTop: 12,
         lineHeight: 1.5,
       }}>
-        Car: typical mid-size hatchback, 12,000 mi/yr. Truck: 6-axle artic, 80,000 mi/yr. Diesel at £1.15/L. CO₂ at 2.64 kg/L.
+        Car: typical mid-size hatchback, 12,000 mi/yr. Truck: 6-axle artic, 80,000 mi/yr. Diesel at £1.15/L (ex-VAT bulk fleet price). CO₂ at 2.64 kg/L.
       </div>
     </div>
   );

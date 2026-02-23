@@ -11,7 +11,7 @@ import FleetFuelCalculator from '@/components/blog/FleetFuelCalculator';
 import OvertakingCalculator from '@/components/blog/OvertakingCalculator';
 import TruckVsCarTable from '@/components/blog/TruckVsCarTable';
 
-You're on the M1, doing 65, and two trucks pull out alongside each other. For the next ninety seconds you watch them drift past each other at what appears to be exactly the same speed. Your blood pressure rises. The inside lane backs up. Eventually the overtaking truck completes its pass, pulls in, and the world moves on.
+You're on the M1, doing 65, and two trucks pull out alongside each other. For the next several minutes you watch them drift past each other at what appears to be exactly the same speed. Your blood pressure rises. The inside lane backs up. Eventually the overtaking truck completes its pass, pulls in, and the world moves on.
 
 Every driver in the UK has experienced this. Most assume the truck driver is being inconsiderate. The actual explanation involves EU legislation from 1992, engine ECU calibration tolerances, and the economics of a 10-hour driving day. Once you understand those, the rest of the commercial freight world starts to make sense, and you start to see why most "obvious" solutions to truck emissions hit hard physical constraints that aren't going away.
 
@@ -47,9 +47,9 @@ Speed limiters have manufacturing tolerances. Tyre wear affects rolling radius, 
 
 <OvertakingCalculator client:visible />
 
-At a 0.5 mph differential, an overtake of a 16.5-metre truck takes roughly 90 seconds and covers about 2.2 km. During those 90 seconds, you're stuck behind two trucks that appear to be travelling at identical speeds. From the driver's seat of a car, it looks pointless.
+At a 0.5 mph differential, an overtake of a 16.5-metre truck -- accounting for the overtaking truck to safely pull out, clear the full vehicle length, and pull back in with adequate gaps -- takes nearly five minutes and covers over 7 km of road. That's roughly 4.5 miles of dual carriageway where you're stuck behind two trucks that appear to be travelling at identical speeds. From the driver's seat of a car, it looks pointless.
 
-But run the maths over a full working day. A driver doing 56.3 instead of 55.8 covers an extra 5 miles across a 10-hour shift. For a driver paid by the mile, or on a delivery schedule measured in minutes, that overtake is rational. The 90 seconds of inconvenience to you saves them meaningful time and money over the course of a day.
+But run the maths over a full working day. A driver doing 56.3 instead of 55.8 covers an extra 5 miles across a 10-hour shift. For a driver paid by the mile, or on a delivery schedule measured in minutes, that overtake is rational. The five minutes of inconvenience to you saves them meaningful time and money over the course of a day.
 
 UK speed limits for heavy vehicles are also more complex than most car drivers realise. Articulated trucks over 7.5 tonnes: 60 mph on dual carriageways, 50 mph on single carriageways, 56 mph (limiter) on motorways. These vary by vehicle class, road type, and whether the vehicle is rigid or articulated. The lorry pulling out on the A-road at what feels like 40 mph isn't being lazy. They might be doing the legal maximum.
 
@@ -69,7 +69,7 @@ Here's where the economics become interesting.
 
 A typical articulated truck at highway cruise consumes between 8 and 10 miles per gallon (UK gallons), depending on load, terrain, wind, and driving style. That's roughly 28 to 35 litres per 100 km, or around 30 litres per hour at cruise speed. This is not a misprint. A truck burns in an hour what a small car burns in a week.
 
-For a truck doing 80,000 miles a year (a fairly typical figure for UK domestic trunk work), that's about 43,000 litres of diesel. At current prices around £1.15 per litre, that's roughly £50,000 in fuel per truck per year.
+For a truck doing 80,000 miles a year (a fairly typical figure for UK domestic trunk work), that's about 43,000 litres of diesel. At current prices around £1.15 per litre (ex-VAT bulk fleet price), that's roughly £50,000 in fuel per truck per year.
 
 Scale it to a fleet. A 30-truck operation spends £1.5 million on diesel annually. Fuel is typically the single largest operating cost after driver wages.
 
@@ -91,7 +91,7 @@ A litre of diesel contains approximately 10 kWh of chemical energy at a density 
 
 Diesel sits in the top-right corner of that chart. No other commercially available energy carrier matches it on *both* axes simultaneously for road transport.
 
-**Batteries** are the starkest contrast. A modern lithium-ion battery pack manages about 0.25 kWh/kg and 0.7 kWh/L. To store the same energy as a 400-litre diesel tank (roughly 4,000 kWh of chemical energy), you'd need a battery weighing approximately 16 tonnes. Even accounting for the diesel engine's lower thermal efficiency (40–45% of that chemical energy becomes useful work at the wheels, versus ~90% for an electric motor), you'd still need a battery several times heavier than a diesel tank and fuel for the same real-world range. Current battery electric trucks achieve 150–300 miles of range with a significant payload penalty.
+**Batteries** are the starkest contrast. A modern lithium-ion battery pack manages about 0.25 kWh/kg and 0.7 kWh/L. To store the same chemical energy as a 400-litre diesel tank (roughly 4,000 kWh), you'd need a battery weighing approximately 16 tonnes. But that comparison overstates the gap, because diesel engines are far less efficient than electric motors. A diesel engine converts roughly 40% of that chemical energy to useful work at the wheels: about 1,600 kWh. An electric drivetrain achieves around 90%, so you only need roughly 1,600 kWh of battery capacity for equivalent range. At 0.25 kWh/kg, that's still about 6.4 tonnes of battery -- roughly 18 times heavier than the 350 kg diesel tank and fuel it replaces, and 6.4 tonnes of payload that disappears from every trip. Current battery electric trucks achieve 150-300 miles of range with this kind of penalty.
 
 **Hydrogen** is a more interesting case. Gravimetrically, hydrogen is extraordinary: 33.3 kWh/kg, the highest of any fuel. But volumetrically, it's dire. Compressed to 700 bar (roughly the pressure inside a scuba tank times 20), hydrogen manages just 1.3 kWh/L — about an eighth of diesel. Liquefied at −253°C, it improves to roughly 2.4 kWh/L, but that's still a quarter of diesel's density and requires cryogenic storage that boils off continuously. The gravimetric advantage is real, but the tank systems needed to exploit it are heavy, large, and expensive. The numbers close the gap considerably once you account for tank weight.
 
