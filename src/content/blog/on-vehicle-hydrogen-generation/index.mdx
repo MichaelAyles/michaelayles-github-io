@@ -1,0 +1,166 @@
+---
+title: "50kWh In, 33kWh Out: On-Vehicle Hydrogen Generation"
+description: "The energy chain behind HHO systems, worked from a real product's published specifications. Why on-vehicle hydrogen generation for diesel trucks is a thermodynamic impossibility, not an engineering challenge."
+date: 2026-02-23
+tags: ["Transport", "Hydrogen", "Physics"]
+draft: false
+---
+
+import AddingVsRecycling from '@/components/blog/AddingVsRecycling';
+import HHOEnergyChain from '@/components/blog/HHOEnergyChain';
+import HHOCalculator from '@/components/blog/HHOCalculator';
+import WhatIfItWorked from '@/components/blog/WhatIfItWorked';
+
+The premise is simple enough to fit on a trade show banner: split water into hydrogen and oxygen using electricity from the truck's alternator, feed the hydrogen into the engine alongside diesel, and save 10-40% on fuel. The products are sold online, at transport exhibitions, and occasionally by apparently credible companies with glossy case studies, distribution partnerships, and testimonials from fleet managers. Some have partnerships with major OEMs. Some have "validated" results.
+
+The problem is equally simple, but it requires tracing the energy through a loop that the marketing materials never draw in full. The electricity to split the water comes from the alternator. The alternator is driven by the engine. The engine burns diesel. You are using diesel to make hydrogen to supplement diesel. And you lose energy at every single conversion step.
+
+This isn't an engineering challenge waiting for a breakthrough. It's a thermodynamic impossibility. The maths is straightforward and the conclusion is unambiguous. Let's work through it.
+
+## Adding energy vs recycling energy
+
+Before getting into the numbers, it's worth understanding why this is fundamentally different from technologies that do work.
+
+A diesel-LPG dual-fuel system injects liquefied petroleum gas alongside diesel. LPG is an external fuel with its own chemical energy content — about 46 MJ/kg. The system takes 100 units of energy from diesel and adds 20 more from LPG. Total energy input goes up. If LPG is cheaper than diesel per unit of energy, you save money. The physics works because you're adding energy from a second source.
+
+An on-vehicle hydrogen generator doesn't add energy from anywhere. The electricity comes from the alternator, driven by the crankshaft, powered by the engine, burning diesel. The hydrogen's energy was diesel energy three conversion steps ago. You're not supplementing the fuel supply. You're recycling a fraction of the engine's own output through a series of lossy conversions and putting a tiny trickle back in. The total energy input can only go down.
+
+<AddingVsRecycling client:visible />
+
+This distinction matters because HHO sellers sometimes position their products alongside legitimate dual-fuel or alternative powertrain technologies, borrowing credibility from an entirely different category. When a fleet manager hears "hydrogen," they think of the Hyundai XCIENT fuel cell trucks running commercially across Europe. Not an electrolysis cell zip-tied to the chassis rail.
+
+## The energy chain
+
+Now let's trace the energy path that every on-vehicle hydrogen system must follow. There are no exceptions to this chain because it's defined by the physical architecture: the vehicle's engine is the only energy source, and the hydrogen must be produced on board.
+
+Start with diesel in the tank. The engine burns it, converting roughly 40-45% of the chemical energy into mechanical work at the crankshaft (the rest leaves as heat through the exhaust and cooling system — this is the thermal efficiency ceiling that even the best truck engines operate against). The crankshaft drives the alternator. The alternator converts mechanical energy to electrical energy at roughly 60-70% efficiency, losing the rest as heat and friction. The electrical energy powers a small electrolyser mounted somewhere on the chassis. The electrolyser splits water into hydrogen and oxygen at, at best, about 66% efficiency (meaning 50 kWh of electricity per kilogram of hydrogen produced — the theoretical minimum is 39.4 kWh/kg, but no commercial electrolyser achieves that). The hydrogen and oxygen are fed into the engine's air intake. The engine burns the hydrogen alongside diesel, converting 40-45% of the hydrogen's chemical energy into work.
+
+At every step, energy is lost. The flow narrows. What started as chemical energy in diesel has been converted to mechanical work, then to electrical energy, then to chemical energy in hydrogen, then back to mechanical work. Four conversions, each with losses. The round-trip efficiency is catastrophic.
+
+<HHOEnergyChain client:visible />
+
+Multiply the efficiencies together for the round trip. Even being generous: 0.43 x 0.65 x 0.66 x 0.43 = 0.079. About 8% of the original diesel energy makes it back to the crankshaft via the hydrogen detour. The other 92% has been dissipated as heat across four conversion steps. You'd be better off just burning the diesel directly — which is, of course, exactly what the engine was already doing.
+
+This is not an engineering limitation that better components will solve. It's the second law of thermodynamics. Every energy conversion produces waste heat. Chain enough conversions together and the losses dominate. No improvement in electrolyser design, alternator efficiency, or system packaging changes the fundamental architecture of the loop.
+
+## The worked example
+
+Let's make this concrete with a real product's published specifications. I've generalised the numbers to avoid naming any specific company, but these are drawn from actual spec sheets that have crossed my desk professionally.
+
+A typical aftermarket HHO system for a heavy commercial vehicle:
+
+- System voltage: 12V (some claim 24V on trucks with 24V electrical systems, but many install 12V units)
+- System current: 14A
+- System power draw: 168W
+
+From these published numbers, everything else follows from physics.
+
+At 50 kWh/kg electrolysis efficiency (which is generous — many small-cell electrolysers perform worse), 168W of electrical input produces approximately 3.36 grams of hydrogen per hour. That hydrogen contains 0.112 kWh of chemical energy (hydrogen's lower heating value is 33.33 kWh/kg).
+
+The system consumes 0.168 kWh of electricity to produce 0.112 kWh of hydrogen. It is a net energy sink before the hydrogen even reaches the engine. The electrical energy consumed exceeds the chemical energy produced by 50%.
+
+And that 0.168 kWh doesn't come for free. The alternator drew it from the crankshaft, which means the engine burned extra diesel to produce it. At 40-45% thermal efficiency and 65% alternator efficiency, generating 0.168 kWh of electricity required roughly 0.6 kWh of diesel energy. The system burns 0.6 kWh of diesel to make 0.112 kWh of hydrogen. A return of about 19 pence on the pound.
+
+<HHOCalculator client:visible />
+
+## The scale of the problem
+
+Numbers like 0.112 kWh are hard to feel intuitively. So let's put them next to the engine's actual energy consumption.
+
+At typical highway operation, a loaded truck burns about 30 litres of diesel per hour. Diesel contains approximately 10 kWh per litre. That's 300 kWh per hour flowing through the engine.
+
+The HHO system contributes 0.112 kWh per hour.
+
+That's a ratio of roughly 2,700:1. The hydrogen represents 0.037% of the engine's total energy input. If you drew this to scale on an A4 sheet of paper, with the full width representing diesel energy, the hydrogen would be thinner than the ink of the line you drew it with.
+
+The products claim 10-15% fuel savings. Sometimes 20-40%. The direct energy contribution is 0.037%. For the claimed saving to be real, the hydrogen would need to act not as a fuel supplement but as a catalyst — improving the combustion of the remaining diesel by a factor that's hard to state without it sounding absurd.
+
+So let's state it.
+
+<WhatIfItWorked client:visible />
+
+For a 15% fuel saving claim: each gram of hydrogen produced per hour would need to somehow catalyse a saving of 4.5 litres of diesel per hour. That's a catalytic effect roughly 400 times more powerful than anything in the published chemistry literature. For context, the catalytic converters in your car's exhaust — actual catalysts, designed by actual chemists, using actual platinum-group metals — operate at catalytic ratios in the single digits.
+
+The claim isn't implausible. It's supernatural.
+
+## Where the "savings" actually come from
+
+Here's the thing: some users do report genuine fuel consumption reductions after installing an HHO system. The fleet manager sees the numbers drop and concludes the product works. The testimonial is written. The case study is published. And the hydrogen had nothing to do with it.
+
+Investigation of installations where measurable fuel savings occurred consistently reveals one or more of the following.
+
+**O2 sensor interference.** The HHO system produces both hydrogen and oxygen. The oxygen-enriched intake air reaches the exhaust lambda sensor, which reads a leaner mixture than is actually present. The ECU responds by reducing fuelling. The engine runs leaner. Fuel consumption drops. In some installations, the O2 sensor is deliberately tampered with or bypassed during fitting.
+
+**ECU remapping.** Some installers remap the engine ECU at the same time as fitting the HHO unit. The remap is the thing that changes fuel consumption. The hydrogen generator is along for the ride. Ask the installer whether they touched the ECU and you'll often get a vague answer about "optimising the system." The remap alone would have produced the same result.
+
+**Forced lean running.** Whether through sensor interference, deliberate remapping, or both, the common mechanism is the same: the engine runs with less fuel relative to the air in the cylinder. This is lean combustion. It produces real, measurable fuel savings. It also produces elevated exhaust gas temperatures (risk of turbo failure, cracked exhaust manifolds, and exhaust valve damage), increased NOx emissions (potentially breaching the vehicle's type approval and making it illegal to operate on public roads), and accelerated wear on pistons and cylinder liners from higher peak combustion temperatures.
+
+The fuel savings are real. The mechanism is lean running. The hydrogen has nothing to do with it. The identical result could be achieved by a £200 ECU remap — without the electrolyser, the reservoir, the tubing, the additional wiring, or the £2,000+ price tag. You'd also know exactly what you'd done to the engine, rather than discovering it when the turbo fails at 200,000 miles.
+
+It's worth being explicit about the warranty and legal implications. Running a modified fuelling map on a Euro VI truck can void the manufacturer's warranty on the entire powertrain. If the vehicle exceeds type-approval NOx limits as a result, the operator is in breach of the Road Vehicles (Construction and Use) Regulations. The insurance position in the event of an engine failure caused by elevated EGTs is, to put it gently, untested.
+
+## The "hydrogen carbon clean" variant
+
+There's a related product category worth addressing: mobile hydrogen carbon cleaning services. Rather than permanently mounting a generator on the truck, a van arrives, connects an external HHO generator to the engine, and runs it at a series of idles and fast idles for about 45 minutes. The claim is that the hydrogen burns off carbon deposits in the engine, turbo, and exhaust system, restoring performance and fuel economy.
+
+This faces two separate questions, and it needs to answer both.
+
+Does hydrogen at idle actually remove carbon deposits? To get rid of carbon, you need to either burn it off (requiring temperatures well above what an engine produces at idle or fast idle) or mechanically remove it. A fast-idling engine doesn't generate the combustion or exhaust temperatures needed to oxidise hardened carbon deposits. Forty-five minutes of trace hydrogen in the intake air seems unlikely to achieve what thousands of hours of hot combustion gases haven't already done. I haven't found peer-reviewed evidence either way — the only literature comes from the companies selling the service.
+
+Does a "cleaned" engine actually use less fuel? This is where the research gets counterintuitive. The published evidence on carbon deposits within the combustion chamber (as distinct from the exhaust aftertreatment) actually suggests that deposits improve fuel efficiency, likely due to the insulating effect of the carbon layer maintaining heat within the cylinder, resulting in faster flame-front propagation. Values in the literature range from 2 to 7% improvement from deposit formation, with the main reference being Nakamura et al.'s work on combustion chamber deposit chemistry.
+
+Aftertreatment is a different story. A blocked DPF or degraded SCR catalyst does measurably reduce efficiency, and cleaning or replacement can recover around 5% through lower exhaust backpressure. But you don't need hydrogen for that — a forced regeneration cycle (which every modern truck ECU can initiate) or a DPF cleaning service achieves the same thing at a fraction of the cost.
+
+So the evidence, such as it exists, suggests that cleaning carbon from the combustion chamber may actually make things slightly worse, while cleaning the exhaust aftertreatment makes things slightly better. A wash at best, and not a job that requires hydrogen.
+
+## The validation problem
+
+Several HHO companies now cite partnerships with major fleet operators or OEM telematics validation. These carry weight and deserve to be addressed fairly.
+
+The reported savings in these partnerships are typically validated via the truck's own onboard telematics — the Scania Fleet Management portal, Volvo Connect, or similar. These systems estimate fuel consumption from ECM data. They're useful fleet management tools, but they're not independent test instrumentation. They don't control for route, load, driver, weather, tyre pressure, or any of the other variables that cause week-to-week fuel consumption to fluctuate by 5-10% with no intervention at all.
+
+For a product claiming 10-15% fuel savings, single-vehicle before-and-after testing using OEM telematics is not adequate methodology, because the noise in real-world conditions exceeds the claimed signal. You need simultaneous controlled comparison: a test truck and a control truck running the same route, same load, same day, with independent instrumentation and statistical analysis. The testing methodology framework for evaluating these claims properly is covered in a later post [coming soon].
+
+## A sanity check you can run yourself
+
+As an aside: the same question — "Is on-vehicle hydrogen generation for diesel vehicles commercially viable? Consider the energy required to generate the hydrogen, the ratios of hydrogen energy to diesel energy, and the marketing claims" — was independently posed to GPT, Claude, and Gemini.
+
+All three reached the same conclusion: on-vehicle hydrogen generation is not commercially viable, citing the thermodynamic constraints above. The specific numbers varied slightly (different assumed efficiencies), but the direction was unanimous. Net energy loss. Closed-loop deficit. No credible mechanism for the claimed savings.
+
+When the marketing language can't survive a five-minute conversation with a chatbot, the claims have a problem.
+
+Note the contrast: the same models were asked about LPG dual-fuel conversions and all confirmed commercial viability for high-mileage fleets. Because LPG dual-fuel works through fuel price arbitrage — you're substituting a cheaper external energy source, not trying to create energy from a closed loop. The models aren't anti-alternative-fuel. They're anti-thermodynamic-violation.
+
+## Why this persists
+
+If the physics is this clear, why do HHO products continue to sell?
+
+The economics of the product itself are part of the answer. An electrolysis cell is cheap to manufacture: some stainless steel plates, rubber gaskets, a reservoir, a few metres of tubing, and a relay. The bill of materials is under £100. The retail price is typically £1,500-3,000. That margin funds a lot of trade show presence, a lot of website copy, and a lot of "independent" case studies.
+
+The testing is always uncontrolled. Before-and-after on a single vehicle, different seasons, different drivers, different loads, different routes, measured by fuel card receipts or OEM telematics rather than independent instrumentation. The noise in real-world fleet fuel consumption is 5-10% between consecutive weeks even with no changes at all. A product that does nothing will occasionally appear to deliver 8% in a single before-and-after comparison purely by chance. The methodological bar for claiming a result is zero.
+
+The word "hydrogen" does heavy lifting. It sounds scientific, modern, and associated with the legitimate hydrogen economy that governments and energy companies are investing billions into. It borrows credibility from an entirely unrelated technology. When a fleet manager hears "hydrogen," they think of fuel cell trucks running commercially across Europe — not an electrolysis cell drawing 168 watts from the alternator.
+
+Some sellers genuinely believe their product works. They've seen the testimonials. They've seen their own fuel card data (on an uncontrolled single-vehicle test). They don't have the thermodynamics background to spot the flaw, and when someone points it out, they have a financial and psychological investment in not hearing it. This isn't always fraud. Sometimes it's Dunning-Kruger with a soldering iron.
+
+And then there are the stories. Several HHO companies reference a wartime origin — usually a Spitfire or Hurricane engine that ran on hydrogen supplementation in an emergency, or a submarine that used electrolysis for air supply and discovered a fuel benefit. These stories are unverifiable, undocumented in any military archive, and have been recycled by successive companies for decades. They serve the same function as origin myths in any tradition: they provide narrative authority that displaces the need for evidence.
+
+## What about the patents?
+
+A common rebuttal: "If it didn't work, why are there patents?" Because patents don't test whether an invention works. A patent examiner assesses novelty, non-obviousness, and enablement (can the described invention be built as described). They do not assess efficacy or thermodynamic viability. Patents have been granted for perpetual motion machines, cold fusion reactors, and devices that claim to generate energy from the vacuum of space. The existence of a patent tells you that someone filed paperwork and paid a fee. It tells you nothing about physics.
+
+It's also worth noting that some companies in this space have engaged IP lawyers to draft patent applications but have not actually filed them. If they had a granted patent, or even a pending application, it would be front and centre in every presentation. "Patent pending" is a marketing asset. Its absence is telling.
+
+## The thermodynamic line
+
+The previous post [coming soon] showed that fuel additive chemistry hits a wall at combustion efficiency: modern engines already burn 99%+ of their fuel, leaving almost nothing for an additive to recover. On-vehicle hydrogen hits a different wall, earlier and harder: the energy chain itself is a net loss before you even ask whether the hydrogen improves combustion.
+
+These are different arguments that reach the same conclusion by different routes. The carbon balance argument says there's no unburnt fuel to recover. The energy chain argument says you can't create a net energy gain from a closed loop. Both are correct simultaneously, and an HHO system fails both tests.
+
+There is no version of this technology that works. Not with better electrolysers. Not with higher-efficiency alternators. Not with a different cell chemistry. Not at a different voltage. The architecture is the problem: using the engine's own output to produce a supplementary fuel that returns less energy than it cost to make. The first law says you can't create energy. The second law says every conversion loses some. Together, they make on-vehicle hydrogen generation a permanently closed door.
+
+If the hydrogen is produced elsewhere — at an industrial electrolyser powered by the grid or by dedicated renewables — and stored on the vehicle, that's an entirely different proposition. It has its own challenges (production economics, infrastructure gaps, efficiency penalties from compression and reconversion), but it's not thermodynamically impossible. It's just currently uneconomic. That distinction matters, and it's the subject of the [next post](/blog/hydrogen-refuelling-road-freight).
+
+---
+
+*This post is part of a series on fleet fuel economy and freight decarbonisation. Start with the [physics and economics foundations](/blog/heavy-haulage-basics). Next: [hydrogen refuelling infrastructure](/blog/hydrogen-refuelling-road-freight). Previously: fuel additive chemistry [coming soon].*
