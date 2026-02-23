@@ -13,9 +13,9 @@ import TruckVsCarTable from '@/components/blog/TruckVsCarTable';
 
 You're on the M1, doing 65, and two trucks pull out alongside each other. For the next ninety seconds you watch them drift past each other at what appears to be exactly the same speed. Your blood pressure rises. The inside lane backs up. Eventually the overtaking truck completes its pass, pulls in, and the world moves on.
 
-Every driver in the UK has experienced this. Most assume the truck driver is being inconsiderate. The actual explanation involves EU legislation from 1992, engine ECU calibration tolerances, and the economics of a 10-hour driving day. Once you understand those, the rest of the commercial freight world starts to make sense — and you start to see why most "obvious" solutions to truck emissions hit hard physical constraints that aren't going away.
+Every driver in the UK has experienced this. Most assume the truck driver is being inconsiderate. The actual explanation involves EU legislation from 1992, engine ECU calibration tolerances, and the economics of a 10-hour driving day. Once you understand those, the rest of the commercial freight world starts to make sense, and you start to see why most "obvious" solutions to truck emissions hit hard physical constraints that aren't going away.
 
-This post is the foundation. Everything else on this blog — fuel additives, hydrogen, driver telemetry, emissions accounting — assumes you have this mental model.
+This post is the foundation. Everything else on this blog (fuel additives, hydrogen, driver telemetry, emissions accounting) assumes you have this mental model.
 
 ## The numbers, side by side
 
@@ -23,15 +23,15 @@ Most people's intuitions about trucks are calibrated against cars. That calibrat
 
 <TruckVsCarTable client:visible />
 
-A fully loaded articulated truck weighs about the same as 29 family cars. It burns roughly 30 litres of diesel per hour at cruise. A fleet of 30 trucks will spend over £1.5 million on fuel this year. These numbers are the reason the industry is obsessed with marginal efficiency gains — and the reason it's such a rich target for people selling snake oil.
+A fully loaded articulated truck weighs about the same as 29 family cars. It burns roughly 30 litres of diesel per hour at cruise. A fleet of 30 trucks will spend over £1.5 million on fuel this year. These numbers are the reason the industry is obsessed with marginal efficiency gains, and the reason it's such a rich target for people selling snake oil.
 
 ## What 44 tonnes actually means
 
 The maximum gross vehicle weight for a standard six-axle articulated truck in the UK and EU is 44 tonnes. That's 44,000 kg, set by law.
 
-It breaks down roughly like this: the tractor unit (the bit with the engine and the cab) weighs around 8 tonnes. The trailer weighs around 7 tonnes. A full fuel tank adds 300–400 kg. What's left — roughly 28 to 29 tonnes — is your payload. That's the freight. That's what you're being paid to move.
+It breaks down roughly like this: the tractor unit (the bit with the engine and the cab) weighs around 8 tonnes. The trailer weighs around 7 tonnes. A full fuel tank adds 300–400 kg. What's left, roughly 28 to 29 tonnes, is your payload. That's the freight. That's what you're being paid to move.
 
-This weight budget is zero-sum. Every kilogram you add to the vehicle is a kilogram you can't carry as freight. A diesel fuel tank for 400 litres of diesel weighs roughly 350 kg (the tank itself is relatively light; diesel is 0.84 kg/L). A battery pack storing equivalent energy would weigh on the order of 16 tonnes at current lithium-ion energy densities. That's not just additional weight — it's 16 tonnes of payload that disappears. The truck would need to make two trips to move what a diesel truck does in one, which means twice the trucks on the road, twice the drivers, and twice the road wear.
+This weight budget is zero-sum. Every kilogram you add to the vehicle is a kilogram you can't carry as freight. A diesel fuel tank for 400 litres of diesel weighs roughly 350 kg (the tank itself is relatively light; diesel is 0.84 kg/L). A battery pack storing equivalent energy would weigh on the order of 16 tonnes at current lithium-ion energy densities. That's not just additional weight. It's 16 tonnes of payload that disappears. The truck would need to make two trips to move what a diesel truck does in one, which means twice the trucks on the road, twice the drivers, and twice the road wear.
 
 Hydrogen tanks are lighter than batteries but vastly larger than diesel tanks for the same range, and the high-pressure carbon fibre vessels (700 bar) are expensive. The physics of energy storage is the single biggest constraint on alternative powertrains in heavy freight, and it's worth understanding properly before evaluating any claim about "just electrifying" the fleet.
 
@@ -51,17 +51,17 @@ At a 0.5 mph differential, an overtake of a 16.5-metre truck takes roughly 90 se
 
 But run the maths over a full working day. A driver doing 56.3 instead of 55.8 covers an extra 5 miles across a 10-hour shift. For a driver paid by the mile, or on a delivery schedule measured in minutes, that overtake is rational. The 90 seconds of inconvenience to you saves them meaningful time and money over the course of a day.
 
-UK speed limits for heavy vehicles are also more complex than most car drivers realise. Articulated trucks over 7.5 tonnes: 60 mph on dual carriageways, 50 mph on single carriageways, 56 mph (limiter) on motorways. These vary by vehicle class, road type, and whether the vehicle is rigid or articulated. The lorry pulling out on the A-road at what feels like 40 mph isn't being lazy — they might be doing the legal maximum.
+UK speed limits for heavy vehicles are also more complex than most car drivers realise. Articulated trucks over 7.5 tonnes: 60 mph on dual carriageways, 50 mph on single carriageways, 56 mph (limiter) on motorways. These vary by vehicle class, road type, and whether the vehicle is rigid or articulated. The lorry pulling out on the A-road at what feels like 40 mph isn't being lazy. They might be doing the legal maximum.
 
 ## Stopping 44 tonnes
 
 The kinetic energy of a moving object scales linearly with mass but quadratically with speed. A 44-tonne truck at 56 mph carries roughly 25 times the kinetic energy of a 1.5-tonne car at the same speed. All of that energy has to be converted to heat in the brakes.
 
-A car at 60 mph stops in roughly 73 metres (thinking distance plus braking distance, from the Highway Code). A loaded articulated truck at 56 mph needs considerably more — even with modern disc brakes on the steer axle, ABS (anti-lock braking system), and EBS (electronic braking system) that coordinates braking force across all axles.
+A car at 60 mph stops in roughly 73 metres (thinking distance plus braking distance, from the Highway Code). A loaded articulated truck at 56 mph needs considerably more, even with modern disc brakes on the steer axle, ABS (anti-lock braking system), and EBS (electronic braking system) that coordinates braking force across all axles.
 
 Modern braking technology is genuinely impressive. ABS prevents wheel lock under hard braking. EBS distributes braking force proportionally, taking into account axle loading (which changes depending on cargo weight and distribution). Roll stability programs detect lateral acceleration and intervene before a rollover. Emergency braking assist systems use radar to detect obstacles and apply maximum braking if the driver doesn't react.
 
-But physics is physics. The energy has to go somewhere, and a loaded truck has a lot of it. This is why trucks leave large following gaps on the motorway. Those gaps aren't an invitation to pull into. They're the minimum distance a driver needs to stop without hitting whatever's in front. Fill that gap in a car and you've just removed the truck driver's safety margin — and your car is now the crumple zone.
+But physics is physics. The energy has to go somewhere, and a loaded truck has a lot of it. This is why trucks leave large following gaps on the motorway. Those gaps aren't an invitation to pull into. They're the minimum distance a driver needs to stop without hitting whatever's in front. Fill that gap in a car and you've just removed the truck driver's safety margin. Your car is now the crumple zone.
 
 ## Fuel consumption at scale
 
@@ -75,7 +75,7 @@ Scale it to a fleet. A 30-truck operation spends £1.5 million on diesel annuall
 
 This is why 1% matters. One percent of £1.5 million is £15,000 per year. For free. Permanently. No additional trucks, no additional drivers, no additional road wear. Just 1% less fuel burned.
 
-That economic sensitivity is exactly why the fleet fuel economy market attracts so much snake oil. A product that costs £5,000 and promises 10% savings appears to offer a £150,000 return. The pitch writes itself. The physics, as we'll see in [later posts](/blog/fuel-additive-chemistry), doesn't support it — but the *economics* make fleet managers want to believe.
+That economic sensitivity is exactly why the fleet fuel economy market attracts so much snake oil. A product that costs £5,000 and promises 10% savings appears to offer a £150,000 return. The pitch writes itself. The physics, as we'll see in [later posts](/blog/fuel-additive-chemistry), doesn't support it. But the *economics* make fleet managers want to believe.
 
 <FleetFuelCalculator client:visible />
 
@@ -93,7 +93,7 @@ Diesel sits in the top-right corner of that chart. No other commercially availab
 
 **Batteries** are the starkest contrast. A modern lithium-ion battery pack manages about 0.25 kWh/kg and 0.7 kWh/L. To store the same energy as a 400-litre diesel tank (roughly 4,000 kWh of chemical energy), you'd need a battery weighing approximately 16 tonnes. Even accounting for the diesel engine's lower thermal efficiency (40–45% of that chemical energy becomes useful work at the wheels, versus ~90% for an electric motor), you'd still need a battery several times heavier than a diesel tank and fuel for the same real-world range. Current battery electric trucks achieve 150–300 miles of range with a significant payload penalty.
 
-**Hydrogen** is a more interesting case. Gravimetrically, hydrogen is extraordinary: 33.3 kWh/kg, the highest of any fuel. But volumetrically, it's dire. Compressed to 700 bar (roughly the pressure inside a scuba tank times 20), hydrogen manages just 1.3 kWh/L — about an eighth of diesel. Liquefied at −253°C, it improves to roughly 2.4 kWh/L, but that's still a quarter of diesel's density and requires cryogenic storage that boils off continuously. The gravimetric advantage is real but the tank systems needed to exploit it are heavy, large, and expensive. The numbers close the gap considerably once you account for tank weight.
+**Hydrogen** is a more interesting case. Gravimetrically, hydrogen is extraordinary: 33.3 kWh/kg, the highest of any fuel. But volumetrically, it's dire. Compressed to 700 bar (roughly the pressure inside a scuba tank times 20), hydrogen manages just 1.3 kWh/L — about an eighth of diesel. Liquefied at −253°C, it improves to roughly 2.4 kWh/L, but that's still a quarter of diesel's density and requires cryogenic storage that boils off continuously. The gravimetric advantage is real, but the tank systems needed to exploit it are heavy, large, and expensive. The numbers close the gap considerably once you account for tank weight.
 
 This isn't going to change quickly. Battery energy density improves at roughly 5–8% per year in commercial applications (laboratory records are higher, but fleet trucks don't run on laboratory cells). At that rate, reaching diesel-equivalent energy density by mass would take decades. Solid-state batteries may accelerate the timeline, but they've been "five years away" for about fifteen years. The physics is real, and it's patient.
 
@@ -103,7 +103,7 @@ None of this is an argument for "diesel forever." It's an argument for "diesel o
 
 **Battery electric** is already excellent for urban delivery, short-haul return-to-depot routes, and any predictable duty cycle under about 150 miles. The truck returns to the same depot every night, plugs in, and charges over 8–10 hours on off-peak electricity. No range anxiety. No payload anxiety on lighter urban loads. Lower maintenance costs (fewer moving parts, regenerative braking reduces brake wear). Lower fuel cost per mile. These are not future benefits; operators are realising them now.
 
-**Hydrogen fuel cells** may eventually serve long-haul fixed corridors — think major port-to-warehouse trunk routes — where dedicated refuelling infrastructure can be built and utilised at high volume. But the infrastructure doesn't exist today, the economics don't yet work, and the efficiency losses in producing, compressing, transporting, and converting hydrogen back to electricity mean you need roughly three times more renewable energy input than a battery electric truck for the same miles driven. There's a [separate post](/blog/hydrogen-refuelling-road-freight) on why that matters.
+**Hydrogen fuel cells** may eventually serve long-haul fixed corridors (think major port-to-warehouse trunk routes) where dedicated refuelling infrastructure can be built and utilised at high volume. But the infrastructure doesn't exist today, the economics don't yet work, and the efficiency losses in producing, compressing, transporting, and converting hydrogen back to electricity mean you need roughly three times more renewable energy input than a battery electric truck for the same miles driven. There's a [separate post](/blog/hydrogen-refuelling-road-freight) on why that matters.
 
 The transition will be use-case by use-case, not a single switch. The fleet managers getting this right are matching powertrains to duty cycles: electric for the short-haul, diesel (and eventually hydrogen or other alternatives) for the long-haul, and making decisions based on total cost of ownership rather than technology fashion.
 
@@ -115,13 +115,13 @@ Rail is superb for what it does: moving bulk commodities (aggregates, intermodal
 
 The problem is last-mile. Every pallet, every parcel, and every container that arrives at a rail terminal needs a truck for the final leg to the warehouse, shop, or construction site. Rail doesn't eliminate trucks; it changes where the truck journey starts.
 
-The UK's rail freight network also doesn't go where modern logistics infrastructure is. Distribution centres are built around motorway junctions — J24 of the M1, the Golden Triangle in the East Midlands — because that's where road access is. They're not built next to rail yards, because intermodal handling (lifting a container from rail to road) adds time, cost, and complexity.
+The UK's rail freight network also doesn't go where modern logistics infrastructure is. Distribution centres are built around motorway junctions (J24 of the M1, the Golden Triangle in the East Midlands) because that's where road access is. They're not built next to rail yards, because intermodal handling (lifting a container from rail to road) adds time, cost, and complexity.
 
 Intermodal freight works for specific, high-volume, long-distance routes. It cannot replace the flexible, point-to-point, just-in-time delivery network that road freight provides. The answer is both, not either/or.
 
 ## Why trucks idle
 
-You pass a layby at 11pm and every truck's engine is running. This looks wasteful, and to some degree it is — but the reasons are practical.
+You pass a layby at 11pm and every truck's engine is running. This looks wasteful, and to some degree it is, but the reasons are practical.
 
 A driver sleeping in their cab in January needs heating. In July, they need air conditioning. The sleeper cab is their bedroom, their living room, and their office for hours at a time. An idling truck engine provides climate control and electrical power for that space.
 
@@ -135,12 +135,12 @@ One thing worth noting: what sounds like an idling truck at a rest stop may actu
 
 ## Where this leads
 
-Trucks are heavy, slow, and burn a lot of fuel because the physics and economics of moving 44 tonnes of freight demand it. Most "obvious" solutions — just electrify them, just put it on rail, just use hydrogen — hit hard physical or infrastructure constraints when you run the numbers.
+Trucks are heavy, slow, and burn a lot of fuel because the physics and economics of moving 44 tonnes of freight demand it. Most "obvious" solutions (just electrify them, just put it on rail, just use hydrogen) hit hard physical or infrastructure constraints when you run the numbers.
 
 The improvements that actually work are incremental and they compound: aerodynamic fairings that shave 3–5%. Automated transmissions that cap the fuel penalty of a bad driver. Predictive cruise control that reads the terrain three miles ahead. Driver training that closes the 15–20% gap between the best and worst operators in a fleet. And fuel substitution, where the duty cycle allows it.
 
-Understanding these basics — the weight budget, the speed constraints, the energy density problem, the economics of 1% — is the foundation for evaluating any claim about truck fuel economy or emissions. Which is what the rest of this blog is about.
+Understanding these basics (the weight budget, the speed constraints, the energy density problem, the economics of 1%) is the foundation for evaluating any claim about truck fuel economy or emissions. Which is what the rest of this blog is about.
 
 ---
 
-*Next: [Thermodynamics Doesn't Care About Your Fuel Additive](/blog/fuel-additive-chemistry) — the six most common additive chemistries sold to commercial fleets, what they actually do at a molecular level, and why none of them deliver the savings claimed on the bottle.*
+*Next: [Thermodynamics Doesn't Care About Your Fuel Additive](/blog/fuel-additive-chemistry). The six most common additive chemistries sold to commercial fleets, what they actually do at a molecular level, and why none of them deliver the savings claimed on the bottle.*
