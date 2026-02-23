@@ -6,7 +6,6 @@ tags: ["Transport", "Hydrogen", "Physics"]
 draft: false
 ---
 
-import AddingVsRecycling from '@/components/blog/AddingVsRecycling';
 import HHOEnergyChain from '@/components/blog/HHOEnergyChain';
 import HHOCalculator from '@/components/blog/HHOCalculator';
 import WhatIfItWorked from '@/components/blog/WhatIfItWorked';
@@ -17,15 +16,15 @@ The problem is equally simple, but it requires tracing the energy through a loop
 
 This isn't an engineering challenge waiting for a breakthrough. It's a thermodynamic impossibility. The maths is straightforward and the conclusion is unambiguous. Let's work through it.
 
-## Adding energy vs recycling energy
+**A note on conflict of interest.** I work in diesel-LPG dual fuel. That's a technology I'll reference briefly below as a point of contrast, and I have a commercial interest in it. The purpose of this post isn't to sell dual fuel — it's to explain why on-vehicle hydrogen generation doesn't work, using physics that anyone can verify independently. I'm being upfront about the conflict so you can weigh the comparison accordingly.
 
-Before getting into the numbers, it's worth understanding why this is fundamentally different from technologies that do work.
+## Why this isn't the same as adding a second fuel
 
-A diesel-LPG dual-fuel system injects liquefied petroleum gas alongside diesel. LPG is an external fuel with its own chemical energy content — about 46 MJ/kg. The system takes 100 units of energy from diesel and adds 20 more from LPG. Total energy input goes up. If LPG is cheaper than diesel per unit of energy, you save money. The physics works because you're adding energy from a second source.
+Before getting into the numbers, it's worth understanding why on-vehicle hydrogen generation is fundamentally different from technologies that do work.
+
+A dual-fuel system — diesel-LPG, diesel-CNG, or similar — injects a second fuel alongside diesel. That second fuel has its own chemical energy content. LPG, for example, carries about 46 MJ/kg. The system takes energy from diesel and adds more from an external source. Total energy input goes up. If the second fuel is cheaper than diesel per unit of energy, you save money. The physics works because new energy is entering the system from outside.
 
 An on-vehicle hydrogen generator doesn't add energy from anywhere. The electricity comes from the alternator, driven by the crankshaft, powered by the engine, burning diesel. The hydrogen's energy was diesel energy three conversion steps ago. You're not supplementing the fuel supply. You're recycling a fraction of the engine's own output through a series of lossy conversions and putting a tiny trickle back in. The total energy input can only go down.
-
-<AddingVsRecycling client:visible />
 
 This distinction matters because HHO sellers sometimes position their products alongside legitimate dual-fuel or alternative powertrain technologies, borrowing credibility from an entirely different category. When a fleet manager hears "hydrogen," they think of the Hyundai XCIENT fuel cell trucks running commercially across Europe. Not an electrolysis cell zip-tied to the chassis rail.
 
