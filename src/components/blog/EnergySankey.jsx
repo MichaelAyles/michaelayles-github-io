@@ -205,7 +205,7 @@ export default function EnergySankey() {
           <SankeyPathway steps={bevSteps} yCenter={bevY} lossDir={-1} color={COLORS.green}
             animPhase={animPhase} svgWidth={W - 105} nodeW={NW} />
           <SankeyPathway steps={h2Steps} yCenter={h2Y} lossDir={1} color={COLORS.purple}
-            animPhase={animPhase} svgWidth={W - 22} nodeW={NW} />
+            animPhase={animPhase} svgWidth={W - 112} nodeW={NW} />
 
           {animPhase > 4.5 && (
             <g style={{ opacity: Math.min(1, (animPhase - 4.5) * 1.5) }}>
