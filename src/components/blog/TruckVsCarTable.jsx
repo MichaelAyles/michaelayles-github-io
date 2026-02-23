@@ -1,21 +1,17 @@
 import { useState } from "react";
 
 const COLORS = {
-  bg: "#0a0a0a",
-  surface: "#141414",
-  border: "#262626",
-  text: "#e5e5e5",
-  textMuted: "#737373",
-  textDim: "#525252",
+  bg: "var(--background)",
+  surface: "var(--surface)",
+  border: "var(--border)",
+  text: "var(--text-primary)",
+  textMuted: "var(--text-secondary)",
+  textDim: "var(--text-dim)",
   accent: "#f97316",
-  green: "#22c55e",
-  red: "#ef4444",
-  blue: "#3b82f6",
-  yellow: "#eab308",
 };
 
 const mono = "'JetBrains Mono', 'Fira Code', 'SF Mono', monospace";
-const sans = "'DM Sans', 'Helvetica Neue', sans-serif";
+const sans = "'Inter', sans-serif";
 
 const rows = [
   { label: "Gross weight", car: "1,500 kg", truck: "44,000 kg", note: "29× heavier", highlight: true },
