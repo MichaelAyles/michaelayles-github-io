@@ -60,6 +60,9 @@ const recentPosts = sorted.slice(0, 8);
           </a>
         ))}
       </div>
+      <div class="view-all">
+        <a href="/blog/" class="view-all-link">View all posts &rarr;</a>
+      </div>
     </section>
 
     <Footer />
@@ -238,6 +241,22 @@ const recentPosts = sorted.slice(0, 8);
     border: 1px solid var(--border);
     border-radius: 3px;
     color: var(--text-secondary);
+  }
+
+  .view-all {
+    text-align: right;
+    margin-top: 1.5rem;
+  }
+
+  .view-all-link {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .view-all-link:hover {
+    color: var(--text-primary);
   }
 
   @media (max-width: 700px) {
