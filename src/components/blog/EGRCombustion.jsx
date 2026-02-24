@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ComposedChart, Line, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ReferenceLine } from "recharts";
 
 const COLORS = {
@@ -50,112 +50,20 @@ export default function EGRCombustion() {
     return data;
   }, []);
 
-  const canvasRef = useRef(null);
-  const particlesRef = useRef([]);
-  const animFrameRef = useRef(null);
-  const PARTICLE_R = 2;
-  const PARTICLE_N = 500;
-
-  // Initialise canvas particle system
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    const r = PARTICLE_R;
-
-    const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
-      const rect = canvas.parentElement.getBoundingClientRect();
-      canvas.width = rect.width * dpr;
-      canvas.height = 150 * dpr;
-      canvas.style.width = rect.width + "px";
-      canvas.style.height = "150px";
-    };
-    resize();
-
-    const w = parseFloat(canvas.style.width) || 300;
-    const h = 150;
+  const gasParticles = useMemo(() => {
     const particles = [];
-    for (let i = 0; i < PARTICLE_N; i++) {
-      const speed = 0.2 + Math.random() * 0.3;
-      const angle = Math.random() * Math.PI * 2;
-      particles.push({
-        x: r + Math.random() * (w - 2 * r),
-        y: r + Math.random() * (h - 2 * r),
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        type: "n2",
-      });
-    }
-    particlesRef.current = particles;
-
-    const animate = () => {
-      const dpr = window.devicePixelRatio || 1;
-      const cw = canvas.width / dpr;
-      const ch = canvas.height / dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, cw, ch);
-
-      for (const p of particlesRef.current) {
-        // Brownian nudge
-        p.vx += (Math.random() - 0.5) * 0.04;
-        p.vy += (Math.random() - 0.5) * 0.04;
-        const sp = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-        if (sp > 0.7) { p.vx *= 0.7 / sp; p.vy *= 0.7 / sp; }
-
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < r) { p.x = r; p.vx = Math.abs(p.vx); }
-        if (p.x > cw - r) { p.x = cw - r; p.vx = -Math.abs(p.vx); }
-        if (p.y < r) { p.y = r; p.vy = Math.abs(p.vy); }
-        if (p.y > ch - r) { p.y = ch - r; p.vy = -Math.abs(p.vy); }
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
-
-        if (p.type === "co2") {
-          ctx.shadowColor = "rgba(168,85,247,0.4)";
-          ctx.shadowBlur = 6;
-          ctx.fillStyle = "rgba(168,85,247,0.9)";
-        } else if (p.type === "o2") {
-          ctx.fillStyle = "rgba(59,130,246,0.85)";
-        } else {
-          ctx.fillStyle = "rgba(128,128,128,0.2)";
-        }
-        ctx.fill();
-        ctx.shadowColor = "transparent";
-        ctx.shadowBlur = 0;
-      }
-      animFrameRef.current = requestAnimationFrame(animate);
-    };
-    animFrameRef.current = requestAnimationFrame(animate);
-
-    const ro = new ResizeObserver(resize);
-    ro.observe(canvas.parentElement);
-    return () => {
-      cancelAnimationFrame(animFrameRef.current);
-      ro.disconnect();
-    };
-  }, []);
-
-  // Reassign particle types when gas composition changes
-  useEffect(() => {
-    const particles = particlesRef.current;
-    if (!particles.length) return;
-    const total = particles.length;
+    const total = 80;
     const o2Count = Math.round((intakeO2 / 100) * total);
-    const co2Count = egrRate > 0 ? Math.max(1, Math.round((intakeCO2 / 100) * total)) : 0;
+    const co2Count = Math.round((intakeCO2 / 100) * total);
     const n2Count = total - o2Count - co2Count;
-    const types = [];
-    for (let i = 0; i < n2Count; i++) types.push("n2");
-    for (let i = 0; i < o2Count; i++) types.push("o2");
-    for (let i = 0; i < co2Count; i++) types.push("co2");
-    for (let i = types.length - 1; i > 0; i--) {
+    for (let i = 0; i < n2Count; i++) particles.push({ type: "n2" });
+    for (let i = 0; i < o2Count; i++) particles.push({ type: "o2" });
+    for (let i = 0; i < co2Count; i++) particles.push({ type: "co2" });
+    for (let i = particles.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [types[i], types[j]] = [types[j], types[i]];
+      [particles[i], particles[j]] = [particles[j], particles[i]];
     }
-    particles.forEach((p, i) => { p.type = types[i] || "n2"; });
+    return particles;
   }, [egrRate]);
 
   const tempColor = peakTemp > 2000 ? COLORS.red : peakTemp > 1800 ? COLORS.accent : peakTemp > 1600 ? "#eab308" : COLORS.blue;
@@ -188,7 +96,17 @@ export default function EGRCombustion() {
             Cylinder charge composition
           </span>
           <div style={{ marginTop: 8, background: COLORS.bg, borderRadius: 8, padding: 12, border: `1px solid ${COLORS.border}` }}>
-            <canvas ref={canvasRef} style={{ display: "block", width: "100%", height: 150, borderRadius: 4, marginBottom: 12 }} />
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(10, 1fr)", gap: 3, marginBottom: 12 }}>
+              {gasParticles.map((p, i) => (
+                <div key={i} style={{
+                  aspectRatio: "1", borderRadius: "50%",
+                  background: p.type === "o2" ? COLORS.blue : p.type === "co2" ? COLORS.purple : "rgba(128,128,128,0.25)",
+                  opacity: p.type === "n2" ? 0.3 : 0.9,
+                  transition: "all 0.5s ease",
+                  boxShadow: p.type === "co2" ? `0 0 4px ${COLORS.purple}66` : "none",
+                }} />
+              ))}
+            </div>
 
             <div style={{ display: "flex", gap: 4, height: 24, borderRadius: 4, overflow: "hidden", marginBottom: 8 }}>
               <div style={{ width: `${intakeN2}%`, background: "rgba(128,128,128,0.2)", transition: "width 0.3s", display: "flex", alignItems: "center", justifyContent: "center" }}>
