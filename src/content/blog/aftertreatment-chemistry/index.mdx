@@ -1,0 +1,292 @@
+---
+title: "Every Euro VI Truck Has a Chemical Plant Bolted Underneath"
+description: "Four catalysts, three chemical reactions, a 600-degree soot incinerator, and 44 sensors. The chemistry and thermodynamics of modern diesel aftertreatment, explained at the molecular level."
+date: 2026-02-24
+tags: ["Transport", "Chemistry", "Engineering"]
+draft: false
+---
+
+import AftertreatmentFlow from '@/components/blog/AftertreatmentFlow';
+import EGRCombustion from '@/components/blog/EGRCombustion';
+import NOxPMTradeoff from '@/components/blog/NOxPMTradeoff';
+import AftertreatmentToggle from '@/components/blog/AftertreatmentToggle';
+import SCREfficiency from '@/components/blog/SCREfficiency';
+import DPFRegenSim from '@/components/blog/DPFRegenSim';
+import DeleteCalculator from '@/components/blog/DeleteCalculator';
+import EGTOperatingMap from '@/components/blog/EGTOperatingMap';
+
+Next time you're on the M1 behind a truck, look at the space between the cab and the rear axles. That stainless steel box, roughly the size of a chest freezer, is not a silencer. Or rather, it's not just a silencer. It contains four catalysts, a ceramic particle filter with channels finer than a human hair, a chemical injection system, and up to 44 sensors monitoring temperature, pressure, and gas composition in real time.
+
+It's a chemical plant. It runs at temperatures between 200°C and 650°C. It processes four simultaneous chemical reactions. And it converts the raw exhaust of a diesel engine — which contains nitrogen oxides, carbon monoxide, unburnt hydrocarbons, and soot — into nitrogen, water vapour, and CO2.
+
+This post walks through each component, the chemistry it performs, the temperatures it needs, and why the whole system is more impressive (and more fragile) than most people realise.
+
+<AftertreatmentFlow client:visible />
+
+## What comes out of a diesel engine
+
+Raw diesel exhaust is roughly:
+
+- **Nitrogen (N2):** ~67–75%. Atmospheric nitrogen that passed through without reacting. Harmless.
+- **Carbon dioxide (CO2):** ~12–15%. The intended product of complete combustion. A greenhouse gas, but not a regulated pollutant in this context.
+- **Water vapour (H2O):** ~10–12%. The other intended product of complete combustion.
+- **Oxygen (O2):** ~2–10%. Diesel runs lean (excess air). This leftover oxygen matters for the aftertreatment chemistry.
+- **Nitrogen oxides (NOx):** ~200–1,500 ppm. Formed when nitrogen and oxygen react at combustion temperatures above roughly 1,600°C. The hotter the combustion, the more NOx. This is the hardest pollutant to deal with.
+- **Carbon monoxide (CO):** ~100–1,000 ppm. Incomplete combustion product. Toxic.
+- **Unburnt hydrocarbons (HC):** ~50–500 ppm. Fuel that didn't fully burn. Contributes to smog.
+- **Particulate matter (PM/soot):** Tiny carbon particles with adsorbed hydrocarbons. The visible "black smoke" from older diesels. Carcinogenic.
+
+The regulated pollutants — NOx, CO, HC, and PM — make up less than 1% of total exhaust volume. The aftertreatment system's job is to remove that fraction of a percent.
+
+At Euro VI, the limits depend on which laboratory test cycle you're talking about. The WHSC (World Harmonized Stationary Cycle) steady-state limits are: 0.4 g/kWh NOx, 1.5 g/kWh CO, 0.13 g/kWh HC, 0.01 g/kWh PM. The WHTC (World Harmonized Transient Cycle) limits are slightly more relaxed: 0.46 g/kWh NOx, 4.0 g/kWh CO, 0.16 g/kWh HC, 0.01 g/kWh PM. The transient cycle allows higher CO and HC because rapid load changes make aftertreatment temperature management harder.
+
+Both are laboratory engine dynamometer tests, not real-world driving. This matters: the system is optimised to pass these specific cycles. Real urban operation, with its low speeds, frequent stops, and cold catalysts, can push the aftertreatment well outside the conditions these cycles represent. Euro VI Step E added ISC (In-Service Conformity) testing with PEMS (Portable Emissions Measurement Systems) on the road, with a conformity factor allowing some margin above the lab limits. Euro 7 tightens this further by making the real-world limits the binding constraint.
+
+Getting from raw engine-out to these numbers requires everything that follows.
+
+## EGR: the in-cylinder strategy
+
+Before exhaust gas even reaches the aftertreatment box, the first NOx reduction happens inside the engine itself.
+
+**What it does:** Takes a portion of exhaust gas (typically 10–30% at relevant operating points) and feeds it back into the intake manifold, mixed with fresh air.
+
+**Why it works:** NOx formation follows the Zeldovich mechanism. The key reactions are:
+
+- N2 + O → NO + N
+- N + O2 → NO + O
+- N + OH → NO + H
+
+These reactions are extremely temperature-sensitive. The rate of NOx formation roughly doubles for every 90°C increase in peak combustion temperature above 1,800°C. This is an exponential sensitivity, not linear.
+
+EGR reduces NOx through three mechanisms:
+
+1. **Dilution effect:** Replacing O2 with CO2 and H2O reduces the oxygen available for combustion, lowering peak flame temperature.
+2. **Thermal effect:** CO2 and H2O have higher specific heat capacities than N2 and O2. They absorb more heat per degree of temperature rise, suppressing peak temperatures.
+3. **Chemical effect:** The dissociation of CO2 and H2O at high temperatures is endothermic. They absorb energy that would otherwise drive NOx formation.
+
+Of these three, the thermal and dilution effects dominate. At 25% EGR rate, peak combustion temperatures can drop by 200–300°C, cutting NOx formation by 50–70%.
+
+<EGRCombustion client:visible />
+
+### The tradeoff
+
+Lower combustion temperatures mean less NOx. But they also mean less complete soot oxidation (more PM), slightly higher CO and HC, and reduced thermal efficiency. This is the fundamental NOx/PM tradeoff. In the pre-aftertreatment era (Euro I–III), engine calibrators had to walk a tightrope between these two. With aftertreatment, the engine can run higher EGR rates (accepting more soot) because the DPF catches it, and lower raw NOx because the SCR cleans up whatever NOx remains.
+
+<NOxPMTradeoff client:visible />
+
+**Cooled vs uncooled EGR:** Most Euro VI trucks use cooled EGR, passing the recirculated gas through a heat exchanger before it enters the intake. Cooling the EGR gas increases its density and further lowers combustion temperature. The downside: EGR coolers foul with soot over time and are a common maintenance item.
+
+**The Euro VI shift:** Some manufacturers (notably Scania and Iveco) went SCR-only for Euro VI, eliminating EGR entirely. Others (Volvo, DAF, Mercedes) use EGR primarily at low loads where exhaust temperatures are too low for effective SCR, and bypass it at highway cruise where SCR efficiency is high. The trend is towards less EGR and more reliance on ever-better SCR systems.
+
+## The DOC: first in line
+
+The DOC is always the first catalyst in the aftertreatment chain, positioned closest to the engine where exhaust gas is hottest.
+
+**What it is:** A ceramic or metallic honeycomb substrate coated with platinum group metals (platinum and palladium). Thousands of parallel channels, each roughly 1mm square, coated with a washcoat of alumina containing the precious metals.
+
+**What it does:** Three oxidation reactions, all exothermic:
+
+1. **CO oxidation:** 2CO + O2 → 2CO2. Carbon monoxide to carbon dioxide. Simple, fast. Light-off temperature (50% conversion): roughly 170–200°C.
+2. **HC oxidation:** CxHy + (x + y/4)O2 → xCO2 + (y/2)H2O. Unburnt hydrocarbons to CO2 and water. Light-off: roughly 200–250°C depending on HC species.
+3. **NO to NO2 oxidation:** 2NO + O2 → 2NO2. This is the DOC's secret weapon. It doesn't reduce total NOx. It converts NO (the dominant form, ~90% of engine-out NOx) to NO2. This matters enormously for two downstream systems: the DPF uses NO2 for passive soot regeneration at lower temperatures, and the SCR uses NO2 for the "fast SCR" reaction with much higher conversion rates at low temperatures.
+
+Typical DOC performance at operating temperature: &gt;95% CO conversion, &gt;90% HC conversion, NO2:NOx ratio increased from ~10% engine-out to ~40–50% DOC-out.
+
+**The heat generation role:** The DOC also serves as a heater. During active DPF regeneration, extra diesel is injected (either via a late in-cylinder post-injection or a dedicated "7th injector" upstream of the DOC). The DOC oxidises this diesel, generating an exothermic reaction that raises exhaust gas temperature by 200–300°C. This hot gas then flows into the DPF to burn off accumulated soot.
+
+**Light-off and the cold start problem:** Below roughly 170°C, the DOC is essentially inactive. No CO conversion, no HC conversion, no NO-to-NO2 conversion. This means cold starts produce elevated CO and HC, the DPF gets no NO2 for passive regeneration, and the SCR gets unfavourable NO:NO2 ratios. This cold-start challenge is the single biggest driver of Euro 7 aftertreatment architecture changes, including close-coupled SCR catalysts mounted right at the turbo outlet where they reach temperature fastest.
+
+## The DPF: the soot trap
+
+**What it is:** A wall-flow ceramic monolith, typically silicon carbide (SiC) or cordierite. Imagine a honeycomb with alternating channels plugged at opposite ends. Exhaust gas enters an open channel, is forced through the porous ceramic wall into the adjacent channel, and exits. The soot particles, typically 10–100 nanometres, are too large to pass through the wall pores and are trapped on the surface and within the pore structure.
+
+Filtration efficiency: &gt;99% of particle mass, &gt;97% of particle number (down to 23nm, moving to 10nm for Euro 7).
+
+<DPFRegenSim client:visible />
+
+### The regeneration problem
+
+As soot accumulates, exhaust backpressure rises. The engine has to work harder to push exhaust gas through the increasingly clogged filter. This costs fuel and eventually, if unchecked, damages the engine. The soot must be burned off periodically.
+
+**Passive regeneration (the preferred mode):** When exhaust temperatures are high enough and NO2 is present (thanks to the DOC), soot oxidises continuously:
+
+- C + 2NO2 → CO2 + 2NO (at 250–400°C, NO2-assisted)
+- C + O2 → CO2 (at &gt;550°C, thermal oxidation)
+
+The NO2-assisted pathway is the clever one. It happens at much lower temperatures than direct thermal oxidation. This is why the DOC's NO-to-NO2 conversion is so important: it provides the oxidant that keeps the DPF cleaning itself during normal highway driving.
+
+**Active regeneration (the fallback):** In city driving, stop-start traffic, or extended idle, exhaust temperatures stay below 250°C. No passive regeneration occurs. Soot loading climbs. When the differential pressure sensor across the DPF detects a threshold soot load, the ECU triggers active regeneration:
+
+1. Late post-injection of diesel or activation of the 7th injector
+2. DOC oxidises the hydrocarbon, generating a large exotherm
+3. Exhaust temperature entering the DPF rises to 550–620°C
+4. Soot undergoes thermal oxidation: C + O2 → CO2
+5. Process runs for 15–30 minutes
+6. Fuel penalty: roughly 1–3% of fuel consumed during that period
+
+**What happens when it goes wrong:** Frequent short trips interrupt active regen before completion. Soot loading never fully clears. Repeated failed regens push soot loading into the critical zone. The ECU restricts engine power (limp mode) and flags a warning. If ignored: uncontrolled regeneration can occur, where accumulated soot ignites and temperatures exceed 1,000°C, potentially cracking the DPF substrate or damaging the SCR catalyst downstream. Ash from engine oil additives accumulates permanently. DPFs need periodic physical cleaning (typically every 200,000–400,000 miles in trucks) to remove ash.
+
+**Why low-SAPS oil matters:** SAPS = Sulphated Ash, Phosphorus, Sulphur. These oil additives form non-combustible ash in the DPF. Low-SAPS oils (CK-4 / E6 / E9 specification) reduce ash accumulation and extend DPF cleaning intervals. Using the wrong oil spec in a DPF-equipped engine is an expensive mistake.
+
+## AdBlue injection
+
+Between the DPF and the SCR catalyst sits the AdBlue injection system. This is where urea becomes ammonia.
+
+**What AdBlue is:** A 32.5% aqueous solution of automotive-grade urea ((NH2)2CO) in demineralised water. The 32.5% concentration isn't arbitrary: it's the eutectic point, meaning it has the lowest possible freezing point for a urea-water solution, at -11°C. This matters because trucks operate in winter.
+
+**The decomposition sequence:**
+
+1. **Water evaporation:** The water flash-evaporates in the hot exhaust stream. This requires the exhaust to be above ~180–200°C, otherwise the water doesn't fully evaporate and liquid urea can pool and crystallise.
+2. **Urea thermolysis:** (NH2)2CO → NH3 + HNCO. The urea decomposes thermally into ammonia and isocyanic acid. Endothermic, requires temperatures above ~150–160°C.
+3. **HNCO hydrolysis:** HNCO + H2O → NH3 + CO2. The isocyanic acid reacts with water vapour to produce a second molecule of ammonia and CO2. Catalysed by the SCR catalyst itself.
+
+Net reaction: (NH2)2CO + H2O → 2NH3 + CO2. One molecule of urea produces two molecules of ammonia.
+
+**Why injection quality matters:** The AdBlue must be atomised into fine droplets (typically &lt;100 microns) and mixed thoroughly with the exhaust gas before reaching the SCR catalyst. Poor atomisation or insufficient mixing length leads to urea crystallisation (solid deposits that restrict flow) and uneven NH3 distribution across the catalyst face.
+
+Euro VI trucks use airless (electrically pressurised) injection at 5–9 bar, replacing the compressed-air-assisted injection of Euro IV/V systems. This gives finer atomisation, more precise dosing, and eliminates the need for an air supply connection.
+
+**AdBlue consumption:** Typically 3–5% of diesel consumption by volume. A truck burning 30 litres/hour of diesel consumes roughly 1–1.5 litres/hour of AdBlue. Tanks are typically 30–90 litres, giving 1,000–2,000 mile range between fills.
+
+## The SCR catalyst: the NOx killer
+
+This is where the main event happens. The SCR catalyst converts nitrogen oxides into harmless nitrogen gas and water.
+
+**What it is:** A ceramic honeycomb substrate coated with either:
+
+- **Vanadium-based (V2O5/WO3/TiO2):** The original automotive SCR catalyst. Good mid-temperature performance. Cannot withstand DPF regen temps, so must be placed after the DPF. Less commonly used in modern Euro VI trucks.
+- **Copper-zeolite (Cu-SSZ-13 or Cu-SAPO-34):** The current standard for Euro VI. Excellent low-temperature activity, thermally stable to &gt;800°C, works well with the DPF upstream.
+- **Iron-zeolite (Fe-BEA or Fe-ZSM-5):** Good high-temperature performance but weaker at low temperatures. Sometimes used in combination with Cu-zeolite.
+
+**The three SCR reactions:**
+
+1. **Standard SCR:** 4NH3 + 4NO + O2 → 4N2 + 6H2O. The workhorse reaction. Works across a wide temperature range but relatively slowly at low temperatures. Dominant when NO2:NOx ratio is low.
+2. **Fast SCR:** 4NH3 + 2NO + 2NO2 → 4N2 + 6H2O. Up to 10x faster than standard SCR at temperatures below 300°C. Requires an equimolar (1:1) mixture of NO and NO2. This is why the DOC's NO-to-NO2 conversion is so critical.
+3. **Slow SCR:** 8NH3 + 6NO2 → 7N2 + 12H2O. Occurs when NO2 dominates. Called "slow" because it is. Also produces N2O (nitrous oxide) as a side product at certain temperatures, which is a potent greenhouse gas. Generally undesirable.
+
+<SCREfficiency client:visible />
+
+The optimal NO2:NOx ratio at the SCR inlet is approximately 0.5 (equal parts NO and NO2), maximising the fast SCR pathway. The DOC aims for this target.
+
+**Temperature dependence:** At 200°C: ~50–60% conversion. At 250°C: ~80–85% conversion (fast SCR kicking in). At 300–450°C: &gt;95% conversion (optimal window). Above 450°C: efficiency can drop slightly as ammonia starts to oxidise rather than reduce NOx.
+
+**Ammonia storage:** The SCR catalyst acts as a molecular sponge, adsorbing ammonia onto its surface. This "stored" ammonia provides a buffer: even if AdBlue dosing is temporarily interrupted, the stored ammonia continues to reduce NOx for a few seconds. The ECU manages the ammonia storage level, targeting enough buffer for transient response without risking ammonia slip.
+
+## The ammonia slip catalyst
+
+The last component in the chain. A thin oxidation catalyst (often platinum-based) downstream of the SCR.
+
+**What it does:** Oxidises any ammonia that passes through the SCR unreacted: 4NH3 + 3O2 → 2N2 + 6H2O. Ammonia is toxic and irritant. Euro VI sets an ammonia limit of 10 ppm average.
+
+**The control dilemma:** Dosing more AdBlue improves NOx conversion but risks ammonia slip. Dosing less prevents slip but allows more NOx through. The ECU walks this line continuously, using engine-out NOx estimate, SCR inlet temperature, ammonia storage model, tailpipe NOx sensor feedback, and the ammonia cross-sensitivity of the NOx sensor.
+
+Euro VI SCR systems target &gt;95% NOx conversion while keeping NH3 slip below 10 ppm. Achieving both simultaneously, across the full temperature and load range, with a catalyst that degrades over time, is a remarkable engineering achievement.
+
+<AftertreatmentToggle client:visible />
+
+## The temperature problem
+
+Everything in the aftertreatment system is temperature-dependent. Every catalyst has a "light-off" temperature below which it does essentially nothing, and a maximum temperature above which it is damaged.
+
+| Component | Min effective temp | Optimal range | Max safe temp |
+|---|---|---|---|
+| DOC | ~170°C | 250–500°C | 750°C |
+| DPF (passive regen) | ~250°C (with NO2) | 350–450°C | 650°C continuous |
+| DPF (active regen) | ~550°C | 550–620°C | 800°C (substrate limit) |
+| SCR (Cu-zeolite) | ~180°C | 250–450°C | ~800°C |
+| ASC | ~200°C | 250–500°C | 700°C |
+
+<EGTOperatingMap client:visible />
+
+**The cold start challenge:** From a cold start, the aftertreatment system is essentially offline. The DOC takes 2–5 minutes to reach light-off. The SCR, further downstream and with greater thermal mass, can take 10–15 minutes at urban driving loads. During this window, CO and HC are elevated, NOx conversion is poor, the DPF gets no NO2 for passive regen, and AdBlue injection is suspended to avoid crystallisation.
+
+This is why Euro 7 proposals are driving close-coupled SCR placement (mounting an SCR catalyst immediately after the turbo, where exhaust is hottest). Pre-heating strategies (electric heaters, burner-based heaters) are also being evaluated.
+
+**The urban duty cycle problem:** A truck doing city deliveries may never reach optimal aftertreatment temperatures during an entire shift. This means poor NOx conversion, soot accumulation without passive regen, frequent active regens (fuel penalty and system stress), and potential for urea crystallisation. This is a design challenge, not a flaw. The system was optimised for the type-approval test cycle, which includes highway driving. Real urban operation pushes it outside its comfort zone.
+
+**Thermal management strategies:** Modern ECUs actively manage exhaust temperature:
+
+- **Intake throttling:** Restricting airflow raises exhaust temperature at the cost of efficiency.
+- **Post-injection:** Small fuel injections late in the combustion cycle add heat to the exhaust.
+- **VGT manipulation:** Variable geometry turbochargers can be partially closed to increase exhaust backpressure and temperature.
+- **Cylinder deactivation:** Some next-generation engines deactivate cylinders to increase the load on the remaining cylinders.
+
+Each of these costs fuel. Thermal management for aftertreatment can add 1–3% to fuel consumption in urban operation.
+
+## The sensor network
+
+A Euro VI truck aftertreatment system typically includes:
+
+- **Temperature sensors:** 4–6 (pre-DOC, post-DOC, pre-DPF, post-DPF, pre-SCR, post-SCR)
+- **Pressure sensors:** 2–3 (differential pressure across DPF, exhaust backpressure, AdBlue line pressure)
+- **NOx sensors:** 2 (engine-out, tailpipe)
+- **Particulate matter sensor:** 1 (post-DPF, for DPF integrity monitoring)
+- **Lambda/O2 sensors:** 1–2
+- **AdBlue quality sensor:** 1 (measures urea concentration and temperature)
+- **AdBlue level sensor:** 1
+- **Assorted control sensors:** AdBlue pump pressure, dosing valve position, EGR valve position, VGT position
+
+DAF's Euro VI system was reported to use 44 sensors. These feed a control system that runs closed-loop on NOx, soot loading, ammonia storage, and temperature management simultaneously.
+
+When a sensor fails or reads implausibly, the OBD (On-Board Diagnostics) system detects it. If the system can't verify that emissions are within limits, it first warns the driver, then progressively derates the engine, and ultimately can force a standstill after a defined number of operating hours or miles. This is by regulatory design: the vehicle must not be operable with non-functional emissions control.
+
+## Why people tamper
+
+The aftertreatment system adds cost, complexity, weight, and maintenance burden:
+
+- System cost: roughly £5,000–10,000 as a percentage of a £100,000+ truck
+- DPF cleaning: £300–500 every 200,000–400,000 miles
+- AdBlue consumption: £1,000–2,000 per year
+- Sensor failures: £200–800 per sensor, and there are dozens
+- Downtime for regen or fault diagnosis: variable, but real
+
+This motivates some owners to "delete" the system: remove the DPF, disable the SCR, remap the ECU to eliminate derates.
+
+**What actually happens when you delete:**
+
+- **DPF delete:** Soot particles go straight to atmosphere. A single deleted vehicle emits 10–20x more PM than a compliant one.
+- **SCR/AdBlue delete:** NOx goes straight to atmosphere. The ECU is remapped to stop dosing AdBlue and suppress fault codes.
+- **EGR delete:** Often done in conjunction. Blanking the EGR valve. This actually improves combustion efficiency and reduces soot, but dramatically increases NOx.
+
+**The legal position:**
+
+- **UK:** Illegal under Road Vehicles (Construction and Use) Regulations. Fines up to £1,000 for cars, £2,500 for vans/trucks. Automatic MOT failure. Insurance void if undeclared.
+- **EU:** Type approval violation. Vehicle is technically not road-legal.
+- **US:** Clean Air Act violation. Fines up to $45,268 per engine. The EPA has fined shops hundreds of thousands of dollars.
+
+<DeleteCalculator client:visible />
+
+**The engineering case against deletion:** Modern engines are calibrated as a system. The engine map, turbo strategy, injection timing, EGR rate, and aftertreatment are all co-optimised. Removing the DPF and EGR changes exhaust backpressure, EGTs, and combustion dynamics in ways the remaining calibration doesn't expect. Without EGR, peak combustion temperatures rise and thermal stress on pistons, valves, and turbos increases. Without the DPF backpressure, the turbo operates at a different point on its compressor map. The performance gains claimed by delete advocates are largely illusory on modern engines. The aftertreatment is baked into the engineering.
+
+## Euro 7 and what's coming
+
+The final Euro 7 limits for heavy-duty (WHTC), coming into force around 2028:
+
+- NOx (hot): 200 mg/kWh (down from Euro VI's 460)
+- NOx (cold): 260 mg/kWh (a new cold-start sub-limit)
+- Particle number: PN10 (extending the count down to 10nm from 23nm)
+- Limits on N2O and formaldehyde emissions (first time either has been regulated for road vehicles)
+- On-board monitoring and reporting of real-world emissions over the vehicle's lifetime
+- Durability requirements of 700,000 km (up from 500,000)
+
+The cold-start NOx sub-limit is the most consequential change for aftertreatment design. Euro VI had no separate cold-start limit, which meant manufacturers could effectively ignore the first few minutes of operation. Euro 7 closes that loophole.
+
+The technology response:
+
+- Close-coupled SCR mounted right at the turbo outlet for fastest warm-up
+- Electrically heated catalysts, pre-heating the SCR before the engine starts
+- Dual-brick SCR (close-coupled + underfloor) for temperature coverage at both extremes
+- Improved DPF coating technology for sub-10nm particle trapping
+- Predictive control using vehicle position, route data, and traffic conditions
+
+None of this requires fundamentally new chemistry. It's the same reactions, driven harder, at lower temperatures, with tighter control. The engineering challenge is making the chemistry work everywhere, not just on the test cycle.
+
+## Conclusion
+
+The exhaust aftertreatment system on a modern truck is one of the more impressive pieces of applied chemistry on the road. It takes a cocktail of toxic gases and carcinogenic particles and converts them, in real time, at varying temperatures and flow rates, into nitrogen, water, and CO2. It does this for 500,000+ miles with periodic cleaning and the occasional sensor replacement.
+
+The next time someone tells you diesel trucks are dirty, ask which Euro standard they're talking about. A Euro VI truck at operating temperature produces less NOx per unit of work than most gas boilers. The particles coming out of its tailpipe are fewer and smaller than the particles generated by its own brakes and tyres.
+
+The system isn't perfect. Cold starts are its weakness. Urban duty cycles push it outside its design envelope. And the complexity creates failure modes that frustrate operators. But the chemistry is real, the engineering is sound, and the air quality improvements in cities with Euro VI-dominant fleets are measurable and significant.
+
+Understanding how it works is the first step to understanding why it matters, why tampering with it is harmful (and increasingly pointless), and what's coming next.
