@@ -1,0 +1,191 @@
+---
+title: "CO2 Is the Wrong Number: Greenhouse Gas Equivalents for Road Freight"
+description: "Fleet dashboards report CO2. Government targets regulate CO2. But CO2 is only one greenhouse gas, and for some powertrain choices, it's not the one that matters most."
+date: 2026-02-25
+tags: ["Transport", "Chemistry", "Engineering"]
+draft: false
+---
+
+import GWPMultiplierVis from '@/components/blog/GWPMultiplierVis';
+import MethaneSlipCalc from '@/components/blog/MethaneSlipCalc';
+import PowertrainComparator from '@/components/blog/PowertrainComparator';
+import N2OSurchargeCalc from '@/components/blog/N2OSurchargeCalc';
+
+> Fleet dashboards report CO2. Government targets regulate CO2. Sustainability reports count CO2. But CO2 is only one greenhouse gas, and for some powertrain choices, it's not the one that matters most.
+
+In 2022, a well-known European supermarket chain converted a tranche of its distribution fleet from diesel to CNG. The sustainability report that year showed an 18% reduction in tailpipe CO2 across those vehicles. Press releases were issued. Awards were shortlisted.
+
+The ICCT published a well-to-wheel analysis of exactly this class of vehicle in the same year. Their finding: spark-ignited CNG trucks, the type the supermarket chain was running, produce approximately the same total greenhouse gas emissions as the diesel trucks they replaced. Somewhere between 2% better and 1% worse, depending on assumptions about upstream methane leakage. The 18% CO2 figure was real. It was also the wrong number.
+
+This happens because CO2 is not the only greenhouse gas leaving a truck's exhaust, and for gas-powered vehicles it's not even the most important one. Methane, the main component of natural gas, traps roughly 30 times more heat per kilogram than CO2. Nitrous oxide, an unintended byproduct of the SCR aftertreatment system fitted to every Euro VI diesel truck, traps 273 times more. Small quantities of either can outweigh large quantities of CO2.
+
+This post works through the numbers. Where the non-CO2 gases come from, how much it takes for them to flip the sign on a claimed climate benefit, and why the number on the fleet dashboard may bear little resemblance to the number that matters for the atmosphere.
+
+## The multipliers
+
+CO2 gets the attention because there's a lot of it. A Euro VI diesel truck emits roughly 2.64 kg of CO2 per litre of diesel burned. Across a fleet doing 40,000 litres per truck per year, that's over 100 tonnes of CO2 per truck. The numbers are big and they're real.
+
+But warming potential varies enormously across different gases. The IPCC quantifies this using Global Warming Potential (GWP): the heat trapped by one kilogram of a gas relative to one kilogram of CO2 over a given timeframe. The most recent values, from the Sixth Assessment Report (AR6, 2021), are the reference throughout this post.
+
+<GWPMultiplierVis client:visible />
+
+The headline numbers:
+
+| Gas | GWP100 (100-year) | GWP20 (20-year) | Atmospheric lifetime |
+|---|---|---|---|
+| CO2 | 1 (by definition) | 1 | Centuries (40% remains after 100 years) |
+| CH4 (methane, fossil) | 29.8 | 82.5 | ~12 years |
+| N2O (nitrous oxide) | 273 | 273 | ~116 years |
+
+The standard convention is GWP100: the warming impact integrated over 100 years. But GWP20 exists and it changes the picture considerably. Methane's 100-year GWP is about 30. Its 20-year GWP is about 83. The reason: methane is a short-lived but fierce warmer. It breaks down in the atmosphere over roughly 12 years, so its impact is front-loaded into the first two decades. If you care about near-term warming and tipping points, methane looks nearly three times worse than the standard metric suggests.
+
+Which timescale you use is a policy question, not a physics question. Both are physically valid. The point is that the choice changes the ranking of what matters. Most fleet reporting, where it considers non-CO2 gases at all, uses GWP100. This is the more favourable framing for methane.
+
+To express total climate impact as a single number, you multiply the mass of each gas by its GWP and sum them. The result is CO2-equivalent, or CO2e. This is the number that should appear on the fleet dashboard. In most cases, it doesn't.
+
+## Methane slip: the worked example
+
+Natural gas has roughly 25% less carbon per unit of energy than diesel. Burn methane instead of diesel and you get less CO2 per kWh of work. This is the basis of every CNG and LNG truck sales pitch, and the tailpipe CO2 reduction is real.
+
+The problem is that gas engines leak methane. Unburnt methane passes through the engine and out the exhaust. This is called methane slip, and it has several sources: incomplete combustion in the cylinder, methane trapped in crevice volumes between the piston and cylinder wall, post-combustion release during valve overlap, and crankcase ventilation.
+
+The magnitude depends on engine technology. Spark-ignited stoichiometric engines (the Otto-cycle type used by Scania and Iveco) have the lowest slip, typically 0.5-1.5% of fuel methane. High-pressure direct injection (HPDI) engines, as used by Volvo, run 1-3%. Older low-pressure port injection systems can hit 3-5% or more.
+
+Here's the arithmetic that matters.
+
+Take a 40-tonne CNG truck on a typical trunk route. It consumes roughly 28 kg of natural gas per 100 km (the energy equivalent of about 35 litres of diesel, adjusted for the lower thermal efficiency of spark-ignited gas engines versus diesel).
+
+At 2% methane slip, 560 grams of unburnt methane exit the exhaust per 100 km. That's 5.6 g/km.
+
+Multiply by GWP100 of 29.8: that's 167 gCO2e per km from methane slip alone.
+
+The truck's tailpipe CO2 saving versus diesel was approximately 150 gCO2e per km (reflecting the 20% lower carbon content of methane, partially offset by the 10% worse fuel economy of SI gas engines).
+
+The methane has just eaten the entire CO2 saving. At 2% slip, the truck is roughly climate-neutral versus diesel at the tailpipe. And we haven't counted anything upstream yet.
+
+<MethaneSlipCalc client:visible />
+
+This gets worse when you add the supply chain. Natural gas extraction, processing, and pipeline transport leak methane at every stage. A comprehensive study by Alvarez et al. (2018) measured US natural gas supply chain losses at approximately 2.3% of gross production. The ICCT's January 2025 analysis used a mean production loss rate of 1.8%, with a range of 0.4% to 4.8% depending on the production basin.
+
+At 1.8% upstream leakage plus 2% engine methane slip, the ICCT found CNG trucks offer approximately 6% well-to-wheel GHG savings over diesel. And if upstream leakage exceeds roughly 2.5%, CNG trucks become worse than diesel for the climate.
+
+There's an atmospheric chemistry detail that makes this more uncomfortable. Methane's breakdown in the atmosphere consumes hydroxyl radicals (OH). When methane concentrations rise, OH gets depleted, which slows the breakdown of methane itself. It's a positive feedback loop: more methane means each additional molecule survives longer. The IPCC estimates this feedback factor at roughly 1.3-1.5. The GWP values already account for it, but it means the problem is non-linear. Doubling methane emissions more than doubles the warming effect.
+
+LNG introduces an additional source of methane that appears in no emissions report. LNG is stored at -162°C in cryogenic tanks. If the truck sits long enough, the fuel warms and boils off. This boil-off gas is vented to atmosphere through a pressure relief valve: pure methane, unburnt, unmeasured. Tank holding times are typically five days. A truck parked for a long weekend can lose meaningful quantities of fuel as direct methane emissions. Clark et al. (2017) measured dynamic venting from HPDI trucks at an average of 0.92% of total gas consumption, with peaks of 2.2% in urban operation.
+
+The Oeko-Institut, in collaboration with the ICCT, published a comprehensive assessment of LNG trucks for the German market. Their conclusion: when non-CO2 emissions are included, spark-ignited natural gas trucks have approximately the same well-to-wheel GHG emissions as diesel trucks, in a range of -2% to +1%. The 15-20% tailpipe CO2 advantage that appears in every manufacturer's brochure is a measurement boundary artefact.
+
+## Nitrous oxide: the aftertreatment side effect
+
+The [previous post](/blog/aftertreatment-chemistry) covered the SCR catalyst in detail: how AdBlue decomposes to ammonia, how ammonia reduces NOx to nitrogen and water, and why the system is one of the more impressive pieces of applied chemistry on the road. That post mentioned N2O in passing. This section gives it the attention it deserves.
+
+SCR's primary reactions produce harmless nitrogen gas. But under certain conditions, a side reaction produces nitrous oxide (N2O) instead. At a GWP of 273, this matters.
+
+The side reaction is temperature-dependent. N2O forms preferentially when the SCR catalyst is below its optimal temperature window: during cold starts and warm-up (catalyst below light-off temperature), low-load urban driving where exhaust temperatures stay below 250°C, and on degraded or aged catalysts where the selectivity shifts. The copper-zeolite catalysts used in most Euro VI systems (Cu-SSZ-13) are particularly susceptible to N2O formation at low temperatures, where the standard SCR reaction is sluggish but ammonia oxidation pathways that produce N2O are active.
+
+The Caldecott Tunnel study (Preble et al., published in *Environmental Science & Technology*) measured real-world emissions from thousands of in-use heavy-duty trucks in the San Francisco Bay Area. They found SCR-equipped trucks (2010+ model year engines) had N2O emission factors of approximately 0.93 g per kg of fuel, up from near-zero for trucks without SCR.
+
+Work that number.
+
+A truck consuming 30 litres of diesel per hour at highway cruise burns roughly 25 kg of fuel per hour (diesel density 0.84 kg/L). At 0.93 g N2O per kg of fuel, that's 23.3 g of N2O per hour.
+
+Multiply by GWP100 of 273: that's 6,350 gCO2e per hour from nitrous oxide alone.
+
+Tailpipe CO2 from the same truck: 30 litres × 2.64 kg/L = 79,200 gCO2 per hour.
+
+The N2O adds an 8% surcharge to the truck's climate impact. Not 8% of the regulated emissions. 8% on top of the total CO2. From a gas that doesn't appear on the fleet dashboard, isn't measured by the telematics system, and until Euro 7 isn't subject to a regulatory limit.
+
+<N2OSurchargeCalc client:visible />
+
+A more recent study (He et al., 2024, published in *Ecotoxicology and Environmental Safety*) tested heavy-duty trucks with both single and dual SCR systems on chassis dynamometers. The dual-SCR trucks, designed to meet the strictest NOx limits under China VI, emitted 6-22 times more N2O than NOx under all tested conditions. The system engineered to eliminate one pollutant was producing another that's 273 times more potent as a greenhouse gas.
+
+The irony runs deeper. NOx itself has indirect climate effects through atmospheric chemistry. It catalyses the formation of tropospheric ozone (a greenhouse gas and harmful pollutant), but it also generates hydroxyl radicals that accelerate methane destruction (a cooling effect). The two effects partially cancel. But N2O, the SCR side product, has no such ambiguity. It's a pure warmer with a 116-year atmospheric lifetime and a GWP that barely changes between the 20-year and 100-year timescale. Reducing NOx for air quality while inadvertently producing N2O for climate warming is exactly the kind of cross-pollutant tradeoff that single-number reporting misses.
+
+Euro 7, expected to apply from around 2028, will include N2O limits for heavy-duty vehicles for the first time, with proposals around 160 mg/kWh. This is an implicit acknowledgement that the current framework has a blind spot.
+
+## Where you draw the line
+
+<PowertrainComparator client:visible />
+
+There are two ways to draw the boundary around a vehicle's emissions.
+
+**Tank-to-wheel (TTW)** counts what comes out of the exhaust. This is what most regulation targets. It's simple, measurable, and directly attributable to the vehicle. For a diesel truck, TTW CO2 is roughly 750 gCO2/km. For a battery electric truck, TTW is zero. For a hydrogen fuel cell truck, TTW is zero.
+
+**Well-to-wheel (WTW)** counts the full chain from primary energy source to the wheel. Extraction, processing, transport, conversion, and everything that comes out of the exhaust including non-CO2 gases.
+
+The ranking changes depending on which boundary you use.
+
+**Diesel:** straightforward. Add roughly 15-20% for upstream extraction, refining, and transport. No surprises. The supply chain is mature, the losses are well-characterised, and DEFRA publishes standard WTW factors annually.
+
+**CNG/LNG:** TTW CO2 is 15-20% lower than diesel. WTW adds methane slip at the engine, fugitive methane from extraction and processing, and potentially LNG boil-off. As worked above, the TTW advantage can evaporate entirely.
+
+**Battery electric:** TTW is zero. WTW depends on the grid. The UK grid averaged 126 gCO2/kWh in 2025 (Carbon Brief analysis of NESO data), with renewables supplying 47% of generation and coal now completely absent following the closure of Ratcliffe-on-Soar in September 2024. At 126 gCO2/kWh and roughly 1.2 kWh/km for a heavy truck, WTW is approximately 151 gCO2e/km. Substantially lower than diesel's ~900 gCO2e/km, and the gap widens every year as the grid cleans up. BEV also has very few conversion steps, which means very few places for non-CO2 gases to enter the picture.
+
+**Hydrogen fuel cell (grey H2):** TTW is zero. WTW is potentially worse than diesel. Steam methane reforming produces roughly 10 kg of CO2 per kg of H2, plus upstream methane leakage from gas extraction. A fuel cell truck consuming about 10 kg of H2 per 100 miles generates roughly 100 kg of CO2 upstream, before accounting for methane. The zero-emission badge on a grey hydrogen truck is a measurement boundary artefact, not a climate achievement.
+
+**Hydrogen fuel cell (green H2):** TTW is zero. WTW is low. But the renewable electricity used to make the hydrogen would deliver [2.5-3x more useful work](/blog/hydrogen-refuelling-road-freight) if used to charge a battery truck directly. Green hydrogen for road freight doesn't just need to beat diesel. It needs to beat the grid.
+
+The pattern is clear. The simpler the energy chain, the fewer opportunities for non-CO2 emissions and conversion losses to accumulate. Battery electric trucks have the shortest chain from primary energy to wheel. Hydrogen and gas powertrains have longer chains, and each step is a place for emissions to hide from a TTW-only measurement.
+
+For comparison: DEFRA applies a 1.9x multiplier to aviation CO2 to account for the non-CO2 warming effects of contrails, NOx, and water vapour at cruising altitude. Aviation's non-CO2 problem is well-established and widely reported. Road freight's equivalent problem, methane slip and N2O, is just as real but barely discussed.
+
+## Five cases where the CO2 number misleads
+
+These are not hypothetical. Each is documented in the literature or observable in current fleet operations.
+
+**1. The CNG sustainability report.** A fleet switches 30 trucks from diesel to CNG. Tailpipe CO2 drops 18%. The sustainability report shows a saving of 540 tonnes of CO2 per year. After accounting for methane slip at 2% and upstream leakage at 1.8%, the actual WTW GHG saving is approximately 30 tonnes. The report overstates the benefit by a factor of 18. Nobody is lying. The numbers are correctly calculated. The boundary is wrong.
+
+**2. The urban delivery fleet with cold SCR.** A Euro VI fleet running short-haul urban distribution. Frequent engine starts, low average speeds, exhaust temperatures rarely reaching the SCR's optimal window. NOx compliance is fine on the annual PEMS check. But the N2O produced during the 40% of operating time the catalyst spends below 250°C adds an invisible 8-12% to the fleet's actual climate impact. The telematics system doesn't have an N2O channel.
+
+**3. Grey hydrogen with a zero-emission badge.** A demonstration fleet of fuel cell trucks running on grey hydrogen from a nearby SMR plant. Promotional materials describe them as "zero-emission vehicles." TTW emissions are indeed zero. WTW emissions, including the 10 kg of CO2 per kg of H2 at the reformer plus upstream methane from gas supply, exceed the diesel trucks they replaced. The badge describes the tailpipe. The climate sees the supply chain.
+
+**4. LNG trucks parked over the weekend.** An LNG-powered fleet where trucks regularly sit from Friday evening to Monday morning. Cryogenic boil-off vents methane to atmosphere through the tank pressure relief valve. This methane appears in no emissions report, no fleet dashboard, no regulatory return. It is invisible to every measurement system except the atmosphere.
+
+**5. Biofuel claims without lifecycle analysis.** A fleet switches to HVO (hydrotreated vegetable oil) and reports near-zero fossil CO2. If the HVO is derived from waste cooking oil, the lifecycle case is strong. If it traces back to palm oil grown on deforested peatland, the lifecycle emissions can exceed petroleum diesel by a factor of three. The single number on the fuel certificate tells you nothing without the upstream story.
+
+## The taxonomy of not-quite-lying
+
+There's a spectrum of intent in how the wrong number gets used.
+
+At one end is genuine ignorance. A fleet manager reports tailpipe CO2 because that's what the telematics system outputs and that's what the regulator asks for. They don't know about methane slip or N2O formation. They're not trying to mislead anyone. The reporting framework gave them the wrong metric and they used it in good faith.
+
+In the middle is motivated reasoning. An OEM selling gas trucks emphasises the 18% tailpipe CO2 reduction because it's true and it's favourable. They don't mention methane slip because it's unfavourable and not required by regulation. The brochure contains no false statements. It contains a carefully chosen boundary.
+
+At the other end is regulatory arbitrage. If the regulation only measures TTW CO2, then the rational commercial response is to optimise for TTW CO2. Gas trucks look excellent on TTW CO2. So do grey hydrogen trucks. The regulation creates an incentive to shift emissions from the tailpipe to elsewhere in the supply chain where nobody is counting. The ICCT has documented this explicitly for European truck CO2 standards, noting that the certification procedure (VECTO) neglects methane and N2O emissions entirely. Gas trucks receive a regulatory advantage that does not correspond to a climate advantage.
+
+None of these categories involve anyone breaking the law. The problem isn't dishonesty. It's the metric. When the metric is wrong, correct behaviour produces wrong results.
+
+This isn't hypothetical. Australia's National Greenhouse and Energy Reporting scheme requires corporations to report in CO2e from the outset, using the same AR6 GWP values (methane at 29.8, N2O at 273). A CNG truck assessed under NGER carries its methane penalty on the balance sheet from day one. The same truck assessed under VECTO, the European certification procedure, shows only tailpipe CO2 — and methane doesn't appear at all. Same truck, same exhaust, different spreadsheet, different purchasing decision.
+
+DEFRA already publishes well-to-wheel CO2e conversion factors that include methane and N2O. The JEC consortium (JRC, EUCAR, and CONCAWE) publishes comprehensive WTW analyses for every major fuel pathway. The data exists. The frameworks exist. The gap between what's measured and what's reported is not a technology problem. It's a choice about which number goes on the dashboard.
+
+## Conclusion
+
+The number on the fleet dashboard, the number in the sustainability report, and the number that actually matters for the climate may be three very different numbers.
+
+A CNG truck can show 18% lower CO2 while delivering approximately zero climate benefit. A Euro VI diesel truck can show compliant NOx while producing meaningful quantities of a greenhouse gas 273 times more potent than CO2. A grey hydrogen truck can wear a zero-emission badge while producing more upstream CO2 than the diesel it replaced.
+
+In each case, the reported number is accurate. The measurement boundary is the problem.
+
+Understanding why requires knowing three things. First, that greenhouse gases have wildly different warming potentials per kilogram, and the multipliers (29.8 for methane, 273 for N2O) are large enough to make small quantities consequential. Second, that where you draw the system boundary — tank-to-wheel or well-to-wheel — changes which powertrain wins and by how much. Third, that some of the most potent warming effects (methane slip from gas engines, N2O from SCR aftertreatment, upstream supply chain leakage) are invisible to the measurement systems that most fleets actually use.
+
+The data to measure properly has existed for years. The ICCT publishes it. JEC publishes it. DEFRA publishes it. Euro 7 is beginning to regulate it.
+
+Measure the right thing. Then optimise.
+
+---
+
+## References
+
+1. IPCC AR6 Working Group I, Chapter 7, Table 7.15. Global Warming Potential values (GWP100): CH4 fossil = 29.8, N2O = 273. GWP20: CH4 fossil = 82.5, N2O = 273.
+2. ICCT (2025). "How upstream methane leakage further weakens the argument for natural gas trucks." Mean production loss rate 1.8%, break-even at ~2.5%.
+3. ICCT (2022). "LNG trucks: a bridge to nowhere." WTW analysis: SI-CNG trucks -2% to +1% vs diesel.
+4. Oeko-Institut / ICCT (2020). "Decarbonization of on-road freight transport and the role of LNG from a German perspective."
+5. Alvarez et al. (2018). "Assessment of methane emissions from the U.S. oil and gas supply chain." *Science*, 361(6398), 186-188.
+6. Clark et al. (2017). Real-world HPDI dynamic venting measurements: mean 0.92%, max 2.2% in urban operation.
+7. Preble et al. (2020). "Control Technology-Driven Changes to In-Use Heavy-Duty Diesel Truck Emissions of Nitrogenous Species." *Env. Sci. & Tech.* SCR N2O: 0.93 g/kg fuel.
+8. He et al. (2024). "The next challenge in emissions control for heavy-duty diesel vehicles: From NOx to N2O." *Ecotoxicology and Environmental Safety*. Dual-SCR: 6-22x more N2O than NOx.
+9. Jin et al. (2022). "Nitrous oxide in diesel aftertreatment systems including DOC, DPF and urea-SCR." *Fuel*. SCR outlet N2O up to 20 ppm vs &lt;1 ppm inlet.
+10. Carbon Brief (2026). "Analysis: UK renewables enjoy record year in 2025." Grid intensity: 126 gCO2/kWh.
+11. DEFRA (2025). UK Government GHG Conversion Factors for Company Reporting.
+12. JEC Well-to-Wheel Study v5 (JRC/EUCAR/CONCAWE).
