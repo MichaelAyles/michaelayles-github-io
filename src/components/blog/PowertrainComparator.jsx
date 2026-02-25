@@ -65,7 +65,7 @@ export default function PowertrainComparator() {
       name: "Diesel (Euro VI)",
       ttw: 750 + (0.004 * gwp.n2o),
       wtw: 900,
-      color: COLORS.textMuted,
+      color: "#737373",
       note: "Baseline. Includes ~8% N2O surcharge from SCR.",
     },
     {

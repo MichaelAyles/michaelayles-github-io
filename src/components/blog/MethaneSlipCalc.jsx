@@ -149,7 +149,7 @@ export default function MethaneSlipCalc() {
 
       <div style={{ marginBottom: 20 }}>
         {[
-          { name: "Diesel (WTW)", value: dieselWTW, color: COLORS.textMuted },
+          { name: "Diesel (WTW)", value: dieselWTW, color: "#737373" },
           { name: "CNG (WTW)", value: cngWTW, color: isWorse ? COLORS.red : COLORS.green },
         ].map(row => (
           <div key={row.name} style={{ marginBottom: 10 }}>
