@@ -222,7 +222,7 @@ export default function OvertakingCalculator() {
             lineHeight: 1.5,
           }}>
             {parseFloat(calc.overtakeTimeSec) > 60
-              ? `At ${calc.differential} mph differential, the overtake takes ${calc.overtakeTimeSec} seconds — over a minute of blocking the outside lane. Annoying, but it gains the driver ${calc.extraMilesPerDay} extra miles across a working day.`
+              ? `At ${calc.differential} mph differential, the overtake takes ${calc.overtakeTimeSec} seconds — nearly ${Math.round(parseFloat(calc.overtakeTimeSec) / 60)} minutes of blocking the outside lane. Annoying, but it gains the driver ${calc.extraMilesPerDay} extra miles across a working day.`
               : `At ${calc.differential} mph differential, the overtake completes in ${calc.overtakeTimeSec} seconds and gains ${calc.extraMilesPerDay} extra miles per shift.`
             }
           </div>

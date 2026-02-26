@@ -17,7 +17,7 @@ const rows = [
   { label: "Gross weight", car: "1,500 kg", truck: "44,000 kg", note: "29× heavier", highlight: true },
   { label: "Motorway speed limit", car: "70 mph", truck: "56 mph", note: "EU limiter (90 km/h)" },
   { label: "Fuel consumption (cruise)", car: "~45 mpg", truck: "~8.5 mpg", note: "5× more per mile" },
-  { label: "Fuel burn rate at cruise", car: "~3 L/hr", truck: "~30 L/hr", note: "10× the flow rate", highlight: true },
+  { label: "Fuel burn rate at cruise", car: "~7 L/hr", truck: "~30 L/hr", note: "~4× the flow rate", highlight: true },
   { label: "Stopping distance (from limit)", car: "~73 m", truck: "~150+ m", note: "Incl. thinking time" },
   { label: "Annual fuel consumption", car: "~1,300 L", truck: "~43,000 L", note: "33× more", highlight: true },
   { label: "Annual fuel cost", car: "~£1,500", truck: "~£50,000", note: "" },
