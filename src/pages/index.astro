@@ -61,7 +61,6 @@ const recentPosts = sorted.slice(0, 8);
         ))}
       </div>
       <div class="view-all">
-        <a href="/rss.xml" class="view-all-link rss-link" target="_blank">RSS</a>
         <a href="/blog/" class="view-all-link">View all posts &rarr;</a>
       </div>
     </section>
@@ -245,22 +244,8 @@ const recentPosts = sorted.slice(0, 8);
   }
 
   .view-all {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 1.5rem;
+    text-align: right;
     margin-top: 1.5rem;
-  }
-
-  .rss-link {
-    font-size: 0.75rem;
-    padding: 0.2rem 0.5rem;
-    border: 1px solid var(--border);
-    border-radius: 3px;
-  }
-
-  .rss-link:hover {
-    border-color: var(--text-secondary);
   }
 
   .view-all-link {

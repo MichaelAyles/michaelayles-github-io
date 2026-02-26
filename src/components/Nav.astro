@@ -11,6 +11,7 @@ const { current = '' } = Astro.props;
     <div class="nav-right">
       <div class="nav-links">
         <a href="/" class:list={['nav-link', { active: current === 'blog' }]}>Blog</a>
+        <a href="/rss.xml" class="nav-link rss" target="_blank" aria-label="RSS Feed">RSS</a>
         <a href="/projects" class:list={['nav-link', { active: current === 'projects' }]}>Projects</a>
         <a href="/about" class:list={['nav-link', { active: current === 'about' }]}>About</a>
       </div>
@@ -71,6 +72,17 @@ const { current = '' } = Astro.props;
 
   .nav-link.active {
     font-weight: 600;
+  }
+
+  .nav-link.rss {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.4rem;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+  }
+
+  .nav-link.rss:hover {
+    border-color: var(--text-primary);
   }
 
   @media (max-width: 500px) {
