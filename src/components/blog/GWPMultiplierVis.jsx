@@ -44,12 +44,12 @@ export default function GWPMultiplierVis() {
 
   const gases = {
     100: [
-      { name: "CO2", gwp: 1, color: COLORS.blue, life: "Centuries", note: "The reference. Persists for hundreds to thousands of years." },
-      { name: "CH4 (methane)", gwp: 29.8, color: COLORS.accent, life: "~12 years", note: "Fossil methane incl. oxidation to CO2. Short-lived but 30x more potent." },
-      { name: "N2O (nitrous oxide)", gwp: 273, color: COLORS.red, life: "~116 years", note: "From SCR aftertreatment. Almost as persistent as CO2, 273x the punch." },
+      { name: "CO2", gwp: 1, color: COLORS.blue, life: "Centuries", note: "Reference gas by convention. 1 doesn't mean harmless — 40% remains after 100 years. Dominates total warming by sheer mass." },
+      { name: "CH4 (methane)", gwp: 29.8, color: COLORS.accent, life: "~12 years", note: "Fossil methane incl. oxidation to CO2. Short-lived but 30x more potent per kg over 100 years." },
+      { name: "N2O (nitrous oxide)", gwp: 273, color: COLORS.red, life: "~116 years", note: "From SCR aftertreatment. Almost as persistent as CO2, 273x the warming per kg." },
     ],
     20: [
-      { name: "CO2", gwp: 1, color: COLORS.blue, life: "Centuries", note: "Same gas, same reference, any timescale." },
+      { name: "CO2", gwp: 1, color: COLORS.blue, life: "Centuries", note: "Still the reference at any timescale. The '1' is a convention, not a ranking of importance." },
       { name: "CH4 (methane)", gwp: 82.5, color: COLORS.accent, life: "~12 years", note: "Nearly 3x worse on 20-year view. Most warming hits in the first two decades." },
       { name: "N2O (nitrous oxide)", gwp: 273, color: COLORS.red, life: "~116 years", note: "Long-lived, so GWP barely changes between 20 and 100 year timescales." },
     ],
@@ -90,7 +90,7 @@ export default function GWPMultiplierVis() {
               <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
                 <span style={{ fontFamily: mono, fontSize: 10, color: COLORS.textDim }}>{gas.life}</span>
                 <span style={{ fontFamily: mono, fontSize: 20, fontWeight: 700, color: gas.color }}>
-                  {gas.gwp === 1 ? "1" : gas.gwp.toFixed(1)}x
+                  {gas.gwp === 1 ? "1x (ref)" : `${gas.gwp.toFixed(1)}x`}
                 </span>
               </div>
             </div>
@@ -115,8 +115,8 @@ export default function GWPMultiplierVis() {
 
       <Insight>
         {timeframe === 100
-          ? "At GWP100: 1 kg of methane warms the climate as much as 30 kg of CO2. 1 kg of N2O equals 273 kg. A 2% methane leak from a gas engine can erase the entire CO2 advantage of switching from diesel."
-          : "At GWP20: methane's impact nearly triples to 83x CO2. If you're concerned about near-term warming and tipping points, methane from gas trucks looks far worse than the standard 100-year metric suggests. N2O barely changes because it persists for over a century either way."}
+          ? "At GWP100 (warming integrated over a century): 1 kg of methane warms as much as 30 kg of CO2. 1 kg of N2O equals 273 kg. CO2 reads as '1' because it's the reference, not because it's benign — it persists for centuries and dominates total warming by mass. A 2% methane leak from a gas engine can erase the entire CO2 advantage of switching from diesel."
+          : "At GWP20 (warming integrated over 20 years): methane's impact nearly triples to 83x CO2. If you're concerned about near-term warming and tipping points, methane from gas trucks looks far worse than the standard 100-year metric suggests. N2O barely changes because it persists for over a century either way."}
       </Insight>
     </Card>
   );
