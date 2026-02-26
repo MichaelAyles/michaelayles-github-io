@@ -30,11 +30,12 @@ const bevSteps = [
 
 const h2Steps = [
   { label: "Renewable\nElectricity", kWh: 100, eff: null },
-  { label: "Electrolysis", kWh: 66, eff: 0.66 },
-  { label: "Compression\n700 bar", kWh: 57.4, eff: 0.87 },
-  { label: "Transport &\nDispensing", kWh: 54.5, eff: 0.95 },
-  { label: "Fuel Cell", kWh: 31.1, eff: 0.57 },
-  { label: "Motor to\nWheel", kWh: 28.0, eff: 0.90 },
+  { label: "Grid\nTransmission", kWh: 95, eff: 0.95 },
+  { label: "Electrolysis", kWh: 62.7, eff: 0.66 },
+  { label: "Compression\n700 bar", kWh: 54.5, eff: 0.87 },
+  { label: "Transport &\nDispensing", kWh: 51.8, eff: 0.95 },
+  { label: "Fuel Cell", kWh: 29.5, eff: 0.57 },
+  { label: "Motor to\nWheel", kWh: 26.6, eff: 0.90 },
 ];
 
 // SVG path generators
@@ -250,8 +251,8 @@ export default function EnergySankey() {
 
       <div style={{ fontFamily: sans, fontSize: 13, color: COLORS.textDim, marginTop: 16, padding: "12px 16px", background: COLORS.bg, borderRadius: 6, lineHeight: 1.5 }}>
         Both pathways start with the same 100 kWh of renewable electricity. The battery electric truck delivers {bevFinal.toFixed(0)} kWh to the wheels.
-        The hydrogen truck delivers {h2Final.toFixed(0)} kWh, losing {(100 - h2Final).toFixed(0)}% of the original energy across five conversion steps.
-        The electrolysis step alone discards {100 - 66} kWh as heat. To move the same freight the same distance, hydrogen needs {ratio} times more wind turbines.
+        The hydrogen truck delivers {h2Final.toFixed(0)} kWh, losing {(100 - h2Final).toFixed(0)}% of the original energy across six conversion steps.
+        The electrolysis step alone discards {Math.round(95 - 62.7)} kWh as heat. To move the same freight the same distance, hydrogen needs {ratio} times more wind turbines.
       </div>
     </div>
   );

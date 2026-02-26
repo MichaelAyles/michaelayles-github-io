@@ -101,9 +101,9 @@ export default function HydrogenProductionCalc() {
   const dieselLPer100Miles = 100 / (8.5 / 4.546); // convert mpg to L/100mi
   const dieselCostPer100Miles = dieselLPer100Miles * dieselPricePerL;
 
-  // BEV truck: ~1.7 kWh per mile at 20p/kWh commercial
+  // BEV truck: ~1.7 kWh per mile, electricity at slider rate
   const bevKWhPerMile = 1.7;
-  const bevRate = 0.20;
+  const bevRate = electricityRate / 100;
   const bevCostPer100Miles = 100 * bevKWhPerMile * bevRate;
 
   const comparisonData = [
