@@ -1,0 +1,19 @@
+{
+  "name": "bitwise-cloud",
+  "description": "Hosted multi-tenant search platform for embedded systems documentation. Web app, REST API, and MCP plugins for team-wide access to indexed reference manuals.",
+  "tags": [
+    "Python",
+    "React",
+    "MCP",
+    "Embedded",
+    "AI"
+  ],
+  "featured": false,
+  "links": {
+    "live": "https://bitwise.mikeayles.com/",
+    "github": "https://github.com/MichaelAyles/bitwise-cloud",
+    "blog": null
+  },
+  "blogPost": "bitwise-cloud",
+  "order": 10
+}

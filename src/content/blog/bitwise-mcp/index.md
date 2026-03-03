@@ -101,6 +101,8 @@ The token efficiency is remarkable: queries that would consume 25,000+ tokens no
 - Code example extraction
 - Multi-document correlation
 
+This project has since evolved into [Bitwise Cloud](/blog/bitwise-cloud), a hosted multi-tenant platform with a web app, REST API, and MCP plugins.
+
 ## Conclusion
 
 bitwise-mcp demonstrates how the Model Context Protocol can bridge the gap between traditional documentation and modern AI-assisted development. By making embedded systems documentation instantly accessible and intelligently searchable, it removes friction from the development process and lets engineers focus on building, not searching.
