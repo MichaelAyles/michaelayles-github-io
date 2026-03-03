@@ -19,7 +19,7 @@ const mono = "'JetBrains Mono', 'Fira Code', 'SF Mono', monospace";
 const sans = "'Inter', sans-serif";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const WEEKLY_LITRES = 30000; // approximate weekly fleet consumption (30 trucks, ~1000L/truck/week)
+const WEEKLY_LITRES = 24500; // approximate weekly fleet consumption (30 trucks, 80k mi/yr, 8.5 mpg)
 
 const presets = {
   stable: { label: "Stable market", values: [138, 138, 139, 139, 138, 138, 137, 138, 139, 138, 138, 138] },

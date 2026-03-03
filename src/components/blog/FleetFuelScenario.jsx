@@ -19,14 +19,14 @@ const mono = "'JetBrains Mono', 'Fira Code', 'SF Mono', monospace";
 const sans = "'Inter', sans-serif";
 
 const FUEL_DUTY_PENCE = 52.95;
-const REFINING_MARGIN_PENCE = 12;
+const REFINING_MARGIN_PENCE = 20;
 const DISTRIBUTION_PENCE = 6;
 const VAT_RATE = 0.20;
 const DUTY_INCREASE_PENCE = 5; // planned +5p by March 2027
 
 function brentToPumpPence(brentUsd, extraDutyPence = 0) {
   const brentGbp = brentUsd / 1.30;
-  const crudePence = (brentGbp / 159) * (159 / 100) * 1.02;
+  const crudePence = (brentGbp * 100) / 159;
   const duty = FUEL_DUTY_PENCE + extraDutyPence;
   const subtotal = crudePence + REFINING_MARGIN_PENCE + DISTRIBUTION_PENCE + duty;
   return subtotal * (1 + VAT_RATE);

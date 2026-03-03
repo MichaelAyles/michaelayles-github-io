@@ -20,18 +20,16 @@ const mono = "'JetBrains Mono', 'Fira Code', 'SF Mono', monospace";
 const sans = "'Inter', sans-serif";
 
 const FUEL_DUTY = 52.95; // pence, frozen since 2011
-const REFINING_MARGIN = 12; // pence per litre (elevated post-2022)
+const REFINING_MARGIN = 20; // pence per litre (elevated post-2022)
 const DISTRIBUTION_MARGIN = 6; // pence per litre
 const VAT_RATE = 0.20;
 
 // Approximate crude cost in pence per litre from $/bbl
-// ~159 litres per barrel, ~38% yield for diesel, exchange rate
+// A barrel is 159 litres. Yield losses are captured in the refining margin.
+// At $82/bbl ≈ 40p/L crude component.
 function crudeToLitrePence(brentUsd, exchangeRate = 1.30) {
   const brentGbp = brentUsd / exchangeRate;
-  // A barrel is 159L, but diesel yield is ~25-30% of a barrel by volume
-  // Industry rule of thumb: crude cost ≈ (brent_gbp / 159) * correction
-  // More practically: at $80/bbl ≈ 40p/L crude component
-  return (brentGbp / 159) * (159 / 100) * 1.02; // yields ~40p at $80
+  return (brentGbp * 100) / 159;
 }
 
 function buildStack(brentUsd) {
