@@ -14,9 +14,9 @@ draft: false
 
 ---
 
-I'm porting [Bitwise Cloud](https://bitwise.mikeayles.com) — a hosted semantic search engine MCP Server & Claude Code plugin for embedded systems datasheets — from Python to Go. The Python backend works fine, but Bitwise Cloud is fundamentally an infrastructure service: it ingests documents, chunks them, generates embeddings, indexes them, and serves queries. That's a server that happens to do some maths. Go is very good at being a server. Single binary, trivial cross-compilation, no runtime to manage.
+I'm porting [Bitwise Cloud](https://bitwise.mikeayles.com), a hosted semantic search engine MCP Server & Claude Code plugin for embedded systems datasheets from Python to Go. The Python backend works fine, but Bitwise Cloud is fundamentally an infrastructure service: it ingests documents, chunks them, generates embeddings, indexes them, and serves queries. That's a server that happens to do some maths. Go is very good at being a server. Single binary, trivial cross-compilation, no runtime to manage.
 
-The problem is the embedding model. Bitwise Cloud uses [BGE-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5) (384 dimensions, 6 transformer layers, 33M params). In Python that's one function call. In Go, every library I found requires ONNX. To get ONNX, you need a Python environment with `transformers`, `optimum`, `torch`, and `onnx` — a non-trivial dependency chain just to produce the artifact your Go binary needs. If the whole point of writing in Go is to ship a single static binary and avoid Python in production, requiring Python in your build pipeline undermines the argument.
+The problem is the embedding model. Bitwise Cloud uses [BGE-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5) (384 dimensions, 6 transformer layers, 33M params). In Python that's one function call. In Go, every library I found requires ONNX. To get ONNX, you need a Python environment with `transformers`, `optimum`, `torch`, and `onnx`, a non-trivial dependency chain just to produce the artifact your Go binary needs. If the whole point of writing in Go is to ship a single static binary and avoid Python in production, requiring Python in your build pipeline undermines the argument.
 
 I wanted to know: how hard is it to just load the weights directly and do the maths yourself?
 
@@ -32,13 +32,13 @@ The typical workflow for running a transformer model in Go looks like this:
 
 That's fine for production ML teams with Python infrastructure already in place. It's a non-starter if you want a Go library that someone can `go get` and use without a build dependency on Python.
 
-There are better options than the raw ONNX path. [Hugot](https://github.com/knights-analytics/hugot) from Knights Analytics is a serious project — a full HuggingFace pipeline framework for Go that now includes a pure Go backend alongside its ONNX Runtime and XLA backends. Credit where it's due. But it still requires models in ONNX format, and their own docs describe the pure Go backend as designed for "simpler workloads" with the recommendation to use a C backend for performance. [gonnx](https://github.com/AdvancedClimateSystems/gonnx) is a pure Go ONNX model runner that implements ops generically, benchmarked at roughly 8x slower than ONNX Runtime. [GoMLX](https://github.com/gomlx/gomlx) has a pure Go backend called SimpleGo, but it's a full ML framework where inference is a small part of a much bigger story.
+There are better options than the raw ONNX path. [Hugot](https://github.com/knights-analytics/hugot) from Knights Analytics is a serious project, a full HuggingFace pipeline framework for Go that now includes a pure Go backend alongside its ONNX Runtime and XLA backends. Credit where it's due. But it still requires models in ONNX format, and their own docs describe the pure Go backend as designed for "simpler workloads" with the recommendation to use a C backend for performance. [gonnx](https://github.com/AdvancedClimateSystems/gonnx) is a pure Go ONNX model runner that implements ops generically, benchmarked at roughly 8x slower than ONNX Runtime. [GoMLX](https://github.com/gomlx/gomlx) has a pure Go backend called SimpleGo, but it's a full ML framework where inference is a small part of a much bigger story.
 
 All of these are legitimate projects solving real problems. None of them let me point at a HuggingFace model directory and get embeddings without an ONNX export step.
 
 BAAI publishes BGE-small-en-v1.5 as safetensors. That's the canonical format, the source of truth. The ONNX versions on HuggingFace are community exports with no guarantee they track the official release. The export bakes in a specific opset version, graph optimisations, and pooling configuration. If any of those differ from what you expect, your embeddings won't match the Python reference, and debugging it means pulling up the ONNX graph in Python.
 
-The models themselves aren't that complicated. BERT is an encoder stack: embeddings, some matrix multiplications, softmax, layer normalisation, repeat. The weights are just arrays of float32. HuggingFace publishes them in a format called safetensors — a dead-simple binary layout with a JSON header and raw float data at byte offsets.
+The models themselves aren't that complicated. BERT is an encoder stack: embeddings, some matrix multiplications, softmax, layer normalisation, repeat. The weights are just arrays of float32. HuggingFace publishes them in a format called safetensors, which is a dead-simple binary layout with a JSON header and raw float data at byte offsets.
 
 So I wrote the inference from scratch.
 
@@ -77,7 +77,7 @@ Yes. Validated against HuggingFace Python `transformers` on six test cases inclu
 | `café résumé naïve` (unicode) | 0.999999 | 0.000211 |
 | `Hello, world! How's it going?` | 1.000000 | 0.000199 |
 
-Token IDs match exactly. Embeddings match to cosine similarity > 0.9999. The residual differences are floating-point accumulation order — the maths is the same, the reduction order isn't.
+Token IDs match exactly. Embeddings match to cosine similarity > 0.9999. The residual differences are floating-point accumulation order, the maths is the same, the reduction order isn't.
 
 ## The Performance Story
 
@@ -94,7 +94,7 @@ Roughly 10-50x slower than optimised native runtimes. PyTorch and ONNX Runtime u
 
 The bottleneck is matrix multiplication. A single BERT layer does four large matmuls (Q, K, V projections plus the output projection), another two in the feed-forward network, and that repeats six times. Profiling confirms matmul accounts for over 90% of inference time.
 
-There's headroom here — better tiling, SIMD via Go assembly, pre-transposed weights — but it'll never match a native BLAS. That's the trade-off, and it's a deliberate one.
+There's headroom here. We could do better tiling, SIMD via Go assembly, pre-transposed weights, but it'll never match a native BLAS. That's the trade-off, and it's a deliberate one.
 
 ## When This Makes Sense
 
