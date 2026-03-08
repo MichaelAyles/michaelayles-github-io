@@ -5,7 +5,7 @@ date: 2026-03-03
 tags: ["Python", "React", "MCP", "Embedded", "AI"]
 project: "bitwise-cloud"
 featured: false
-draft: true
+draft: false
 ---
 
 ## From Local Tool to Platform
