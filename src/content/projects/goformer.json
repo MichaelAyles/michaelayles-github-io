@@ -1,0 +1,18 @@
+{
+  "name": "goformer",
+  "description": "Pure Go BERT-family transformer inference. Loads HuggingFace safetensors directly — no CGO, no ONNX, no Python.",
+  "tags": [
+    "Go",
+    "Machine Learning",
+    "Embeddings",
+    "NLP"
+  ],
+  "featured": true,
+  "links": {
+    "live": "https://pkg.go.dev/github.com/MichaelAyles/goformer",
+    "github": "https://github.com/MichaelAyles/goformer",
+    "blog": null
+  },
+  "blogPost": "goformer",
+  "order": 5
+}
