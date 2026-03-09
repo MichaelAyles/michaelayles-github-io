@@ -1,7 +1,7 @@
 ---
 title: "goformersearch: Vector Search in Pure Go"
 description: "Brute-force and HNSW nearest-neighbour search with zero dependencies. When to use which, backed by data."
-date: 2026-03-08
+date: 2026-03-09
 tags: ["Go", "Vector Search", "HNSW", "Embeddings", "Similarity Search"]
 project: "goformersearch"
 featured: true
