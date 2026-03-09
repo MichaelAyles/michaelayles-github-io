@@ -124,7 +124,7 @@ A few things I found worth noting while building this:
 - **Optimisation** — the matmul is naive. Tiling improvements and Go assembly SIMD kernels for amd64/arm64 could close the gap significantly
 - **Memory reuse** — pre-allocate workspace tensors and reuse buffers across layers instead of allocating per inference
 - **Sharded safetensors** — support models split across multiple weight files
-- **go-vec** — a companion pure Go vector store with brute-force and HNSW search, completing the zero-dependency semantic search stack for the Bitwise Cloud port
+- **[goformersearch](/blog/goformersearch)**, a companion pure Go vector store with brute-force and HNSW search, completing the zero-dependency semantic search stack for the Bitwise Cloud port
 
 ---
 
