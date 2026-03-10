@@ -1,4 +1,4 @@
-export default function DemoEmbed({ src, height = 720 }) {
+export default function DemoEmbed({ src, height = 1100 }) {
   return (
     <figure style={{ margin: "2rem 0" }}>
       <iframe
@@ -22,9 +22,11 @@ export default function DemoEmbed({ src, height = 720 }) {
           textAlign: "center",
         }}
       >
-        Interactive demo. Hit play if it hasn't started, or{" "}
+        Let it run at full speed for a few thousand episodes, then compare trained behaviour
+        to an untrained model using the snapshot controls. Toggle ablation to evaluate the
+        model with random outputs, approximating the network's influence.{" "}
         <a href={src} target="_blank" rel="noopener noreferrer">
-          open full screen
+          Open full screen
         </a>
         .
       </figcaption>
