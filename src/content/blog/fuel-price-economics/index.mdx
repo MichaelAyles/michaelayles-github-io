@@ -1,7 +1,7 @@
 ---
 title: "What's Actually in a Litre of Diesel"
-description: "Brent crude just jumped 10%. Your fuel bill won't. The anatomy of a diesel price, why wars move it less than you'd think, and why the Chancellor is a bigger threat than Iran."
-date: 2026-03-03
+description: "Brent crude hit $119.50, then crashed to $88, then bounced to $90, all in 48 hours. Your fuel bill moved 5p. The anatomy of a diesel price, why wars move it less than you'd think, and why the Chancellor is still a bigger threat than Iran."
+date: 2026-03-10
 tags: ["Transport", "Economics", "Energy"]
 draft: false
 ---
@@ -11,25 +11,27 @@ import FleetFuelScenario from '@/components/blog/FleetFuelScenario';
 import RocketsAndFeathers from '@/components/blog/RocketsAndFeathers';
 import SurchargeSimulator from '@/components/blog/SurchargeSimulator';
 
-It's Monday morning. Iran has blocked the Strait of Hormuz. Brent crude jumped 10% over the weekend. The news is running footage of tankers and fire. Your transport manager is on the phone asking what this means for the fuel budget.
+It's Monday morning. Israel has just bombed 30 Iranian oil depots. Brent crude hit $119.50 before lunch, its highest intraday level since the Ukraine invasion. By the afternoon, the US Energy Secretary tweeted that the Navy had escorted a tanker through the Strait of Hormuz, and crude crashed 15% in a few hours. The tweet turned out to be false. As I write this on Tuesday, Brent is trading around $90, with a 52-week range of $58 to $120. Nobody knows where it'll be when you read this.
+
+Your transport manager is on the phone asking what this means for the fuel budget.
 
 Here's the short answer: less than you think.
 
-Brent crude is currently around $82 a barrel. The last time the UK saw record diesel prices, £1.99 a litre at motorway services in June 2022, Brent was averaging $123. That's 50% higher than today. The pump price was 40% higher. Those two percentages don't match, and the reason they don't match is the entire point of this post.
+Brent crude has swung from $73 to $120 to $90 in the space of ten days. The pump price has gone from about 138p to 153p. Crude moved 45% intraday. Diesel at the pump moved about 11%. The last time the UK saw record diesel prices, £1.99 a litre at motorway services in June 2022, Brent was averaging $123. That's 37% higher than today's ~$90. The pump price was 30% higher. Those two percentages don't match, and the reason they don't match is the entire point of this post.
 
 Most people's mental model of fuel pricing is simple: oil goes up, diesel goes up, proportionally, immediately. All three of those assumptions are wrong. The relationship isn't proportional. It isn't immediate. And crude oil isn't even the largest component of what you pay at the pump.
 
 ## The stack
 
-A litre of diesel at £1.42, roughly what you'll pay today at a UK filling station, is not £1.42 worth of refined oil. It's a stack of five layers, and only one of them moves when a tanker gets blocked in the Strait of Hormuz.
+A litre of diesel at about £1.53, roughly what you'll pay today at a UK filling station, is not £1.53 worth of refined oil. It's a stack of five layers, and only one of them moves when a tanker gets blocked in the Strait of Hormuz.
 
 <DieselPriceWaterfall client:visible />
 
 Starting from the bottom:
 
-**Crude oil: ~40p.** This is the bit that makes the news. It's the commodity price of the raw material, converted from dollars-per-barrel to pence-per-litre via the exchange rate and a yield factor (a barrel of crude produces roughly 160 litres of various refined products, of which diesel is one). At $82/bbl and an exchange rate of roughly $1.30/£, the crude component of a litre of diesel works out to about 39–42p. This is the only layer that responds directly to geopolitics.
+**Crude oil: ~42p.** This is the bit that makes the news. It's the commodity price of the raw material, converted from dollars-per-barrel to pence-per-litre via the exchange rate and a yield factor (a barrel of crude produces roughly 160 litres of various refined products, of which diesel is one). At $90/bbl and an exchange rate of roughly $1.345/£ (the pound has actually strengthened through the crisis, providing some cushion), the crude component works out to about 42p. At Monday's $119.50 peak it was briefly 56p. This is the only layer that responds directly to geopolitics.
 
-**Refining margin: ~18–20p.** Also called the "crack spread", the difference between what a refinery pays for crude and what it sells refined diesel for. This moves independently of crude oil. In normal times it sits around 8–10p per litre. Post-2022 it's settled at roughly double that because several European refineries closed during the energy crisis and capacity hasn't fully recovered. The refining margin spiked harder than crude during the Ukraine crisis, because the problem wasn't just expensive oil, it was a physical shortage of refining capacity for diesel specifically. Most people don't know this layer exists.
+**Refining margin: ~20–22p.** Also called the "crack spread", the difference between what a refinery pays for crude and what it sells refined diesel for. This moves independently of crude oil. In normal times it sits around 8–10p per litre. Post-2022 it's settled at roughly double that because several European refineries closed during the energy crisis and capacity hasn't fully recovered. The European diesel crack spread hit near $46/bbl in November 2025 on tighter Russia sanctions, and the Hormuz closure is adding further pressure because Middle East refineries that were backfilling Russian supply to Europe are now also constrained. Bahrain's refinery has declared force majeure after an Iranian strike. The refining margin spiked harder than crude during the Ukraine crisis, because the problem wasn't just expensive oil, it was a physical shortage of refining capacity for diesel specifically. We're at risk of a repeat. Most people don't know this layer exists.
 
 **Distribution and retail margin: ~5–7p.** Getting the diesel from the refinery to the filling station, plus the retailer's margin. Tanker trucks, storage depots, the forecourt itself. Relatively stable. Retailers typically make 2–5p per litre profit. This is why filling station owners aren't getting rich when prices spike, their margin is roughly constant. They make money on the sandwich you buy while you're paying £1.50 a litre.
 
@@ -37,9 +39,9 @@ Starting from the bottom:
 
 **VAT at 20%: ~23–24p.** Charged on everything above, including the duty. You pay tax on tax. This layer does move with the total, but slowly, because it's 20% of a number that's dominated by a fixed component.
 
-Add them up and you get ~£1.42. But notice the structure: the fixed components (duty + the relatively stable distribution margin) account for roughly 58–60p of every litre regardless of what crude oil does. That's over 40% of the pump price that doesn't respond to OPEC, Iran, Russia, or any other geopolitical event.
+Add them up and you get roughly £1.53. But notice the structure: the fixed components (duty + the relatively stable distribution margin) account for roughly 58–60p of every litre regardless of what crude oil does. That's still nearly 40% of the pump price that doesn't respond to OPEC, Iran, Russia, or any other geopolitical event.
 
-This is why a 50% increase in crude doesn't produce a 50% increase at the pump. It produces roughly a 15–18% increase. The tax structure acts as a shock absorber.
+This is why a 50% increase in crude doesn't produce a 50% increase at the pump. It produces roughly a 15–18% increase. The tax structure acts as a shock absorber. On Monday, crude swung 45% intraday. The pump price, when it finishes adjusting, will have moved maybe 11%.
 
 ## The 2022 comparison
 
@@ -51,31 +53,37 @@ This is worth making concrete. In June 2022, at the peak of the post-Ukraine ene
 - Fuel duty: 52.95p (same as today, the freeze held)
 - Everything else (refining, distribution, VAT): ~84p
 
-Today:
+Today (10 March 2026, with crude bouncing around $90):
 
-- Brent crude: ~$82/bbl
-- UK average diesel: £1.42/L
-- Crude component: ~40p
+- Brent crude: ~$90/bbl
+- UK average diesel: ~£1.53/L (and still catching up to wholesale moves)
+- Crude component: ~42p
 - Fuel duty: 52.95p (still the same)
-- Everything else: ~49p
+- Everything else: ~58p
 
-The crude component dropped 22p (35%). The pump price dropped 57p (29%). But 35p of that 57p drop came from the refining margin normalising, not from crude falling. The refining margin in mid-2022 was extreme, diesel was in physical shortage across Europe, with the crack spread hitting levels that hadn't been seen in decades. That's mostly resolved. The crude price drop and the margin normalisation happened to coincide, which made it look like oil prices drove the whole thing. They didn't.
+The crude component dropped 20p (32%) from 2022 to now. The pump price dropped 46p (23%). But a big chunk of that drop came from the refining margin normalising, not from crude falling. The refining margin in mid-2022 was extreme, diesel was in physical shortage across Europe, with the crack spread hitting levels that hadn't been seen in decades. That partly resolved, though the current Hormuz closure is putting it under pressure again. The crude price drop and the margin normalisation happened to coincide, which made it look like oil prices drove the whole thing. They didn't.
 
 ## What the current crisis actually means
 
-The Strait of Hormuz handles roughly 20% of global seaborne oil traffic. Iran threatening to close it is about as significant as maritime chokepoints get. Brent has moved from $73 to $82, call it a $9 increase, or about 12%.
+The Strait of Hormuz handles roughly 20% of global seaborne oil traffic. It is now effectively closed. Tanker traffic is near zero, only Iranian-flagged vessels are transiting. Iraq, Kuwait, the UAE, and Bahrain have started cutting production because they're running out of storage. Analysts are warning this is already the largest oil supply shock ever, 3-4x the barrels lost compared to 1973 or 1979. Mojtaba Khamenei has been named Iran's new Supreme Leader, a hardliner, which signals no quick diplomatic resolution. The G7 is discussing a coordinated strategic reserve release with the IEA. Trump is floating the idea of "taking over" the Strait and also considering reducing Russia sanctions to ease supply.
 
-What does that 12% increase in crude do to a litre of diesel?
+This is serious. But let's look at what it actually does to the numbers.
 
-The crude component goes from roughly 35p to about 40p. Add the unchanged duty, a stable refining margin, distribution, and recalculated VAT, and the pump price moves from roughly £1.37 to about £1.42.
+Brent has moved from $73 pre-crisis to around $90 today, call it a $17 increase, or about 23%. But it's been everywhere in between. It touched $119.50 on Monday morning and $81 on Monday afternoon. The 52-week range is now $58 to $120. This is the most volatile single-day move since 2020.
 
-That's about 5p per litre. Roughly 4%.
+What does the $73 to $90 move do to a litre of diesel?
 
-Brent up 12%. Pump price up 4%. The tax structure does its job.
+The crude component goes from roughly 34p to about 42p. Add the unchanged duty, a slightly elevated refining margin (the crack spread is widening as Middle East refining capacity gets constrained), distribution, and recalculated VAT, and the model says the pump price should move from roughly £1.38 to about £1.48.
 
-Now scale it to a fleet. The [first post in this series](/blog/heavy-haulage-basics) established the baseline: a 30-truck fleet doing 80,000 miles per truck per year at 8.5 mpg burns about 1.28 million litres of diesel annually. At the pre-crisis price of £1.37, that's £1.76 million. At £1.42, it's £1.82 million.
+The actual pump price today is about £1.53. The 5p gap between the model and reality is rockets and feathers in real time: retailers priced up when crude spiked to $119, and they haven't priced back down now that crude has settled to $90. They will, slowly. But not today.
 
-The Iran crisis, as of today, costs that fleet roughly £65,000 a year. Real money. But not the catastrophe the headlines imply.
+Even at the actual pump price of £1.53, that's 15p per litre above pre-crisis. About 11%.
+
+Crude up 23% (and 64% intraday). Pump price up 11%. The tax structure does its job.
+
+Now scale it to a fleet. The [first post in this series](/blog/heavy-haulage-basics) established the baseline: a 30-truck fleet doing 80,000 miles per truck per year at 8.5 mpg burns about 1.28 million litres of diesel annually. At the pre-crisis price of £1.38, that's £1.77 million. At £1.53, it's £1.96 million.
+
+The Hormuz crisis, as of today, costs that fleet roughly £190,000 a year. That's real money, more than I wrote a week ago. But at the Monday $119.50 peak, the model pump price was about £1.64, which would have cost £330,000 above baseline. Even that worst case is nothing like the £790,000 hit the same fleet took in 2022, because the crack spread hasn't (yet) blown out to 2022 levels.
 
 <FleetFuelScenario client:visible />
 
@@ -83,29 +91,36 @@ For context, here's where the scenarios stack up:
 
 | Scenario | Brent | Approx pump price | Fleet annual cost | Δ vs baseline |
 |---|---|---|---|---|
-| Pre-crisis (Feb 2026) | $73/bbl | ~£1.37/L | £1.76M | |
-| Current (March 2026) | $82/bbl | ~£1.42/L | £1.83M | +£67k |
-| Sustained escalation | $100/bbl | ~£1.53/L | £1.96M | +£200k |
-| Hormuz closure | $120/bbl | ~£1.64/L | £2.11M | +£350k |
-| 2022 peak (for reference) | $123/bbl | ~£1.99/L | £2.55M | +£790k |
+| Pre-crisis (Feb 2026) | $73/bbl | ~£1.38/L | £1.77M | — |
+| Current (~Mar 10) | $90/bbl | ~£1.48/L | £1.90M | +£130k |
+| Actual pump price (Mar 10) | $90/bbl | ~£1.53/L | £1.96M | +£190k |
+| Monday peak | $119/bbl | ~£1.64/L | £2.10M | +£330k |
+| Prolonged closure (Rystad est.) | $135/bbl | ~£1.73/L | £2.22M | +£450k |
+| 2022 peak (for reference) | $123/bbl | ~£1.99/L | £2.55M | +£780k |
 
-The 2022 peak looks disproportionately worse because the refining margin was simultaneously extreme. The crude component alone at $120 today would produce a pump price of roughly £1.64, not £1.99. The difference is the crack spread.
+I've added an "actual pump price" row because there's currently a gap between what the model predicts at $90 and what you'll actually pay at the pump. That gap is the rockets-and-feathers lag: prices went up when crude spiked and haven't come back down yet. It will close over the coming weeks if crude stays around $90.
 
-One more row for that table, and this is the one that should concern fleet operators more than anything happening in the Middle East:
+The 2022 peak still looks disproportionately worse because the refining margin was simultaneously extreme. The crude component alone at $119 today produces a model pump price of roughly £1.64, not £1.99. The difference is the crack spread. If the Hormuz closure persists for months and refining margins blow out again, the picture gets considerably worse. The "prolonged closure" row at $135 assumes current refining margins, not 2022 crisis margins.
 
-| After duty increases (March 2027) | $82/bbl | ~£1.48/L | £1.90M | +£140k |
+One more row for that table, and this is the one that should concern fleet operators as much as anything happening in the Middle East:
 
-The government's planned fuel duty increases, 1p in September 2026, 2p in December 2026, 2p in March 2027, will add 5p per litre of duty, which is 6p at the pump after VAT. At current crude prices, that costs the same 30-truck fleet roughly £77,000 per year. More than the current war premium. And unlike a geopolitical crisis, it's not going away.
+| After duty increases (March 2027) | $90/bbl | ~£1.54/L | £1.97M | +£200k |
+
+The government's planned fuel duty increases, 1p in September 2026, 2p in December 2026, 2p in March 2027, will add 5p per litre of duty, which is 6p at the pump after VAT. At current crude prices, that costs the same 30-truck fleet roughly £77,000 per year. The war premium at today's pump price is about £190,000, so the duty increases no longer look small by comparison. But the war premium might reverse. The duty increases won't.
 
 ## Rockets and feathers
 
 There's an asymmetry to all of this that anyone who drives has noticed: prices go up fast and come down slowly. Economists call this "rockets and feathers." Fuel prices rocket up on bad news and float down like feathers when the crisis passes.
 
+We just saw the most dramatic example in years, compressed into a single trading session. On Monday morning Brent hit $119.50. By Monday afternoon, after Energy Secretary Chris Wright posted (falsely, as it turned out) that the US Navy had escorted a tanker through the Strait, crude crashed roughly 15% to settle around $88. It's now about $90. The entire round trip, $73 to $120 to $90, happened in ten days.
+
+Diesel at the pump went from 138p to 153p. It has not come back down. When crude does eventually settle, pump prices will drift lower, slowly, over weeks. This is the asymmetry made visible in real time.
+
 <RocketsAndFeathers client:visible />
 
 The reasons are structural, not conspiratorial. Refiners and wholesalers buy crude on futures markets. When prices spike, they price new product at the new cost immediately, even if their current inventory was bought cheaper. This is rational: replacement cost is what matters, not historical cost. When prices fall, they sell through higher-cost inventory before passing on savings. The lag is real.
 
-Retailers face the same logic compressed into tighter margins. A filling station making 3p per litre can't afford to be caught below cost if wholesale moves against them overnight. So they raise fast. But there's no equivalent urgency to lower, consumers grumble but still fill up, because fuel demand is inelastic. You need to get to work. The truck needs to deliver the freight. Nobody cancels a shipment because diesel went up 5p.
+Retailers face the same logic compressed into tighter margins. A filling station making 3p per litre can't afford to be caught below cost if wholesale moves against them overnight. So they raise fast. But there's no equivalent urgency to lower, consumers grumble but still fill up, because fuel demand is inelastic. You need to get to work. The truck needs to deliver the freight. Nobody cancels a shipment because diesel went up 5p. The PRA reported 30% higher sales on March 9 compared to normal, not quite panic buying, but the hoarding instinct is starting.
 
 For commercial fleets, the mechanism is different but the asymmetry persists. Most haulage contracts include a fuel surcharge, a line item that adjusts the rate the customer pays based on a published diesel price index, typically the weekly DESNZ average. When diesel goes up, the surcharge goes up, and the customer absorbs the increase. In theory, this is a perfect hedge.
 
@@ -131,9 +146,9 @@ Ask anyone what drives fuel prices and they'll say crude oil. Ask them what the 
 
 The crack spread, the difference between crude oil and refined diesel, is the invisible layer. In normal times it's stable enough to ignore. But "normal times" ended in 2022. European diesel refining capacity has been structurally reduced. Russian diesel exports to Europe, which used to be a significant supply, have been redirected. The remaining refinery base is running harder, at higher utilisation, with less redundancy.
 
-This means the diesel price can move even when crude doesn't. In late 2022, crude had already fallen back below $90, but diesel prices remained elevated because the crack spread was still wide. The refining bottleneck was the binding constraint, not the oil price.
+This means the diesel price can move even when crude doesn't. In late 2022, crude had already fallen back below $90, but diesel prices remained elevated because the crack spread was still wide. The refining bottleneck was the binding constraint, not the oil price. Right now, Rystad is forecasting "very high diesel crack spreads in Europe" through most of 2026 even before the Hormuz closure. With Middle East refining capacity now also constrained, and Bahrain's refinery offline, the risk of a 2022-style crack spread blowout is real.
 
-For fleet operators, this matters because the crack spread isn't hedgeable with simple crude oil instruments. Crude futures protect you against crude moves. They don't protect you against a refinery outage in Rotterdam or a sanctions change that redirects product flows. The correct hedge is gasoil futures (which track refined diesel, not crude), but these are less liquid and more expensive.
+For fleet operators, this matters because the crack spread isn't hedgeable with simple crude oil instruments. Crude futures protect you against crude moves. They don't protect you against a refinery outage in Rotterdam, a sanctions change that redirects product flows, or an airstrike on a Bahraini refinery. The correct hedge is gasoil futures (which track refined diesel, not crude), but these are less liquid and more expensive.
 
 ## What actually moves the needle
 
@@ -141,21 +156,22 @@ So you're a fleet operator. You can't control OPEC. You can't hedge the crack sp
 
 The answer is the same answer the rest of this blog keeps arriving at: control what you can control.
 
-A 5% improvement in fleet fuel economy, achievable through driver behaviour, telematics, predictive cruise control, and the operational improvements covered in the [rest of this series](/blog/heavy-haulage-basics), saves more money than a $10/bbl swing in crude oil. It's also permanent. It doesn't reverse when the crisis passes. It doesn't require a derivatives desk. It compounds every mile, every day, every truck.
+A 5% improvement in fleet fuel economy, achievable through driver behaviour, telematics, predictive cruise control, and the operational improvements covered in the [rest of this series](/blog/heavy-haulage-basics), saves real money. At the current pump price of £1.53, it saves about £98,000 a year for the same 30-truck fleet. It's also permanent. It doesn't reverse when the crisis passes. It doesn't require a derivatives desk. It compounds every mile, every day, every truck.
 
 The numbers, using the same 30-truck fleet:
 
 | Lever | Annual impact |
 |---|---|
-| 5% fuel economy improvement | saves ~£91k |
-| Current Hormuz crisis (+$9/bbl) | costs ~£67k |
+| 5% fuel economy improvement | saves ~£98k |
+| Hormuz crisis at current pump price (+15p/L) | costs ~£190k |
+| Hormuz crisis at model price (+10p/L, $73→$90) | costs ~£130k |
 | Planned duty increases (5p/L) | costs ~£77k |
-| Full aero package (3-5% saving) | saves ~£55–91k |
+| Full aero package (3-5% saving) | saves ~£59–98k |
 
-A single operational improvement more than offsets the war premium. And unlike crude oil, it's permanent, it doesn't reverse when the crisis passes, doesn't require a derivatives desk, and compounds every mile, every day, every truck.
+I'll be honest: at last week's prices, a 5% efficiency gain more than offset the war premium. At this week's prices, it doesn't. The crisis has escalated beyond the point where one operational lever cancels it out. But the efficiency gain is still half the war premium, it's permanent, and the war premium is (probably) not. If crude settles back to $80, the efficiency gain will be worth more than whatever the crisis leaves behind. And the duty increases are still coming either way.
 
-The news shows oil prices and burning refineries. The spreadsheet shows fuel duty, refining margins, and fleet efficiency. The spreadsheet wins every time.
+The news shows oil prices and burning refineries. The spreadsheet shows fuel duty, refining margins, and fleet efficiency. The spreadsheet wins, even when the refineries are actually on fire.
 
 ---
 
-*This post is part of a series on the physics, chemistry, and economics of commercial freight. Start with [the fundamentals of moving 44 tonnes](/blog/heavy-haulage-basics). The driver behaviour and telemetry data behind that "5% improvement" claim is coming next.*
+*This post is part of a series on the physics, chemistry, and economics of commercial freight. Start with [the fundamentals of moving 44 tonnes](/blog/heavy-haulage-basics). The driver behaviour and telemetry data behind that "5% improvement" claim is coming next. This post was originally published on 3 March 2026 when Brent was $82 and diesel was 142p. It has been substantially updated on 10 March 2026 to reflect the escalation. The numbers will keep moving. The structure won't.*

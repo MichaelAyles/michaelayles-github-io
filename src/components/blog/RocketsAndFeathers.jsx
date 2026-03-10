@@ -63,7 +63,9 @@ const historicalData = [
   { date: "2025-12", brent: 74, diesel: 143, label: null },
   { date: "2026-01", brent: 73, diesel: 136, label: null },
   { date: "2026-02", brent: 73, diesel: 138, label: null },
-  { date: "2026-03", brent: 82, diesel: 142, label: "Hormuz crisis" },
+  { date: "2026-03-03", brent: 82, diesel: 142, label: null },
+  { date: "2026-03-09", brent: 99, diesel: 153, label: "Peak: $119.50 intraday" },
+  { date: "2026-03-10", brent: 90, diesel: 153, label: "Hormuz crisis" },
 ];
 
 const events = [
@@ -88,10 +90,10 @@ const events = [
   {
     key: "hormuz",
     label: "Hormuz crisis (2026)",
-    description: "Crude up 12% over a weekend. Pump prices moving — but the tax structure limits the impact to ~3% at the pump.",
+    description: "Israel struck 30 Iranian oil depots. Brent hit $119.50 intraday on Mar 9, then crashed 15% in hours after a false US Navy report. Diesel at the pump moved from 138p to 153p and hasn't come back down. The crude round-tripped. The pump price didn't. Classic rockets and feathers, compressed into 48 hours.",
     startIdx: 33,
-    endIdx: 36,
-    rocketDays: "Days",
+    endIdx: 37,
+    rocketDays: "Hours",
     featherDays: "TBD",
   },
 ];

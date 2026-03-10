@@ -23,14 +23,15 @@ const WEEKLY_LITRES = 24500; // approximate weekly fleet consumption (30 trucks,
 
 const presets = {
   stable: { label: "Stable market", values: [138, 138, 139, 139, 138, 138, 137, 138, 139, 138, 138, 138] },
-  spike: { label: "Sudden spike", values: [138, 138, 158, 162, 160, 155, 150, 148, 145, 143, 141, 140] },
+  spike: { label: "Sudden spike", values: [138, 138, 162, 170, 168, 160, 155, 150, 148, 145, 143, 141] },
   gradual: { label: "Gradual rise", values: [138, 140, 142, 144, 146, 148, 150, 152, 154, 155, 155, 155] },
   crash: { label: "Price crash", values: [165, 160, 148, 140, 135, 132, 130, 130, 131, 132, 132, 133] },
+  hormuz: { label: "Hormuz crisis (actual)", values: [138, 138, 153, 165, 170, 168, 160, 155, 150, 148, 145, 143] },
 };
 
 export default function SurchargeSimulator() {
-  const [scenario, setScenario] = useState("spike");
-  const [dieselPrices, setDieselPrices] = useState(presets.spike.values);
+  const [scenario, setScenario] = useState("hormuz");
+  const [dieselPrices, setDieselPrices] = useState(presets.hormuz.values);
   const [surchargeDelay, setSurchargeDelay] = useState(4); // weeks lag
   const [dragging, setDragging] = useState(false);
 

@@ -20,14 +20,14 @@ const mono = "'JetBrains Mono', 'Fira Code', 'SF Mono', monospace";
 const sans = "'Inter', sans-serif";
 
 const FUEL_DUTY = 52.95; // pence, frozen since 2011
-const REFINING_MARGIN = 20; // pence per litre (elevated post-2022)
+const REFINING_MARGIN = 22; // pence per litre (elevated post-2022, further widened by Hormuz)
 const DISTRIBUTION_MARGIN = 6; // pence per litre
 const VAT_RATE = 0.20;
 
 // Approximate crude cost in pence per litre from $/bbl
 // A barrel is 159 litres. Yield losses are captured in the refining margin.
-// At $82/bbl ≈ 40p/L crude component.
-function crudeToLitrePence(brentUsd, exchangeRate = 1.30) {
+// At $90/bbl ≈ 42p/L crude component.
+function crudeToLitrePence(brentUsd, exchangeRate = 1.345) {
   const brentGbp = brentUsd / exchangeRate;
   return (brentGbp * 100) / 159;
 }
@@ -71,7 +71,7 @@ const Slider = ({ label, value, onChange, min, max, step = 1, unit = "", format 
 );
 
 export default function DieselPriceWaterfall() {
-  const [brent, setBrent] = useState(82);
+  const [brent, setBrent] = useState(90);
   const [showDutyIncrease, setShowDutyIncrease] = useState(false);
 
   const stack = useMemo(() => buildStack(brent), [brent]);
@@ -247,7 +247,8 @@ export default function DieselPriceWaterfall() {
       }}>
         <span style={{ fontFamily: mono, fontWeight: 700, color: COLORS.textMuted }}>Reference points: </span>
         Pre-crisis (Feb 2026, $73) → £{(baselineStack.total / 100).toFixed(2)}/L.
-        {" "}Current ($82) → £{(buildStack(82).total / 100).toFixed(2)}/L.
+        {" "}Current (~$90) → £{(buildStack(90).total / 100).toFixed(2)}/L.
+        {" "}Mar 9 intraday peak ($119.50) → £{(buildStack(119.5).total / 100).toFixed(2)}/L.
         {" "}June 2022 peak ($123 + extreme crack spread) → ~£1.99/L.
         {" "}Fuel duty has been 52.95p since March 2011.
       </div>

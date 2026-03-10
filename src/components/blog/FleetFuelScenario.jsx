@@ -19,13 +19,13 @@ const mono = "'JetBrains Mono', 'Fira Code', 'SF Mono', monospace";
 const sans = "'Inter', sans-serif";
 
 const FUEL_DUTY_PENCE = 52.95;
-const REFINING_MARGIN_PENCE = 20;
+const REFINING_MARGIN_PENCE = 22;
 const DISTRIBUTION_PENCE = 6;
 const VAT_RATE = 0.20;
 const DUTY_INCREASE_PENCE = 5; // planned +5p by March 2027
 
 function brentToPumpPence(brentUsd, extraDutyPence = 0) {
-  const brentGbp = brentUsd / 1.30;
+  const brentGbp = brentUsd / 1.345;
   const crudePence = (brentGbp * 100) / 159;
   const duty = FUEL_DUTY_PENCE + extraDutyPence;
   const subtotal = crudePence + REFINING_MARGIN_PENCE + DISTRIBUTION_PENCE + duty;
@@ -64,7 +64,7 @@ export default function FleetFuelScenario() {
   const [trucks, setTrucks] = useState(30);
   const [mpg, setMpg] = useState(8.5);
   const [milesPerYear, setMilesPerYear] = useState(80000);
-  const [brent, setBrent] = useState(82);
+  const [brent, setBrent] = useState(90);
 
   const calc = useMemo(() => {
     const litres = fleetAnnualLitres(trucks, milesPerYear, mpg);
@@ -95,10 +95,10 @@ export default function FleetFuelScenario() {
   }, [trucks, mpg, milesPerYear, brent]);
 
   const scenarios = [
-    { label: "Pre-crisis", brent: 73, color: COLORS.textMuted },
-    { label: "Current", brent: 82, color: COLORS.accent },
-    { label: "Escalation", brent: 100, color: COLORS.yellow },
-    { label: "Hormuz closure", brent: 120, color: COLORS.red },
+    { label: "Pre-crisis (Feb)", brent: 73, color: COLORS.textMuted },
+    { label: "Current (~Mar 10)", brent: 90, color: COLORS.accent },
+    { label: "Monday peak", brent: 119, color: COLORS.yellow },
+    { label: "Prolonged closure", brent: 135, color: COLORS.red },
   ];
 
   const scenarioData = scenarios.map(s => {
@@ -236,10 +236,10 @@ export default function FleetFuelScenario() {
             War premium (Hormuz)
           </div>
           <div style={{ fontFamily: mono, fontSize: 20, fontWeight: 700, color: COLORS.red }}>
-            +£{((calc.litres * (brentToPumpPence(82) - brentToPumpPence(73)) / 100) / 1000).toFixed(0)}k
+            +£{((calc.litres * (brentToPumpPence(90) - brentToPumpPence(73)) / 100) / 1000).toFixed(0)}k
           </div>
           <div style={{ fontFamily: mono, fontSize: 10, color: COLORS.textDim, marginTop: 4 }}>
-            $73 → $82/bbl
+            $73 → $90/bbl
           </div>
         </div>
         <div style={{ textAlign: "center" }}>
