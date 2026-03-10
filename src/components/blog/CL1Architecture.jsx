@@ -16,7 +16,7 @@ export default function CL1Architecture() {
   ];
 
   const arrows = [
-    [150, 310],
+    [150, 180],
     [310, 340],
     [480, 510],
     [640, 670],
