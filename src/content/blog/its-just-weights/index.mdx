@@ -1,0 +1,93 @@
+---
+title: "It's Just Weights"
+description: "A tiny neural network reproduces the Cortical Labs CL1 DOOM demo in your browser. 132 parameters vs 200,000 biological neurons."
+date: 2026-03-10
+tags: ["machine-learning", "neuroscience", "doom"]
+draft: false
+---
+
+import CL1Architecture from '@/components/blog/CL1Architecture';
+import NetworkDiagram from '@/components/blog/NetworkDiagram';
+import DemoEmbed from '@/components/blog/DemoEmbed';
+
+Last month, Cortical Labs published a demo of their CL1 system: 200,000 human brain cells, grown on a multielectrode array, playing a simplified version of DOOM. The internet lost its mind. Hacker News threads invoked "I Have No Mouth and I Must Scream." Commenters debated the ethics of torturing neurons in a jar.
+
+I think this is bloody cool. I also think the panic is completely unwarranted. Here's why.
+
+## What's actually happening
+
+The CL1 architecture is not "neurons playing DOOM." It's a sandwich. Two conventional ML systems with biological neurons in the middle.
+
+<CL1Architecture client:visible />
+
+A PPO encoder (running on a GPU, written in Python) takes the game state and encodes it as electrical stimulation patterns. These pulses are fed to the biological neurons. The neurons produce spike patterns in response. A CNN decoder (also running on a GPU, also Python) reads those spikes and maps them to game actions: turn left, turn right, shoot, move forward.
+
+The neurons don't see pixels. They receive three encoded signals: the angle to the enemy, the distance, and whether it's visible. They produce spikes. Silicon does the rest.
+
+The developer, Shawn Cole, built the software side of this in a week. The neurons sit in the middle doing what neurons do: adapting their connection strengths in response to repeated stimulation. When a particular input pattern consistently precedes a reward signal, the connections that produced the "right" output get stronger. The ones that didn't get weaker.
+
+This is what the ablation test shows. When you randomise the decoder output (ignoring what the neurons actually produce), performance drops to chance. When you restore the real decoder, performance returns. The neurons contribute. Their connection weights encode useful behaviour.
+
+But that's not consciousness. That's not cognition. That's stimulus-response conditioning.
+
+## I reproduced it in 132 parameters
+
+I built an equivalent system in the browser. Same three inputs (enemy angle, distance, visibility). Same four actions. Same reward structure. A tiny feedforward neural network, 132 parameters total, learns the same behaviour. In seconds.
+
+<NetworkDiagram client:visible />
+
+Three input neurons feed into sixteen hidden neurons (tanh activation), which feed into four output neurons (softmax). The network picks an action by sampling from the output probability distribution. A policy gradient algorithm adjusts the weights after each batch of episodes, strengthening connections that led to kills and weakening ones that didn't.
+
+That's it. No frameworks. No GPU. The entire network is hand-rolled in about 150 lines of TypeScript. If you needed TensorFlow to match what 200,000 biological neurons do, something would be wrong.
+
+Watch it learn:
+
+<DemoEmbed client:visible src="https://braindoom.mikeayles.com" />
+
+Within a few hundred episodes, the network reliably turns toward the enemy, closes distance, and shoots when aimed. Try the ablation toggle in the controls. Performance drops to chance immediately, exactly like the CL1 control condition. Toggle it off. Performance returns. Same test, same result, 132 parameters instead of 200,000 neurons.
+
+## What you're watching
+
+In the first few episodes, the weights are random and the agent spins aimlessly. This is the ablation baseline, equivalent to the CL1 condition where decoder output is randomised.
+
+By episode ten or so, the connections from the "enemy angle" input to the "turn left" and "turn right" outputs start differentiating. If the enemy is left, the weight toward "turn left" strengthens. You can see this happening in real time in the network diagram, connections going red (strong positive) or blue (strong negative).
+
+By episode fifty, the agent turns and shoots reliably. The full behaviour. The CL1 biological neurons took days of continuous stimulation to get here.
+
+The weight diagram tells the whole story. The three inputs and four outputs are connected by 132 numbers. Before training, those numbers are random noise. After training, they encode the policy: "turn toward the enemy, shoot when aimed." The entire learned behaviour is literally just weights.
+
+## The gym analogy
+
+Your bicep doesn't know it's lifting a dumbbell. It receives a nerve impulse, contracts, and if you keep providing the same stimulus (progressive overload), the muscle fibres adapt. They get stronger. The connection between "nerve impulse" and "force output" changes. Nobody calls a bicep conscious for adapting to stimulus.
+
+Hebbian learning in biological neurons works the same way. "Neurons that fire together wire together." A connection that's active when a reward arrives gets strengthened. A connection that's active when punishment arrives gets weakened. This is the same update rule as gradient descent, just implemented in chemistry instead of arithmetic.
+
+The CL1 neurons receive encoded electrical signals. They produce spikes. The connections between input and output adapt based on reward feedback. Replace "electrical signals" with "floating point numbers" and "spikes" with "activations" and you have my 132-parameter network. Replace "connection strengths" with "weights" and you have the exact same thing. Because it is the exact same thing.
+
+Nobody is worried about my network becoming conscious. Nobody should be worried about 200,000 unstructured neurons in a dish doing the same computation.
+
+## What's actually cool
+
+The genuinely interesting thing about CL1 is not the consciousness debate. It's the drug testing angle.
+
+If you have a biological system that exhibits measurable, reproducible learning, you have a drug testing assay. Expose the neurons to a compound, measure the change in learning rate or asymptotic performance, and you have a quantitative signal of neurological effect. This is what Cortical Labs' CTO has been talking about, using the platform to test experimental compounds on human neural tissue without human subjects.
+
+That is a genuinely new capability. The Python SDK that lets you programmatically interface with biological neural tissue, stimulate it, record from it, and measure learning, that's interesting technology with real applications in pharmaceutical screening.
+
+The "DOOM" framing is marketing. Effective marketing, clearly, but it obscures the actual contribution.
+
+## Where the line actually is
+
+I want to be clear: the ethical question about biological neural systems is real. It's just premature here.
+
+200,000 unstructured organoid neurons doing stimulus-response conditioning is not qualitatively different from what my 132 parameters do. For comparison, a fruit fly has roughly 140,000 neurons, but those are structured into a connectome with sensory feedback loops, memory circuits, and decision-making architecture. The CL1 organoid doesn't have any of that. It's a dish of cells.
+
+The interesting and important questions are about what happens when someone grows an organised cortical structure with feedback loops, hierarchical processing, and persistent memory. When biological systems start exhibiting behaviours that simple parameter-matching can't reproduce. That's the line to watch for. A dish of cells producing stimulus-response adaptation is not that.
+
+## The point
+
+The coolest thing about this story isn't the consciousness debate. It's that we can now programmatically interface with biological neural tissue and measure learning. That's a genuinely new capability with real applications in drug discovery and neuroscience research.
+
+The scary version of this story requires organised neural architecture, sensory feedback loops, and emergent computation that exceeds what simple weight adjustment can produce. We're not there. What we have is weights. Adjustable, measurable, reproducible weights.
+
+Just like the ones in my browser. Just like the ones in your bicep. There's no magic here. It's just weights.
