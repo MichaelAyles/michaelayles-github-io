@@ -3,16 +3,18 @@ title: "It's Just Weights"
 description: "A tiny neural network reproduces the Cortical Labs CL1 DOOM demo in your browser. 132 parameters vs 200,000 biological neurons."
 date: 2026-03-10
 tags: ["machine-learning", "neuroscience", "doom"]
-draft: true
+draft: false
 ---
 
 import CL1Architecture from '@/components/blog/CL1Architecture';
 import NetworkDiagram from '@/components/blog/NetworkDiagram';
 import DemoEmbed from '@/components/blog/DemoEmbed';
 
-Last month, Cortical Labs published a demo of their CL1 system: 200,000 human brain cells, grown on a multielectrode array, playing a simplified version of DOOM. The internet lost its mind. Hacker News threads invoked "I Have No Mouth and I Must Scream." Commenters debated the ethics of torturing neurons in a jar.
+Last month, Cortical Labs published a demo of their CL1 system: 200,000 human brain cells, grown on a multielectrode array, playing a simplified version of DOOM. The internet lost its mind. Hacker News invoked "I Have No Mouth and I Must Scream." One commenter put it perfectly: "we grew a brain on a petri dish, gave it a shotgun, and sent it to hell." Others debated whether Cortical Labs had built the Torment Nexus.
 
 I think this is bloody cool. I also think the panic is completely unwarranted. Here's why.
+
+What surprised me most wasn't the demo itself. It was the reaction. This is a technical audience. Most of HN has trained a neural network, or at least understands what one is. And yet the thread filled up with people projecting consciousness onto 200,000 unstructured cells doing stimulus-response conditioning. The word "neuron" is doing a lot of heavy lifting here. Swap it for "parameter" and nobody bats an eye.
 
 ## What's actually happening
 
@@ -20,9 +22,9 @@ The CL1 architecture is not "neurons playing DOOM." It's a sandwich. Two convent
 
 <CL1Architecture client:visible />
 
-A PPO encoder (running on a GPU, written in Python) takes the game state and encodes it as electrical stimulation patterns. These pulses are fed to the biological neurons. The neurons produce spike patterns in response. A CNN decoder (also running on a GPU, also Python) reads those spikes and maps them to game actions: turn left, turn right, shoot, move forward.
+The neurons never see the DOOM framebuffer. There is no visual processing happening here. The game engine outputs a handful of numerical signals, the horizontal angle to the nearest enemy, its distance, and whether it's on screen, and a PPO encoder (running on a GPU, written in Python) converts those numbers into electrical stimulation patterns. These pulses are fed to the biological neurons. The neurons produce spike patterns in response. A CNN decoder (also on a GPU, also Python) reads those spikes and maps them to game actions: turn left, turn right, shoot, move forward.
 
-The neurons don't see pixels. They receive three encoded signals: the angle to the enemy, the distance, and whether it's visible. They produce spikes. Silicon does the rest.
+To be completely clear: the inputs to the biological neurons are three numbers. Not a screen. Not pixels. Not anything resembling vision. Three floats, encoded as electrical pulses.
 
 The developer, Shawn Cole, built the software side of this in a week. The neurons sit in the middle doing what neurons do: adapting their connection strengths in response to repeated stimulation. When a particular input pattern consistently precedes a reward signal, the connections that produced the "right" output get stronger. The ones that didn't get weaker.
 
@@ -36,25 +38,29 @@ I built an equivalent system in the browser. Same three inputs (enemy angle, dis
 
 <NetworkDiagram client:visible />
 
-Three input neurons feed into sixteen hidden neurons (tanh activation), which feed into four output neurons (softmax). The network picks an action by sampling from the output probability distribution. A policy gradient algorithm adjusts the weights after each batch of episodes, strengthening connections that led to kills and weakening ones that didn't.
+Three input neurons feed into sixteen hidden neurons (tanh activation), which feed into four output neurons (softmax). The network picks an action by sampling from the output probability distribution. A policy gradient algorithm adjusts the weights after each batch of episodes, strengthening connections that led to good outcomes and weakening ones that didn't.
 
 That's it. No frameworks. No GPU. The entire network is hand-rolled in about 150 lines of TypeScript. If you needed TensorFlow to match what 200,000 biological neurons do, something would be wrong.
+
+You might wonder how 132 numbers can match 200,000 neurons. The answer is that the task is small, not the neurons. Three inputs, four outputs, "turn toward stimulus and act." The information-theoretic complexity of that policy is tiny. You could probably solve it with 20 parameters. The 200,000 neurons aren't wired efficiently for this task, they're an unstructured organoid, cells that grew into a random clump on an electrode array. Most of those neurons are either doing nothing useful, redundantly encoding the same signal, or maintaining biological overhead (membrane potential, ion channels, metabolic processes) that exists to keep the cell alive, not to compute. It's the same reason a CPU has billions of transistors but only a fraction are doing the actual arithmetic for any given instruction.
+
+You can toggle the demo between "water the flower" and "shoot the demon" mode. The weights form identically. The network has no concept of either. The semantics are entirely in your head.
 
 Watch it learn:
 
 <DemoEmbed client:visible src="https://braindoom.mikeayles.com" />
 
-Within a few hundred episodes, the network reliably turns toward the enemy, closes distance, and shoots when aimed. Try the ablation toggle in the controls. Performance drops to chance immediately, exactly like the CL1 control condition. Toggle it off. Performance returns. Same test, same result, 132 parameters instead of 200,000 neurons.
+Within a few hundred episodes, the network reliably turns toward the target, closes distance, and acts when aimed. Try the ablation toggle in the controls. Performance drops to chance immediately, exactly like the CL1 control condition. Toggle it off. Performance returns. Same test, same result, 132 parameters instead of 200,000 neurons.
 
 ## What you're watching
 
 In the first few episodes, the weights are random and the agent spins aimlessly. This is the ablation baseline, equivalent to the CL1 condition where decoder output is randomised.
 
-By episode ten or so, the connections from the "enemy angle" input to the "turn left" and "turn right" outputs start differentiating. If the enemy is left, the weight toward "turn left" strengthens. You can see this happening in real time in the network diagram, connections going red (strong positive) or blue (strong negative).
+By episode ten or so, the connections from the "enemy angle" input to the "turn left" and "turn right" outputs start differentiating. If the target is left, the weight toward "turn left" strengthens. You can see this happening in real time in the network diagram, connections going red (strong positive) or blue (strong negative).
 
-By episode fifty, the agent turns and shoots reliably. The full behaviour. The CL1 biological neurons took days of continuous stimulation to get here.
+By episode fifty, the agent turns and acts reliably. The full behaviour. The CL1 biological neurons took days of continuous stimulation to get here.
 
-The weight diagram tells the whole story. The three inputs and four outputs are connected by 132 numbers. Before training, those numbers are random noise. After training, they encode the policy: "turn toward the enemy, shoot when aimed." The entire learned behaviour is literally just weights.
+The weight diagram tells the whole story. The three inputs and four outputs are connected by 132 numbers. Before training, those numbers are random noise. After training, they encode the policy: "turn toward the target, act when aimed." The entire learned behaviour is literally just weights.
 
 ## The gym analogy
 
@@ -62,7 +68,9 @@ Your bicep doesn't know it's lifting a dumbbell. It receives a nerve impulse, co
 
 Hebbian learning in biological neurons works the same way. "Neurons that fire together wire together." A connection that's active when a reward arrives gets strengthened. A connection that's active when punishment arrives gets weakened. This is the same update rule as gradient descent, just implemented in chemistry instead of arithmetic.
 
-The CL1 neurons receive encoded electrical signals. They produce spikes. The connections between input and output adapt based on reward feedback. Replace "electrical signals" with "floating point numbers" and "spikes" with "activations" and you have my 132-parameter network. Replace "connection strengths" with "weights" and you have the exact same thing. Because it is the exact same thing.
+The CL1 neurons receive three encoded numbers as electrical pulses. They produce spikes. The connections between input and output adapt based on reward feedback. Replace "electrical pulses" with "floating point numbers" and "spikes" with "activations" and you have my 132-parameter network. Replace "connection strengths" with "weights" and you have the exact same thing. Because it is the exact same thing.
+
+Steve Furber, a computer science professor at the University of Manchester, [noted](https://www.newscientist.com/article/2517389-human-brain-cells-on-a-chip-learned-to-play-doom-in-a-week/) that we still don't fully understand how the neurons are playing the game or how they know what's expected of them. This is an honest assessment. But "we don't fully understand the mechanism" is a long way from "it's conscious." We don't fully understand how my 132 parameters converge on a policy either, that's the nature of gradient-based optimisation. The weights work. We can measure that they work. The "how" is an open research question, not evidence of a mind.
 
 Nobody is worried about my network becoming conscious. Nobody should be worried about 200,000 unstructured neurons in a dish doing the same computation.
 
@@ -70,7 +78,7 @@ Nobody is worried about my network becoming conscious. Nobody should be worried 
 
 The genuinely interesting thing about CL1 is not the consciousness debate. It's the drug testing angle.
 
-If you have a biological system that exhibits measurable, reproducible learning, you have a drug testing assay. Expose the neurons to a compound, measure the change in learning rate or asymptotic performance, and you have a quantitative signal of neurological effect. This is what Cortical Labs' CTO has been talking about, using the platform to test experimental compounds on human neural tissue without human subjects.
+If you have a biological system that exhibits measurable, reproducible learning, you have a drug testing assay. Expose the neurons to a compound, measure the change in learning rate or asymptotic performance, and you have a quantitative signal of neurological effect. This is what Cortical Labs' CTO has been talking about: using the platform to test experimental compounds on human neural tissue without human subjects.
 
 That is a genuinely new capability. The Python SDK that lets you programmatically interface with biological neural tissue, stimulate it, record from it, and measure learning, that's interesting technology with real applications in pharmaceutical screening.
 
@@ -80,9 +88,9 @@ The "DOOM" framing is marketing. Effective marketing, clearly, but it obscures t
 
 I want to be clear: the ethical question about biological neural systems is real. It's just premature here.
 
-200,000 unstructured organoid neurons doing stimulus-response conditioning is not qualitatively different from what my 132 parameters do. For comparison, a fruit fly has roughly 140,000 neurons, but those are structured into a connectome with sensory feedback loops, memory circuits, and decision-making architecture. The CL1 organoid doesn't have any of that. It's a dish of cells.
+200,000 unstructured organoid neurons doing stimulus-response conditioning is not qualitatively different from what my 132 parameters do. For comparison, a fruit fly has roughly 140,000 neurons, but those are structured into a connectome with sensory feedback loops, memory circuits, and decision-making architecture that took millions of years of evolution to wire up. The CL1 organoid doesn't have any of that. It's a dish of cells.
 
-The interesting and important questions are about what happens when someone grows an organised cortical structure with feedback loops, hierarchical processing, and persistent memory. When biological systems start exhibiting behaviours that simple parameter-matching can't reproduce. That's the line to watch for. A dish of cells producing stimulus-response adaptation is not that.
+I don't think this is anywhere close to the line, and I think the people panicking are confusing the word "neuron" with the word "mind." The interesting and important questions are about what happens when someone grows an organised cortical structure with feedback loops, hierarchical processing, and persistent memory. When biological systems start exhibiting behaviours that simple parameter-matching can't reproduce. That's the line to watch for. A dish of cells producing stimulus-response adaptation is not that.
 
 ## The point
 
@@ -91,3 +99,7 @@ The coolest thing about this story isn't the consciousness debate. It's that we 
 The scary version of this story requires organised neural architecture, sensory feedback loops, and emergent computation that exceeds what simple weight adjustment can produce. We're not there. What we have is weights. Adjustable, measurable, reproducible weights.
 
 Just like the ones in my browser. Just like the ones in your bicep. There's no magic here. It's just weights.
+
+---
+
+*[View the source code](https://github.com/MichaelAyles/braindoom) for the 132-parameter demo. The full network is in `src/network/network.ts`.*
