@@ -237,7 +237,7 @@ export default function RAGBenchmarkChart() {
 
       <p style={{ fontSize: '0.65rem', color: '#475569', marginTop: '16px', marginBottom: 0 }}>
         Benchmark: 60 queries across 4 categories (exact symbol, conceptual, cross-cutting, refactoring) against a ~200-file TypeScript codebase.
-        Claude Code on Opus 4.5, GitHub Copilot on Haiku 4.5. RAG via MCP server (FAISS + SQLite FTS5).
+        Claude Code on Opus 4.6, GitHub Copilot on Haiku 4.5. RAG via MCP server (FAISS + SQLite FTS5).
         Per-tool semaphore; sequential execution within each tool.
       </p>
     </div>
