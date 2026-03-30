@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 
 const COLORS = {
   claude: '#f97316',
@@ -72,13 +72,24 @@ function DeltaChip({ value, unit = '', invert = false }) {
 export default function RAGBenchmarkChart() {
   const [view, setView] = useState('overview');
   const [metric, setMetric] = useState('recall');
+  const containerRef = useRef(null);
+  const [compact, setCompact] = useState(false);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const ro = new ResizeObserver(([entry]) => {
+      setCompact(entry.contentRect.width < 520);
+    });
+    ro.observe(containerRef.current);
+    return () => ro.disconnect();
+  }, []);
 
   const tools = ['claude', 'copilot'];
   const categories = ['exact', 'concept', 'cross', 'refactor'];
 
   const buttonStyle = (active) => ({
-    padding: '6px 14px',
-    fontSize: '0.8rem',
+    padding: compact ? '6px 10px' : '6px 14px',
+    fontSize: compact ? '0.7rem' : '0.8rem',
     border: active ? '1px solid #f97316' : '1px solid rgba(255,255,255,0.15)',
     borderRadius: '6px',
     background: active ? 'rgba(249, 115, 22, 0.15)' : 'transparent',
@@ -88,23 +99,23 @@ export default function RAGBenchmarkChart() {
   });
 
   return (
-    <div style={{
+    <div ref={containerRef} style={{
       background: 'var(--surface, #1a1a2e)',
       border: '1px solid rgba(255,255,255,0.08)',
       borderRadius: '12px',
-      padding: '24px',
+      padding: compact ? '16px' : '24px',
       fontFamily: 'system-ui, -apple-system, sans-serif',
       color: 'var(--text, #e2e8f0)',
     }}>
       <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
         <button onClick={() => setView('overview')} style={buttonStyle(view === 'overview')}>Overview</button>
         <button onClick={() => setView('categories')} style={buttonStyle(view === 'categories')}>By Category</button>
-        <button onClick={() => setView('speed')} style={buttonStyle(view === 'speed')}>Speed vs Quality</button>
+        <button onClick={() => setView('speed')} style={buttonStyle(view === 'speed')}>Time to Resolution</button>
       </div>
 
       {view === 'overview' && (
         <div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: compact ? '1fr' : '1fr 1fr', gap: compact ? '16px' : '24px' }}>
             {tools.map((tool) => {
               const nat = DATA[tool].native;
               const rag = DATA[tool].rag;
@@ -113,7 +124,7 @@ export default function RAGBenchmarkChart() {
                 <div key={tool} style={{ padding: '16px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
                   <h4 style={{ margin: '0 0 4px', color, textTransform: 'capitalize' }}>{tool === 'claude' ? 'Claude Code' : 'GitHub Copilot'}</h4>
                   <p style={{ margin: '0 0 12px', fontSize: '0.75rem', color: '#64748b' }}>
-                    {tool === 'claude' ? 'Opus 4.5' : 'Haiku 4.5'} &middot; {nat.n + rag.n} runs
+                    {tool === 'claude' ? 'Opus 4.6' : 'Haiku 4.5'} &middot; {nat.n + rag.n} runs
                   </p>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '16px' }}>
@@ -132,7 +143,7 @@ export default function RAGBenchmarkChart() {
                   <Bar value={rag.recall} max={1} color={color} label="RAG recall" sublabel={rag.recall.toFixed(3)} />
 
                   <div style={{ marginTop: '12px', fontSize: '0.75rem', color: '#64748b' }}>
-                    Speed: {nat.time.toFixed(0)}s native → {rag.time.toFixed(0)}s RAG{' '}
+                    Time to resolution: {nat.time.toFixed(0)}s native → {rag.time.toFixed(0)}s RAG{' '}
                     <DeltaChip value={rag.time - nat.time} unit="s" invert />
                   </div>
                 </div>
@@ -146,7 +157,7 @@ export default function RAGBenchmarkChart() {
         <div>
           <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
             <button onClick={() => setMetric('recall')} style={buttonStyle(metric === 'recall')}>Recall</button>
-            <button onClick={() => setMetric('time')} style={buttonStyle(metric === 'time')}>Speed</button>
+            <button onClick={() => setMetric('time')} style={buttonStyle(metric === 'time')}>Time to Resolution</button>
           </div>
 
           {categories.map((cat) => (
@@ -192,7 +203,7 @@ export default function RAGBenchmarkChart() {
               Recall
             </div>
             <div style={{ position: 'absolute', bottom: '4px', left: '50%', transform: 'translateX(-50%)', fontSize: '0.7rem', color: '#64748b' }}>
-              Mean response time (s)
+              Mean time to resolution (s)
             </div>
 
             {/* Data points */}
@@ -238,7 +249,8 @@ export default function RAGBenchmarkChart() {
       <p style={{ fontSize: '0.65rem', color: '#475569', marginTop: '16px', marginBottom: 0 }}>
         Benchmark: 60 queries across 4 categories (exact symbol, conceptual, cross-cutting, refactoring) against a ~200-file TypeScript codebase.
         Claude Code on Opus 4.6, GitHub Copilot on Haiku 4.5. RAG via MCP server (FAISS + SQLite FTS5).
-        Per-tool semaphore; sequential execution within each tool.
+        Per-tool semaphore; sequential execution within each tool. Copilot absolute numbers are lower bounds due to parser limitations (see caveats).
+        RAG times include MCP cold start (~12s/query).
       </p>
     </div>
   );
