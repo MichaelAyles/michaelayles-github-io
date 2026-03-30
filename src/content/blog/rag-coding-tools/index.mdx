@@ -39,7 +39,7 @@ I wrote 60 queries across four categories: exact symbol lookups ("where is funct
 
 The target codebase is [kicad-library](https://github.com/michaelayles/kicad-library), a ~200-file TypeScript project and the source code to [circuitsnips.com](https://www.circuitsnips.com), my KiCad subcircuit sharing website. Small enough to be tractable, large enough to have real architectural concerns.
 
-I ran four tools, of which two produced reliable data: **Claude Code** (Anthropic's CLI, running Opus 4.6) and **GitHub Copilot CLI** (running Haiku 4.5 server-side). Each tool ran every query 3 times in both modes, giving me ~580 data points. Codex CLI had data reliability issues (empty answers beyond exact symbol lookups) and Gemini CLI hit persistent auth failures in subprocess mode despite passing earlier tests. Since this benchmark compares search modes, not tools, I discarded both rather than present incomplete data.
+I ran four tools, of which two produced reliable data: **Claude Code** (Anthropic's CLI, running Opus 4.6) and **GitHub Copilot CLI** (running Haiku 4.5). Each tool ran every query 3 times in both modes, giving me ~580 data points. Codex CLI had data reliability issues (empty answers beyond exact symbol lookups) and Gemini CLI hit persistent auth failures in subprocess mode despite passing earlier tests. Since this benchmark compares search modes, not tools, I discarded both rather than present incomplete data.
 
 ## Three caveats before you look at the data
 
@@ -117,7 +117,7 @@ But that calculus doesn't apply equally to all tools.
 
 ## The case for RAG in Copilot
 
-GitHub Copilot CLI is architecturally similar to Claude Code (both are local TUIs that execute tool calls on your machine), but the model and search strategy differ significantly. The model running server-side is Haiku 4.5, which is fast and cheap but less capable than the Opus 4.6 powering Claude Code. And based on my benchmarking, Copilot's native search strategy is noticeably less sophisticated: it makes more tool calls per query (13 on average vs fewer for Claude), takes longer to converge, and shows some parsing issues that suggest the search tooling hasn't received the same level of optimisation as Claude Code's. More tool calls means more model inference round trips, which is where the time goes.
+GitHub Copilot CLI is architecturally similar to Claude Code (both are local TUIs that execute tool calls on your machine, with model inference in the cloud), but the model and search strategy differ significantly. Copilot runs Haiku 4.5, which is fast and cheap but less capable than the Opus 4.6 powering Claude Code. And based on my benchmarking, Copilot's native search strategy is noticeably less sophisticated: it makes more tool calls per query (13 on average vs fewer for Claude), takes longer to converge, and shows some parsing issues that suggest the search tooling hasn't received the same level of optimisation as Claude Code's. More tool calls means more model inference round trips, which is where the time goes.
 
 RAG helps Copilot more than it helps Claude, not in recall (where the lift is modest), but in the overall experience. With RAG, Copilot is **44% faster** and shows a **19% F1 improvement**. The speed gain alone changes the usability equation, remembering that these numbers include MCP cold start overhead and Copilot's absolute accuracy is likely higher than the parser reports. When your tool takes 60 seconds per query in native mode, cutting that to 34 seconds makes it feel like a different product.
 
