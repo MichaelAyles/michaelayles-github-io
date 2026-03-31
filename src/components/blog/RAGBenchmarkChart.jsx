@@ -1,21 +1,19 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const COLORS = {
   claude: '#f97316',
   copilot: '#3b82f6',
-  native: 'rgba(255,255,255,0.15)',
-  rag: 'rgba(255,255,255,0.05)',
 };
 
 const DATA = {
   claude: {
-    native: { recall: 0.825, precision: 0.396, f1: 0.502, time: 34.1, n: 133 },
-    rag: { recall: 0.878, precision: 0.417, f1: 0.529, time: 46.4, n: 120 },
+    native: { recall: 0.907, precision: 0.409, f1: 0.533, time: 37.0, n: 180 },
+    rag: { recall: 0.924, precision: 0.437, f1: 0.559, time: 34.6, n: 180 },
     categories: {
-      exact: { native: { recall: 0.933, time: 23.8 }, rag: { recall: 0.933, time: 36.9 } },
-      concept: { native: { recall: 0.919, time: 42.9 }, rag: { recall: 0.923, time: 52.5 } },
-      cross: { native: { recall: 0.742, time: 44.0 }, rag: { recall: 0.788, time: 57.1 } },
-      refactor: { native: { recall: 0.400, time: 20.2 }, rag: { recall: 0.625, time: 34.6 } },
+      exact: { native: { recall: 0.933, time: 22.1 }, rag: { recall: 1.000, time: 26.0 } },
+      concept: { native: { recall: 0.896, time: 36.7 }, rag: { recall: 0.933, time: 33.9 } },
+      cross: { native: { recall: 0.891, time: 48.8 }, rag: { recall: 0.881, time: 38.8 } },
+      refactor: { native: { recall: 0.907, time: 40.5 }, rag: { recall: 0.880, time: 39.7 } },
     },
   },
   copilot: {
@@ -121,13 +119,13 @@ export default function RAGBenchmarkChart() {
               const rag = DATA[tool].rag;
               const color = COLORS[tool];
               return (
-                <div key={tool} style={{ padding: '16px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                <div key={tool} style={{ padding: compact ? '12px' : '16px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
                   <h4 style={{ margin: '0 0 4px', color, textTransform: 'capitalize' }}>{tool === 'claude' ? 'Claude Code' : 'GitHub Copilot'}</h4>
                   <p style={{ margin: '0 0 12px', fontSize: '0.75rem', color: '#64748b' }}>
-                    {tool === 'claude' ? 'Opus 4.6' : 'Haiku 4.5'} &middot; {nat.n + rag.n} runs
+                    Haiku 4.5 &middot; {nat.n + rag.n} runs
                   </p>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: compact ? '8px' : '12px', marginBottom: '16px' }}>
                     {[['Recall', 'recall'], ['Precision', 'precision'], ['F1', 'f1']].map(([label, key]) => (
                       <div key={key} style={{ textAlign: 'center' }}>
                         <div style={{ fontSize: '0.7rem', color: '#64748b', marginBottom: '2px' }}>{label}</div>
@@ -143,7 +141,7 @@ export default function RAGBenchmarkChart() {
                   <Bar value={rag.recall} max={1} color={color} label="RAG recall" sublabel={rag.recall.toFixed(3)} />
 
                   <div style={{ marginTop: '12px', fontSize: '0.75rem', color: '#64748b' }}>
-                    Time to resolution: {nat.time.toFixed(0)}s native → {rag.time.toFixed(0)}s RAG{' '}
+                    Time to resolution: {nat.time.toFixed(0)}s native &rarr; {rag.time.toFixed(0)}s RAG{' '}
                     <DeltaChip value={rag.time - nat.time} unit="s" invert />
                   </div>
                 </div>
@@ -198,7 +196,6 @@ export default function RAGBenchmarkChart() {
             Each dot is a tool/mode combination. Top-left is the ideal: fast and accurate.
           </p>
           <div style={{ position: 'relative', height: '300px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', padding: '20px' }}>
-            {/* Axes */}
             <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'rotate(-90deg) translateX(50%)', fontSize: '0.7rem', color: '#64748b' }}>
               Recall
             </div>
@@ -206,13 +203,12 @@ export default function RAGBenchmarkChart() {
               Mean time to resolution (s)
             </div>
 
-            {/* Data points */}
             {tools.map((tool) => {
               const color = COLORS[tool];
               return ['native', 'rag'].map((mode) => {
                 const d = DATA[tool][mode];
-                const x = ((d.time - 10) / 60) * 80 + 10; // 10-70s mapped to 10-90%
-                const y = (1 - d.recall) * 80 + 10; // recall 0-1 mapped to 90-10%
+                const x = ((d.time - 10) / 60) * 80 + 10;
+                const y = (1 - d.recall) * 80 + 10;
                 const toolLabel = tool === 'claude' ? 'Claude' : 'Copilot';
                 return (
                   <div key={`${tool}-${mode}`} style={{
@@ -248,9 +244,9 @@ export default function RAGBenchmarkChart() {
 
       <p style={{ fontSize: '0.65rem', color: '#475569', marginTop: '16px', marginBottom: 0 }}>
         Benchmark: 60 queries across 4 categories (exact symbol, conceptual, cross-cutting, refactoring) against a ~200-file TypeScript codebase.
-        Claude Code on Opus 4.6, GitHub Copilot on Haiku 4.5. RAG via MCP server (FAISS + SQLite FTS5).
-        Per-tool semaphore; sequential execution within each tool. Copilot absolute numbers are lower bounds due to parser limitations (see caveats).
-        RAG times include MCP cold start (~12s/query).
+        Both tools on Haiku 4.5. RAG via warm MCP server (FAISS + SQLite FTS5).
+        Per-tool semaphore; sequential execution within each tool. Native and RAG phases run separately.
+        Copilot absolute numbers are lower bounds due to parser limitations (see caveats).
       </p>
     </div>
   );

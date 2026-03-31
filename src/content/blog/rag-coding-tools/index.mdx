@@ -1,7 +1,7 @@
 ---
 title: "Does RAG Actually Help AI Coding Tools?"
-description: "I benchmarked Claude Code and GitHub Copilot with and without RAG-powered semantic search across 60 queries on a real codebase. If you use Copilot CLI, you could be 44% faster and 19% more accurate."
-date: 2026-03-30
+description: "I benchmarked Claude Code and GitHub Copilot on the same model with and without RAG-powered semantic search across 60 queries. RAG didn't make search more accurate, but it cut token consumption by 28%."
+date: 2026-03-31
 tags: ["Engineering", "AI", "Tooling"]
 draft: false
 ---
@@ -13,12 +13,12 @@ I daily drive Claude Code. It's amazing, but I'm always baffled by the search. M
 Somehow, this is what happens:
 
 ```
-❯ please review blog-triage
+> please review blog-triage
 
   Searched for 2 patterns (ctrl+o to expand)
 
-⏺ Explore(Find blog-triage content)
-  ⎿  Done (32 tool uses · 32.6k tokens · 38s)
+  Explore(Find blog-triage content)
+    Done (32 tool uses / 32.6k tokens / 38s)
   (ctrl+o to expand)
 
   Read 2 files (ctrl+o to expand)
@@ -39,19 +39,19 @@ I wrote 60 queries across four categories: exact symbol lookups ("where is funct
 
 The target codebase is [kicad-library](https://github.com/michaelayles/kicad-library), a ~200-file TypeScript project and the source code to [circuitsnips.com](https://www.circuitsnips.com), my KiCad subcircuit sharing website. Small enough to be tractable, large enough to have real architectural concerns.
 
-I ran four tools, of which two produced reliable data: **Claude Code** (Anthropic's CLI, running Opus 4.6) and **GitHub Copilot CLI** (running Haiku 4.5). Each tool ran every query 3 times in both modes, giving me ~580 data points. Codex CLI had data reliability issues (empty answers beyond exact symbol lookups) and Gemini CLI hit persistent auth failures in subprocess mode despite passing earlier tests. Since this benchmark compares search modes, not tools, I discarded both rather than present incomplete data.
+**Crucially, both tools ran the same model: Haiku 4.5.** Claude Code supports explicit model selection via `--model`, and GitHub Copilot CLI also runs Haiku 4.5. This eliminates the model capability confound entirely. Any difference in the numbers is due to the tool's search architecture, not the underlying model.
+
+Each tool ran every query 3 times in both modes. Native and RAG phases ran separately: all native queries completed first with no MCP server configured, then the MCP server was started and all RAG queries ran. Claude Code completed all 360 runs; Copilot completed 325 (some queries timed out or returned unparseable output). That gives ~685 data points across the two tools.
+
+I also ran Codex CLI and Gemini CLI, but neither produced reliable data. Codex returned empty answers beyond exact symbol lookups and Gemini hit persistent auth failures in subprocess mode. Since this benchmark compares search modes, not tools, I discarded both rather than present incomplete data.
 
 ## Three caveats before you look at the data
 
-I want to be upfront about the limitations of this benchmark, because they matter for how you interpret the numbers.
-
 **The Copilot parser is imperfect.** My file extraction regex struggled with Copilot's output format. Copilot often returned detailed, correct answers that the scoring couldn't parse, so its true recall is likely higher than reported. This hits some categories harder than others (exact symbol lookups show 0.200 recall despite Copilot clearly finding the right files in the raw output). The Copilot absolute numbers are best treated as lower bounds. The *relative* change between native and RAG within Copilot is more reliable, because parsing errors affect both modes roughly equally.
 
-**The speed numbers include MCP cold start.** Every RAG query in this benchmark pays the cost of spinning up a fresh MCP server process, loading the FAISS index, loading the embedding model, running inference, then returning results. That cold start adds ~12 seconds per query. In production you'd keep the server warm in the background, which would eliminate this penalty entirely. The speed numbers here represent a worst case for RAG, not a typical deployment.
+**The MCP server is warm, not cold.** In this benchmark, the MCP server starts once before the RAG phase and stays running for all queries. This is closer to how you'd actually deploy it (a background process with the index already loaded). It does mean the RAG speed numbers don't include cold-start overhead, which would add ~12 seconds per query if the server restarted each time.
 
 **200 files is a small codebase.** Native grep on a 200-file TypeScript project takes milliseconds. RAG is designed for scale, for 10,000+ file monorepos where context windows overflow and keyword search starts failing. This benchmark answers: "does RAG matter for small-to-medium codebases?" It does not answer what happens at scale, where the balance almost certainly shifts in RAG's favour. I'd like to test that, but haven't yet.
-
-With all that said, the two tools that did produce data gave me ~580 runs, and the patterns in that data are interesting. The tools are running very different models: Opus 4.6 is Anthropic's most capable model, Haiku 4.5 is their smallest. This is not an apples-to-apples model comparison. It's a test of whether bolting RAG onto these tools changes their behaviour, and crucially, *why* the effect differs between them.
 
 One more note: Copilot's IDE integration likely uses workspace indexing for search, but when invoked as a CLI subprocess (as in this benchmark), it falls back to basic tool calls with no pre-built index, to the best of the author's understanding. The native-mode results here may not reflect Copilot's full search capability in VS Code.
 
@@ -59,51 +59,68 @@ One more note: Copilot's IDE integration likely uses workspace indexing for sear
 
 <RAGBenchmarkChart client:visible />
 
-## The core finding: RAG's value depends on how many iterations your tool needs
+## The headline: tool design dominates
 
-Here's the thing that surprised me most, and the result I think actually matters.
+Both tools are running the same model. Both have access to the same codebase. Both get the same 60 queries. The difference is how they search.
 
-Both Claude Code and Copilot execute searches as agentic loops: the model decides what to grep for, reads the results, decides what to do next, and repeats until it has an answer. Every iteration requires a round trip to the model's inference endpoint, Anthropic's API for Claude, GitHub's infrastructure for Copilot. The time cost of a query is dominated by how many of these round trips happen.
+Claude Code native achieves **0.907 recall** in **37 seconds**. Copilot native achieves **0.604 recall** in **61 seconds**. That's a 30-percentage-point recall gap and a 1.6x speed gap, on the same model. Adding RAG doesn't close it: Claude Code native (0.907) still outperforms Copilot RAG (0.617) by 29 points.
 
-Claude Code with Opus resolves most queries in a few smart steps. It picks good search terms, reads the results efficiently, and converges fast. Adding RAG gives it one more tool, but it was already finding the files. The overhead of the MCP server (especially with cold start) outweighs the marginal accuracy gain.
+This isn't a model story. It's a tool story. Claude Code's agentic search, how it decides what to grep for, how it reads results, how it iterates, is fundamentally more effective than Copilot's. The same Haiku 4.5 model, given better search tooling, finds 50% more relevant files in 40% less time.
 
-Copilot with Haiku takes a different path. It averaged 13 tool calls per query in native mode, meaning 13 model round trips where the server decides what to search for next, reads results, and tries again. RAG gives it richer context in fewer calls, so fewer round trips and less time waiting on inference. The result: native Copilot takes 60.8 seconds per query on average. With RAG, 34.1 seconds. That speed difference alone changes the usability equation.
+## What RAG does to each tool
 
-**RAG acts as a compression layer for search iterations.** A strong model with good agentic search doesn't need that compression, it's already efficient. A weaker model burning through round trips benefits enormously, because RAG lets it skip the iterative convergence and get relevant files immediately.
+**Claude Code: breakeven accuracy, 28% fewer tokens.**
 
-This is the lens through which the rest of the data makes sense.
+| | Native | RAG | Delta |
+|---|---|---|---|
+| Recall | 0.907 | 0.924 | +1.7pp |
+| Precision | 0.409 | 0.437 | +2.8pp |
+| F1 | 0.533 | 0.559 | +4.9% |
+| Speed | 37.0s | 34.6s | -6% |
+| Tokens/query | 367K | 265K | -28% |
 
-## What RAG does to accuracy
+The accuracy story is a wash. Claude's native search already finds 90.7% of the right files. RAG pushes that to 92.4%, but the statistical comparison shows p=0.911, well above any conventional significance threshold. The difference is indistinguishable from noise.
 
-Both tools show improved F1 scores with RAG. Claude Code's lift is consistent but modest (+5.4%), driven primarily by a 5.3 percentage point recall gain. Copilot's F1 improvement is more pronounced at +19.5%, with precision jumping from 0.256 to 0.333, suggesting that RAG helps Copilot focus on the right files rather than casting a wide, noisy net.
+The token story is not a wash. Native queries consume 367K tokens on average. RAG queries consume 265K. That's a **28% reduction** in token consumption at effectively identical accuracy. RAG provides richer context in fewer round trips, so Claude makes fewer agentic iterations and reads fewer files to reach the same answer.
 
-The headline: RAG improves accuracy for both tools, but the effect is small. A few percentage points, not a step change. Both tools already found most of the right files through native search alone.
+If you're on a subscription, this means faster responses and less context window pressure. If you're on the API, this is a straight cost reduction. At Haiku 4.5 pricing, that's real money at scale.
 
-The interesting part is *where* RAG helps.
+**GitHub Copilot: transformative speed improvement, modest accuracy lift.**
+
+| | Native | RAG | Delta |
+|---|---|---|---|
+| Recall | 0.604 | 0.617 | +1.3pp |
+| Precision | 0.256 | 0.333 | +7.7pp |
+| F1 | 0.338 | 0.404 | +19.5% |
+| Speed | 60.8s | 34.1s | -44% |
+
+RAG cuts Copilot's response time nearly in half. In native mode, Copilot averages 13 tool calls per query, each requiring a model inference round trip. RAG gives it richer context upfront, reducing the number of iterations needed. The precision jump from 0.256 to 0.333 shows RAG is helping Copilot focus: fewer files returned, but more of them are right.
+
+If you're using Copilot CLI today, bolting on a semantic search MCP server might be the single highest-leverage improvement you can make.
 
 ## Where RAG earns its keep
 
-The accuracy lift isn't uniform across query types. Breaking it down:
+The accuracy lift isn't uniform across query types.
 
-**Exact symbol lookups** ("where is `parseSExpression` defined?"): RAG makes no difference for Claude, which hits 0.933 recall in both modes. The native tools already grep for the symbol name and find it immediately. RAG is solving a problem that doesn't exist here.
+**Exact symbol lookups** ("where is `parseSExpression` defined?"): RAG pushes Claude from 0.933 to perfect 1.000 recall. These queries are already easy for grep, but RAG catches the occasional edge case. Copilot's low numbers here (0.200) are primarily a parsing artefact.
 
-**Conceptual questions** ("how does the upload pipeline work?"): Marginal. Claude goes from 0.919 to 0.923. These questions are broad enough that multiple search strategies converge on similar results.
+**Conceptual questions** ("how does the upload pipeline work?"): Claude goes from 0.896 to 0.933. RAG helps by surfacing semantically related files that don't share keywords with the query. These are broad questions where multiple search strategies converge on similar results, so the lift is real but not dramatic.
 
-**Cross-cutting concerns** ("what files handle rate limiting?"): Claude goes from 0.742 to 0.788. RAG helps find files that aren't connected by imports or naming conventions, the kind of thing semantic similarity is designed for.
+**Cross-cutting concerns** ("what files handle rate limiting?"): Near-identical recall for both tools in both modes. Claude: 0.891 native vs 0.881 RAG. Copilot: 0.867 native vs 0.862 RAG. Neither tool benefits from RAG here, suggesting both native and semantic search are equally effective at finding cross-cutting files in a 200-file codebase.
 
-**Refactoring analysis** ("what would change if we replaced the KiCad renderer?"): This is where RAG shines. Claude jumps from 0.400 to 0.625, a **56% relative improvement**. Copilot goes from 0.839 to 0.932. These queries require understanding functional relationships between files, not just keyword matching. A file called `ThumbnailRegenerator.tsx` doesn't mention "renderer" in its name, but it's semantically related. RAG finds it. Grep doesn't.
+**Refactoring analysis** ("what would change if we replaced the KiCad renderer?"): Copilot jumps from 0.839 to 0.932, an **11% improvement**. These queries require understanding functional relationships between files, the kind of thing semantic similarity is designed for. A file called `ThumbnailRegenerator.tsx` doesn't mention "renderer" in its name, but it's semantically related. RAG finds it. Grep doesn't. Claude stays flat at 0.907/0.880, because its native search is already picking up these relationships through iterative exploration.
 
-The pattern: **RAG helps most when the answer isn't in the filename or the imports**.
+The pattern: **RAG helps most when the answer isn't in the filename or the imports, and when the tool's native search isn't already doing multi-step reasoning to find it.**
 
-## What RAG does to time-to-resolution
+## The cost case for RAG
 
-This is where the agentic iteration thesis plays out in the data.
+The token data is the finding that surprised me most. Claude Code's native search consumes 367K tokens per query on average. It's spending those tokens strategically, grepping, reading results, narrowing down, reading more, and it converges on the right files through intelligent iteration. But it's still burning through tokens to get there.
 
-**Claude Code gets slower with RAG.** Native: 34.1s mean. RAG: 46.4s mean. **+36% slower.** This includes the ~12 second MCP cold start per query. With a warm server, RAG time would drop to roughly native levels. Even so, RAG doesn't make Claude faster, because Opus already resolves queries in few iterations. The RAG call is an extra step in an already-short pipeline.
+With RAG, Claude drops to 265K tokens per query because the semantic search front-loads relevant context. The model doesn't need to iterate as much. Same accuracy, 28% less compute.
 
-**GitHub Copilot gets faster with RAG.** Native: 60.8s mean. RAG: 34.1s mean. **44% faster.** Copilot made an average of 13 tool calls per query in native mode, each requiring a model inference round trip. RAG gives it richer context in fewer calls, so fewer round trips and less time waiting on inference. The 44% speed gain is real and substantial, even with the cold start overhead included.
+For subscription users, this is the difference between a slightly-faster and a slightly-slower response. But for API users, and for anyone thinking about deploying AI coding tools at team or organisation scale, a 28% token reduction at breakeven accuracy is significant. Anthropic can subsidise inference on Max subscriptions because they're building market share. That subsidy doesn't extend to the API, and it won't last forever. RAG might not make your tool smarter, but it can make it substantially cheaper to run.
 
-**On persistent indexing:** with a warm MCP server (no cold start), Claude's RAG time would drop from 46.4s to roughly native (34s), and Copilot's already-faster RAG time would improve further. Background indexing that updates incrementally as files change would also eliminate staleness concerns. The numbers in this post represent a floor for RAG speed performance, not a ceiling.
+Copilot's native search, by contrast, takes 13 tool calls on average and 61 seconds. It's making more round trips but getting less value from each one. RAG compresses those iterations by giving Copilot better starting context, which is why the speed improvement is so dramatic (44%) while the recall improvement is modest (1.3pp). The model can reason about the code equally well; it's the search scaffolding that makes the difference.
 
 ## Claude Code already tried this
 
@@ -111,49 +128,37 @@ Here's something worth knowing: early versions of Claude Code actually used RAG 
 
 > Agentic search generally works better. It is also simpler and doesn't have the same issues around security, privacy, staleness, and reliability.
 
-My data is consistent with that decision. Claude Code's native agentic search (where the model decides what to grep for, reads the results, and iterates) already achieves 0.825 recall. The RAG lift is real but small, +5.3pp. For a tool with a capable model that resolves queries in few iterations, the engineering complexity of maintaining a vector index isn't obviously worth a few percentage points.
+My data is consistent with that decision, if you're optimising for accuracy. With the same Haiku 4.5 model, Claude Code's native agentic search achieves 0.907 recall, and RAG adds only 1.7 percentage points. The engineering complexity of maintaining a vector index, keeping it fresh, handling edge cases around file deletions and renames, isn't obviously worth that small a lift.
+
+But the cost picture is different. RAG reduces token consumption by 28% at breakeven accuracy. If you're Anthropic and you're subsidising inference to win market share, that's an internal infrastructure saving. If you're an enterprise deploying Claude Code across 500 engineers, that's a line item on a budget. The accuracy case for RAG is weak. The cost case is strong.
 
 But that calculus doesn't apply equally to all tools.
 
 ## The case for RAG in Copilot
 
-GitHub Copilot CLI is architecturally similar to Claude Code (both are local TUIs that execute tool calls on your machine, with model inference in the cloud), but the model and search strategy differ significantly. Copilot runs Haiku 4.5, which is fast and cheap but less capable than the Opus 4.6 powering Claude Code. And based on my benchmarking, Copilot's native search strategy is noticeably less sophisticated: it makes more tool calls per query (13 on average vs fewer for Claude), takes longer to converge, and shows some parsing issues that suggest the search tooling hasn't received the same level of optimisation as Claude Code's. More tool calls means more model inference round trips, which is where the time goes.
+If your tool's native search is less sophisticated, if it makes more round trips, takes longer to converge, and doesn't extract as much value from each iteration, then RAG changes the equation. Copilot CLI goes from 61 seconds to 34 seconds with RAG. That's not a marginal improvement; it transforms the experience from "go make coffee" to "instant enough to stay in flow."
 
-RAG helps Copilot more than it helps Claude, not in recall (where the lift is modest), but in the overall experience. With RAG, Copilot is **44% faster** and shows a **19% F1 improvement**. The speed gain alone changes the usability equation, remembering that these numbers include MCP cold start overhead and Copilot's absolute accuracy is likely higher than the parser reports. When your tool takes 60 seconds per query in native mode, cutting that to 34 seconds makes it feel like a different product.
+The F1 improvement of 19.5% is also meaningful. Copilot native returns an average of 11 files per query with 0.256 precision. Copilot RAG returns 4.6 files with 0.333 precision. RAG is acting as a focus mechanism, giving the model better initial context so it doesn't need to cast as wide a net.
 
-If you're using Copilot CLI today, bolting on a semantic search MCP server might be the single highest-leverage improvement you can make.
-
-## The model matters more than the mode
-
-The bigger story in this data: the gap between Claude and Copilot is far larger than the gap between native and RAG for either tool.
-
-Claude native (Opus 4.6) outperforms Copilot RAG (Haiku 4.5) on recall: 0.825 vs 0.617. A stronger model with worse search beats a weaker model with better search. This isn't a fair model comparison, Opus is significantly more expensive than Haiku, but it suggests that if you have to choose between a better model and better retrieval, the model wins.
-
-That said, Copilot's absolute numbers are dragged down by both model capability *and* the parser issue described in the caveats. The 0.200 exact-symbol recall is almost certainly a scoring artefact rather than a reflection of what Haiku 4.5 can actually do. A cleaner test would use the same model on both sides to isolate the retrieval effect from the tooling effect.
-
-And this is a 200-file codebase. The calculus might flip at scale. In a monorepo with 10,000 files, native grep becomes intractable and RAG's semantic narrowing could become essential rather than marginal. I haven't tested that yet.
+If you're using Copilot CLI, add a semantic search MCP server. The setup is straightforward (FAISS + SQLite FTS5, index your codebase, expose over stdio) and the payoff is immediate.
 
 ## What's next
-
-The file extraction parsing needs work. Copilot's true recall is likely higher than reported, and until parsing is fixed, the absolute numbers are best treated as lower bounds.
 
 The biggest limitation of this benchmark is that RAG is bolted on as an MCP server alongside the tool's existing search. That means every RAG query pays MCP protocol overhead on top of the actual retrieval, and the tool still has its native search available, so you're measuring "native + optional RAG" rather than "RAG as the primary search strategy."
 
 To fix that, I'm planning to fork [opencode](https://github.com/sst/opencode), an open-source coding CLI, and replace the core search implementation directly. One build with standard agentic search (grep, glob, file reads, Claude Code style). One with RAG as the primary search backend. Same model, same tool, no MCP overhead. That should isolate whether RAG actually retrieves better results, or whether the modest lift I'm seeing here is just the MCP server adding a second opinion that occasionally catches something grep missed.
 
-I'd also like to run this on larger codebases (Linux kernel, React). The hypothesis is that RAG's value increases with codebase size, and a 200-file project may be below the threshold where native search starts failing.
-
-And I'd like to test with the same model on both sides. The Claude-vs-Copilot comparison conflates model capability with tool design with retrieval strategy. A cleaner test would be the same model, same tool, with and without RAG.
-
-When will I do this? Probably not any time soon. I ran this on my Claude Max subscription and Copilot Pro. To run this with opencode, I'd be quite out of pocket. Never say never though.
+I'd also like to run this on larger codebases. The hypothesis is that RAG's value increases with codebase size, and a 200-file project may be below the threshold where native search starts failing.
 
 ## The bottom line
 
-RAG makes AI coding tools slightly more accurate and doesn't hurt reliability. The accuracy lift is real but modest: a few percentage points overall, with meaningful gains on refactoring and cross-cutting queries where semantic understanding matters.
+When you control for model capability, the gap between tools is enormous and the gap between search modes is small.
 
-The speed story depends on architecture, and this is the finding I think matters most. **RAG compresses agentic search iterations.** If your tool has a capable model that resolves queries in few smart steps (Claude Code with Opus), RAG adds overhead for marginal accuracy gains, and Anthropic's own team already made the call to drop it. If your tool needs many iterations to converge (Copilot CLI with Haiku), RAG collapses those iterations into fewer, richer calls, making it 44% faster and 19% more accurate. That's a meaningful improvement, noting the caveats on both numbers above.
+Claude Code's agentic search achieves 0.907 recall in 37 seconds. The same model through Copilot's search achieves 0.604 recall in 61 seconds. That's a 50% recall advantage and 40% speed advantage from tool design alone, not model capability.
 
-For a 200-file codebase, the honest answer is: **a good model with good agentic search is hard to beat**. RAG earns its keep on the hard queries, the ones where the answer isn't in the filename, but those are a minority of real-world usage. And for tools that haven't invested as heavily in native search, RAG is a compelling bolt-on upgrade.
+RAG helps both tools, but differently. For Claude Code, it's breakeven accuracy (+1.7pp recall, not statistically significant) but a **28% reduction in token consumption**. That's not an accuracy play, it's a cost play, and at API pricing or team scale it's a meaningful one. For Copilot, it's a transformative speed improvement (-44%) and a meaningful F1 lift (+19.5%), because RAG compresses the iterative search process that Copilot does less efficiently.
+
+The honest answer for a 200-file codebase: **good search tooling matters more than retrieval strategy**. RAG earns its keep on the hard queries and as a speed optimiser for tools with expensive search loops, but it can't compensate for fundamentally less effective search architecture. If you're choosing between investing in better agentic search or bolting on RAG, the data says invest in the search.
 
 Whether that changes at scale, or when RAG replaces the search rather than supplementing it, is the next question. I'll update this when I have the data.
 
