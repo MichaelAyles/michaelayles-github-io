@@ -6,6 +6,40 @@ interface Props {
 
 const { title = 'Michael Ayles', description = 'Electronics & Embedded Systems Engineer' } = Astro.props;
 const pageTitle = title === 'Michael Ayles' ? title : `${title} | Michael Ayles`;
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Michael Ayles',
+  alternateName: 'Mike Ayles',
+  url: 'https://www.mikeayles.com',
+  jobTitle: 'Head of Product Development',
+  worksFor: {
+    '@type': 'Organization',
+    name: 'addvantage Global Ltd',
+    url: 'https://addvantageglobal.com'
+  },
+  description: 'Electronics and embedded systems engineer building production ECUs (28.5M+ miles shipped) and applied AI systems for hardware design.',
+  knowsAbout: [
+    'Embedded Systems',
+    'Engine Control Units',
+    'PCB Design',
+    'Functional Safety (ASIL B)',
+    'Large Language Models',
+    'Retrieval-Augmented Generation',
+    'Agentic Orchestration',
+    'KiCad',
+    'Go',
+    'TypeScript',
+    'Python',
+    'C/C++'
+  ],
+  sameAs: [
+    'https://github.com/MichaelAyles',
+    'https://linkedin.com/in/mayles',
+    'https://phaestus.app'
+  ]
+};
 ---
 
 <!DOCTYPE html>
@@ -18,6 +52,7 @@ const pageTitle = title === 'Michael Ayles' ? title : `${title} | Michael Ayles`
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
   <script is:inline>
     var stored = localStorage.getItem('theme');
     if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
