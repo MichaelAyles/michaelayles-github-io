@@ -105,7 +105,7 @@ The eye gate is mediapipe-backed. It rejects frames where someone's eyes appear 
 
 ## What banger deliberately doesn't do
 
-- **No editor, no develop pipeline, no retouching.** Banger picks keepers; another tool develops them. Originals come out of Export byte-identical to what went in. This is non-negotiable. If the tool ever modified a RAW file I'd never trust it again.
+- **No editor, no develop pipeline, no retouching.** I did want to have it export both the raws and dynamically decide on whether photos needed touching up, but this became a project in its own right, i did have a draft, but the images looked deep fried, so until i can commit more time, its just a culler.
 - **No cloud sync, no web service, no phone app.** Files-only is the value proposition.
 - **No video.** Library currently skips .mp4. Pixel and DJI bodies mix videos with photo folders; for now they're invisible.
 - **Not multi-tenant.** Single-user app on a single laptop.
