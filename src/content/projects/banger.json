@@ -1,0 +1,18 @@
+{
+  "name": "banger",
+  "description": "Local photo culler. CLIP embeddings, MMR diversity, ArcFace identity clustering, and a Ridge regressor trained on your own -5..+5 labels. Copies keepers out, never edits the originals.",
+  "tags": [
+    "Python",
+    "AI",
+    "Photography",
+    "CLIP"
+  ],
+  "featured": false,
+  "links": {
+    "live": null,
+    "github": "https://github.com/MichaelAyles/photo-ingest",
+    "blog": null
+  },
+  "blogPost": "banger",
+  "order": 7
+}
