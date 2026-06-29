@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Sites</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header, footer {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            text-align: center;
+        }
+        main {
+            flex-grow: 1;
+            padding: 2rem;
+        }
+        #sitesGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .siteCard {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .siteCard a {
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>My Sites</h1>
+    </header>
+    
+    <main>
+        <div id="sitesGrid"></div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 My Sites. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
