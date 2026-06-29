@@ -7,7 +7,10 @@ import { getCollection, render } from 'astro:content';
 import { cleanSlug, formatDate } from '../../utils';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  // Build a page for every post, including drafts, so drafts are reachable at
+  // their own URL (unlisted preview). Drafts still stay out of the blog index,
+  // pagination, and RSS, so they are not "published" anywhere a reader browses.
+  const posts = await getCollection('blog');
   return posts.map(post => ({
     params: { slug: cleanSlug(post.id) },
     props: { post },
