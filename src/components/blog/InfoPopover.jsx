@@ -4,7 +4,16 @@ import { useState, useRef, useEffect } from "react";
 // click (or hover on desktop). Theme-adaptive via CSS variables.
 export default function InfoPopover({ label, title, children }) {
   const [open, setOpen] = useState(false);
+  const [mobile, setMobile] = useState(false);
   const ref = useRef(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 560px)");
+    const update = () => setMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -43,11 +52,10 @@ export default function InfoPopover({ label, title, children }) {
         <span
           role="dialog"
           style={{
-            position: "absolute",
             zIndex: 50,
-            top: "calc(100% + 8px)",
-            left: 0,
-            width: "min(340px, 80vw)",
+            ...(mobile
+              ? { position: "fixed", left: 12, right: 12, bottom: 12, width: "auto", maxHeight: "60vh", overflowY: "auto" }
+              : { position: "absolute", top: "calc(100% + 8px)", left: 0, width: "min(340px, 80vw)" }),
             background: "var(--surface)",
             border: "1px solid var(--border)",
             borderRadius: 8,

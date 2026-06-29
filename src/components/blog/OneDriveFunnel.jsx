@@ -1,4 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+// Tracks whether the viewport is below a breakpoint. SSR-safe (defaults false).
+function useIsMobile(bp = 560) {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${bp}px)`);
+    const update = () => setMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, [bp]);
+  return mobile;
+}
 
 // Funnel stages (millions of devs). Edit these and the chart re-derives.
 const STAGES = [
@@ -20,51 +33,82 @@ const TOTAL = STAGES[0].value;
 
 export default function OneDriveFunnel() {
   const [hover, setHover] = useState(null);
+  const isMobile = useIsMobile();
   const cooked = STAGES[STAGES.length - 1].value;
 
   return (
-    <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, padding: 24, margin: "32px 0" }}>
-      <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap", marginBottom: 18 }}>
+    <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, padding: isMobile ? 16 : 24, margin: "32px 0" }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: isMobile ? 6 : 10, flexWrap: "wrap", marginBottom: isMobile ? 14 : 18 }}>
         <span style={{ fontFamily: MONO, fontSize: 12, color: "var(--text-secondary)", letterSpacing: 0.3 }}>FUNNEL</span>
-        <span style={{ fontFamily: MONO, fontSize: 22, fontWeight: 700, color: RED }}>~{fmt(cooked)}</span>
-        <span style={{ fontFamily: SANS, fontSize: 14, color: "var(--text-primary)" }}>devs over the 300k limit, silently not backed up</span>
+        <span style={{ fontFamily: MONO, fontSize: isMobile ? 20 : 22, fontWeight: 700, color: RED }}>~{fmt(cooked)}</span>
+        <span style={{ fontFamily: SANS, fontSize: isMobile ? 13 : 14, color: "var(--text-primary)" }}>devs over the 300k limit, silently not backed up</span>
         <span style={{ fontFamily: MONO, fontSize: 12, color: "var(--text-dim)" }}>0.3M to 3M range</span>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 12 : 14 }}>
         {STAGES.map((s, i) => {
           const pct = (s.value / TOTAL) * 100;
           const prev = i === 0 ? null : STAGES[i - 1];
           const dropped = prev ? prev.value - s.value : 0;
           const isHover = hover === i;
+
+          const labelBlock = (
+            <div style={{ textAlign: isMobile ? "left" : "right", minWidth: 0 }}>
+              <div style={{ fontFamily: SANS, fontSize: 13, fontWeight: 600, lineHeight: 1.2,
+                color: s.cooked ? RED : "var(--text-primary)" }}>{s.name}</div>
+              {s.sub && <div style={{ fontFamily: MONO, fontSize: 10, color: "var(--text-dim)", marginTop: 2 }}>{s.sub}{i > 0 ? " kept" : ""}</div>}
+            </div>
+          );
+
+          const bar = (
+            <div style={{ flex: 1, height: isMobile ? 26 : 30, borderRadius: 5, background: "var(--background)",
+              border: "1px solid var(--border)", overflow: "hidden", position: "relative" }}>
+              <div style={{ width: `${Math.max(pct, 1.5)}%`, height: "100%",
+                background: s.cooked ? RED : ACCENT,
+                opacity: hover === null || isHover ? 0.92 : 0.6,
+                transition: "width .5s ease, opacity .15s ease",
+                borderRadius: "4px 0 0 4px" }} />
+            </div>
+          );
+
+          const value = (
+            <div style={{ fontFamily: MONO, fontSize: 14, fontWeight: 700, whiteSpace: "nowrap",
+              color: s.cooked ? RED : "var(--text-primary)", width: 48, textAlign: "right" }}>{fmt(s.value)}</div>
+          );
+
+          const drop = (
+            <div style={{ fontFamily: MONO, fontSize: 10, color: SAFE, whiteSpace: "nowrap",
+              opacity: dropped > 0 ? 1 : 0 }}>
+              {dropped > 0 ? `−${fmt(dropped)} ${s.drop}` : ""}
+            </div>
+          );
+
+          // Mobile: stack label over a full-width bar row, drop note sits under the label.
+          if (isMobile) {
+            return (
+              <div key={s.name}>
+                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, marginBottom: 4 }}>
+                  {labelBlock}
+                  {drop}
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  {bar}
+                  {value}
+                </div>
+              </div>
+            );
+          }
+
+          // Desktop: label | bar value drop on one row.
           return (
             <div key={s.name}
               onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}
               style={{ display: "grid", gridTemplateColumns: "minmax(120px, 168px) 1fr", gap: 14, alignItems: "center" }}>
-
-              {/* label column */}
-              <div style={{ textAlign: "right", minWidth: 0 }}>
-                <div style={{ fontFamily: SANS, fontSize: 13, fontWeight: 600, lineHeight: 1.2,
-                  color: s.cooked ? RED : "var(--text-primary)" }}>{s.name}</div>
-                {s.sub && <div style={{ fontFamily: MONO, fontSize: 10, color: "var(--text-dim)", marginTop: 2 }}>{s.sub}{i > 0 ? " kept" : ""}</div>}
-              </div>
-
-              {/* bar column */}
+              {labelBlock}
               <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                <div style={{ flex: 1, height: 30, borderRadius: 5, background: "var(--background)",
-                  border: "1px solid var(--border)", overflow: "hidden", position: "relative" }}>
-                  <div style={{ width: `${Math.max(pct, 1.5)}%`, height: "100%",
-                    background: s.cooked ? RED : ACCENT,
-                    opacity: hover === null || isHover ? 0.92 : 0.6,
-                    transition: "width .5s ease, opacity .15s ease",
-                    borderRadius: "4px 0 0 4px" }} />
-                </div>
-                <div style={{ fontFamily: MONO, fontSize: 14, fontWeight: 700, whiteSpace: "nowrap",
-                  color: s.cooked ? RED : "var(--text-primary)", width: 52, textAlign: "right" }}>{fmt(s.value)}</div>
-                <div style={{ fontFamily: MONO, fontSize: 10, color: SAFE, whiteSpace: "nowrap",
-                  width: 150, opacity: dropped > 0 ? 1 : 0 }}>
-                  {dropped > 0 ? `−${fmt(dropped)} ${s.drop}` : ""}
-                </div>
+                {bar}
+                {value}
+                <div style={{ width: 150 }}>{drop}</div>
               </div>
             </div>
           );

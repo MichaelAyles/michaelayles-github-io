@@ -212,6 +212,46 @@ img {
   margin: 2rem 0;
 }
 
+/* Mobile: tighten everything so more text fits per screen */
+@media (max-width: 700px) {
+  .prose {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .prose p {
+    margin-bottom: 1rem;
+  }
+
+  .prose h2 {
+    font-size: 1.3rem;
+    margin-top: 1.8rem;
+  }
+
+  .prose h3 {
+    font-size: 1.1rem;
+    margin-top: 1.5rem;
+  }
+
+  .prose ul,
+  .prose ol {
+    margin-left: 1.2rem;
+  }
+
+  .prose table {
+    font-size: 0.85rem;
+  }
+
+  .prose th,
+  .prose td {
+    padding: 0.35rem 0.5rem;
+  }
+
+  .prose pre {
+    padding: 0.85rem;
+  }
+}
+
 /* Section title */
 .section-title {
   font-size: 0.9rem;

@@ -85,6 +85,8 @@ Get-Process OneDrive.Sync.Service | Select-Object CPU, @{N='RAM_MB';E={[math]::R
 
 If that CPU number is in the thousands, you have found your battery drain. And quitting the client will not stop it, the service relaunches from a Run registry key (`HKCU\Software\Microsoft\Windows\CurrentVersion\Run\OneDrive`) on every login.
 
+> **If you work on the OneDrive clients at Microsoft:** the fix here is small and it would make everyone a lot safer. When a folder crosses the 300,000-item limit you already document, just say so. A single warning, "you are over the recommended limit and sync may not keep up," is the entire difference between a known problem and a silent one. Better still, turn the green tick orange, or anything other than the reassuring tick, the moment the client can no longer keep up. The data to do this is already on the machine. The only thing missing is telling the user. A backup that admits it is failing is a chore. A backup that lies with a green tick is the disaster scheduled for the worst possible day.
+
 ## "Yeah, but my code is on GitHub"
 
 Mostly true in my case, about 90% of what I care about is pushed to a remote. But GitHub only knows about files you have committed and pushed. That leaves out work in progress, ignored files, binary assets git handles badly, and scratch files and local configs. GitHub is a collaboration tool that happens to hold your source history. It is not a backup, and it would tell you the same.
