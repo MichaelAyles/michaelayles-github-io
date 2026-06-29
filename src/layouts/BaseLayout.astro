@@ -88,6 +88,64 @@ const personSchema = {
 </head>
 <body>
   <slot />
+  <script is:inline>
+    (function () {
+      var NAMES = {
+        powershell: 'PowerShell', ps: 'PowerShell', bash: 'Bash', sh: 'Shell',
+        shell: 'Shell', zsh: 'Zsh', python: 'Python', py: 'Python',
+        js: 'JavaScript', javascript: 'JavaScript', ts: 'TypeScript',
+        typescript: 'TypeScript', jsx: 'JSX', tsx: 'TSX', json: 'JSON',
+        html: 'HTML', css: 'CSS', c: 'C', cpp: 'C++', go: 'Go', rust: 'Rust',
+        yaml: 'YAML', yml: 'YAML', toml: 'TOML', sql: 'SQL', diff: 'Diff',
+        text: 'Text', plaintext: 'Text'
+      };
+      function enhance() {
+        var blocks = document.querySelectorAll('pre.astro-code:not([data-enhanced])');
+        blocks.forEach(function (pre) {
+          pre.setAttribute('data-enhanced', '');
+          var lang = (pre.getAttribute('data-language') || 'text').toLowerCase();
+          var label = NAMES[lang] || lang.toUpperCase();
+
+          var wrap = document.createElement('div');
+          wrap.className = 'code-block';
+          var head = document.createElement('div');
+          head.className = 'code-block-head';
+          var name = document.createElement('span');
+          name.className = 'code-lang';
+          name.textContent = label;
+          var btn = document.createElement('button');
+          btn.className = 'code-copy';
+          btn.type = 'button';
+          btn.setAttribute('aria-label', 'Copy code to clipboard');
+          btn.textContent = 'Copy';
+          head.appendChild(name);
+          head.appendChild(btn);
+
+          pre.parentNode.insertBefore(wrap, pre);
+          wrap.appendChild(head);
+          wrap.appendChild(pre);
+
+          btn.addEventListener('click', function () {
+            var code = pre.querySelector('code');
+            var text = code ? code.innerText : pre.innerText;
+            navigator.clipboard.writeText(text).then(function () {
+              btn.textContent = 'Copied';
+              btn.classList.add('copied');
+              setTimeout(function () {
+                btn.textContent = 'Copy';
+                btn.classList.remove('copied');
+              }, 1600);
+            });
+          });
+        });
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', enhance);
+      } else {
+        enhance();
+      }
+    })();
+  </script>
 </body>
 </html>
 
