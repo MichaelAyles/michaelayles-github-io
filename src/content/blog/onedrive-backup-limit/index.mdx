@@ -1,6 +1,6 @@
 ---
 title: "Are you sure OneDrive has got your back(up)?"
-description: "My laptop's fan led me to OneDrive trying to sync 2.46 million files, 8x past Microsoft's own 300,000 limit. Past that line the backup quietly stops working while the green tick keeps lying. How a stack of defaults traps developers, and what to do about it."
+description: "My laptop's battery led me to find out one layer of my backup strategy was silently broken. Microsoft Onedrive only supports 300,000 files officially. Past that line the backup quietly stops working while the tick keeps lying. How a stack of defaults traps developers, and what to do about it."
 date: 2026-06-29
 tags: ["Backup", "OneDrive", "Windows", "Developer Tools"]
 draft: true
@@ -9,19 +9,27 @@ featured: false
 
 import OneDriveFunnel from '@/components/blog/OneDriveFunnel';
 
-My laptop was running hot doing nothing, and the fan was loud enough that I finally went looking for why. I expected a memory leak, some process slowly eating RAM until the machine swapped itself to death. That is the boring shape these things usually take. What I found instead was worse, and quieter, and had nothing to do with memory.
+My laptop battery was dying a lot faster than it should have been, I expected a memory leak, some process slowly eating RAM until the machine swapped itself to death. That is the boring shape these things usually take. What I found instead was worse, and quieter, and had nothing to do with memory.
 
 OneDrive was trying to sync 2.46 million files.
 
 Microsoft's own documented recommendation is no more than 300,000. I was at roughly 8x that. And this is not a number I invented to be unkind. Microsoft's restrictions and limitations page says performance issues can occur once you pass 300,000 items, even if you are not actively syncing all of them, and older hardware is explicitly capped at that 300,000-item supported limit. Past that line the client starts losing. It lags, it throws errors, it silently gives up, and it does all of this without telling you in any way you would notice.
 
-Here is the part that made me put my coffee down. The whole reason I tolerate OneDrive, the whole reason most people do, is the backup. And the backup is exactly the thing that stops working first. At 8x over the limit, "it's fine, it's in OneDrive" is no longer a true sentence. The sync is lagging or erroring or stalled, and the little cloud icon is still sitting there with a tick on it. You can lose a disk, go to restore from the cloud, and discover the cloud copy stopped being current months ago. You would find out at the exact worst possible moment to find out.
+I need to be straight about my setup, because "OneDrive ate my backup" is a much weaker story if OneDrive was my only backup. It was not.
+
+My backup strategy is better than just OneDrive, I have a job that is very hazardous to hardware, so I have a NAS at one location as my primary. Everything lives there, it runs RAID 1 so one dead disk takes nothing with it, and it replicates to a second location so a fire or a burglary does not either. That is the actual safety net and it was never the thing at risk here. 
+
+OneDrive was the layer on top, and it does two jobs for me. It catches the recent stuff, whatever I have made or changed since the last NAS sync, so there is never a window where today's work only exists on the laptop. And it is a second independent offsite copy, somewhere different from where the NAS replicates, the offsite for my offsite. Belt, braces, and a spare pair of braces.
+
+So I was not trusting OneDrive with everything. But I was trusting it with something specific and real, the most recent slice of my work and one of my two geographic copies. And that is the layer that quietly stopped working, while showing me a tick the whole time. The sync was lagging or erroring or stalled, and the little cloud icon was still sitting there with a tick on it. The more I sit with it the more I think that is the worse failure. A backup that has obviously broken is a job on your to-do list. A backup that lies to you with a little cloud icon is a disaster scheduled for the worst possible day.
+
+(My code is mostly on GitHub too, which helps and does not save you. That gets its own section further down.)
 
 ## How I got here without trying
 
 I did not do anything exotic to end up 8x over a limit I had never heard of. I fell into a default.
 
-Windows pushes Known Folder Move very hard. It is the friendly prompt that offers to "back up your Desktop and Documents to OneDrive," and it shows up insistently the moment you sign in with a Microsoft account. Say yes once, or let a managed M365 setup say yes for you, and your Desktop and Documents now live inside the sync folder.
+Windows pushes Known Folder Move very hard. It is the friendly prompt that offers to "back up your Desktop and Documents to OneDrive," and it shows up insistently the moment you sign in with a Microsoft account. Say yes once, or let a managed M365 setup say yes for you, and your Desktop and Documents now live inside the sync folder. 
 
 Now think about where developers keep their code. Visual Studio defaults new projects to Documents\Visual Studio. Arduino, MPLAB, Unity, and the CodeWarrior and KDS firmware toolchains that got me all scatter their working trees through Documents too. And a working tree is not a handful of source files. It is node_modules with tens of thousands of entries, it is the .git object store, it is build and bin and obj and venv and __pycache__, all of it regenerable junk that has no business in a cloud backup but is now sitting right in the sync path.
 
@@ -38,7 +46,7 @@ Desktop and Documents alone were 99% of it, both redirected into OneDrive by Kno
 
 ## "Who even has 300,000 files?"
 
-Fair question. That number sounds like a hoarder with a decade of jpegs. It is not. It is a Tuesday afternoon of normal dev work.
+Fair question. That number sounds like a hoarder with a decade of files. It is not. This laptop is around 2 years old, and the Windows install is more recent than that.
 
 When I drilled into the worst offender on my machine, a single folder sitting on my Desktop, it turned out to be a clone of [nxpSDK](https://github.com/Masmiseim36/nxpSDK), a public NXP microcontroller SDK maintained by Masmiseim36 on GitHub. If you are doing any embedded work on NXP micros it is genuinely worth knowing about, Masmiseim36 has done the unglamorous work of collating the SDK headers, drivers, and toolchain support files that NXP scatter across their own site. One repo. Not my code. Not unique data. 28 GB and 900,000 files, fully re-clonable from GitHub in an afternoon, and it had been quietly contributing most of my OneDrive overrun the whole time. Removing it knocked 900k files off the count in a single delete.
 
@@ -50,11 +58,11 @@ The nxpSDK clone was 900,000 files on its own.
 
 But here is the part that matters more than either of those numbers. My Projects folder has 145 projects in it. Most are nowhere near as large as those three. Some are bigger. Strip out the nxpSDK anomaly and the remaining 144 projects still total to around 1.56 million files. The 300k limit was always going to get crossed. The clone just made it happen faster and more obviously.
 
-That is what the failure mode actually looks like. Not one catastrophic project. Just a normal developer's working history, accumulated over a few years, where each individual project seemed fine and the aggregate quietly crossed a line that nobody told you existed. There was never a moment where something went wrong. The count just went up, the sync client fell behind, the tick kept showing green, and nothing told you.
+That is what the failure mode actually looks like. Not one catastrophic project. Just a normal developer's working history, accumulated over a few years, where each individual project seemed fine and the aggregate quietly crossed a line that nobody told you existed. There was never a moment where something went wrong. The count just went up, the sync client fell behind, the tick kept showing we're good, and nothing told you.
 
 ## How many other people are quietly in this hole
 
-This is the bit that turned it from "my annoying afternoon" into something I wanted to write down. I am not special. The trap is a stack of defaults, and the same stack is under a lot of machines. So here is a rough back-of-envelope, the kind with big error bars but a solid direction:
+I love a Fermi estimate, and figured I am not special. The trap is a stack of defaults, and the same stack is under a lot of machines. So here is a rough back-of-envelope, the kind with big error bars but a solid direction:
 
 <OneDriveFunnel client:visible />
 
@@ -68,23 +76,25 @@ This is the bit that turned it from "my annoying afternoon" into something I wan
 
 Central guess, about 1.2 million developers in this state, with Windows being the biggest single contributor because Known Folder Move is pushed hardest there by default. The underlying trap is platform-agnostic though. If you have OneDrive running on macOS or Linux and your project folders are in the sync path, the 300k limit hits you the same way. The rate is lower because OneDrive is not installed or configured aggressively on those platforms by default, but lower is not zero. Low end maybe 0.3 million total, high end maybe 3 million, with most of the uncertainty in two soft fractions: how many actually have the sync running, and how many keep code in the synced folders.
 
-Now put a consequence on it. Take the baseline rate at which any given machine loses its local disk in a year, drive failure plus ransomware plus an unlucky rm -rf in the wrong directory, call it 2 to 5%. Apply it to 1.2 million people who believe they are backed up and are not. That is somewhere between 24,000 and 60,000 developers a year who lose real work they were certain was covered. Not "the laptop felt slow." The repo is gone, and the cloud copy you were trusting topped out months back.
+Now put a consequence on it. And here is where my own setup is worth holding up as the lucky case rather than the typical one. I had a NAS underneath, so the silent hole was in my spare layer. Most of these 1.2 million do not. For them OneDrive is not the third line of defence, it is the only line, the thing standing between a dead disk and a year of lost work, and it is the line that fails silently. Take the baseline rate at which any given machine loses its local disk in a year, drive failure plus ransomware plus an unlucky rm -rf in the wrong directory, call it 2 to 5%. Apply it to 1.2 million people who believe they are backed up and are not. That is somewhere between 24,000 and 60,000 developers a year who lose real work they were certain was covered. Not "the laptop felt slow." The repo is gone, and the cloud copy you were trusting topped out months back. If even my belt-and-braces-and-a-spare setup had a quiet hole in it, the people treating that one layer as their whole strategy are properly exposed.
 
 ## Why nobody sees it coming
 
 The reason this persists is that every single layer hides it.
 
-OneDrive shows you a green tick that says you are synced. The 300,000 limit does not appear anywhere in the interface you actually look at, it is buried in a support article you would only read after something had already gone wrong. And the failure mode is silence. Not a red banner, not a notification, just sync that quietly stops keeping up while continuing to look healthy. There is no moment where the system says "I have given up on 2 million of your files." You are simply, gradually, not backed up, and nothing tells you.
+OneDrive shows you a tick that says you are synced. The 300,000 limit does not appear anywhere in the interface you actually look at, it is buried in a support article you would only read after something had already gone wrong. And the failure mode is silence. Not a red banner, not a notification, just sync that quietly stops keeping up while continuing to look healthy. There is no moment where the system says "I have given up on 2 million of your files." You are simply, gradually, not backed up, and nothing tells you.
 
 I only found it because the fan annoyed me. That is a terrible early-warning system.
 
 ## "Yeah, but my code is on GitHub"
 
-Fair. That is better than nothing. But GitHub only knows about files you have committed and pushed, which leaves out work in progress that has not been committed yet, ignored files that never went into the repo, binary assets that git handles badly, and scratch files and local configs. GitHub is a collaboration tool that happens to hold your source history. It is not a backup, and it would tell you the same.
+Fair, and in my case mostly true, about 90% of what I care about is pushed to a remote. So let me be honest about why that softened the blow for me and why it will not soften it as much for you.
 
-The more awkward point is about everything else on your machine. Even if every line of code you care about is safely pushed to a remote, the files generating your 300k overrun, the node_modules, the .git object stores, the build trees, are still sitting in your sync path. OneDrive cannot keep up with them, so it falls behind on everything in the queue. Not just the regenerable junk. Everything. The work archive you made because it felt important. The photos that ended up on your Desktop because you were in a hurry. The half-finished invoice sitting in Documents. None of those have a git repo. All of them are invisible to GitHub. And all of them are failing to sync because the same queue is backed up behind two million files you would happily delete if you knew they were there.
+GitHub only knows about files you have committed and pushed. That leaves out work in progress that has not been committed yet, ignored files that never went into the repo, binary assets that git handles badly, and scratch files and local configs. GitHub is a collaboration tool that happens to hold your source history. It is not a backup, and it would tell you the same.
 
-Your code may be fine. It is the stuff that has no backup plan at all that is getting quietly dropped.
+Then there is everything that is not code. This is the bit where I got lucky and you might not. My non-code files, the documents, the photos that landed on the Desktop in a hurry, the half-finished invoices, all of that is on the NAS, so GitHub being a partial picture did not actually leave me exposed. For the typical reader in that 1.2 million it does. Even if every line of code you care about is safely pushed to a remote, the files generating your 300k overrun, the node_modules, the .git object stores, the build trees, are still sitting in your sync path. OneDrive cannot keep up with them, so it falls behind on everything in the queue. Not just the regenerable junk. Everything. The work archive you made because it felt important. The photos that ended up on your Desktop because you were in a hurry. The half-finished invoice sitting in Documents. None of those have a git repo. None of them, for most people, have a NAS either. All of them are invisible to GitHub. And all of them are failing to sync because the same queue is backed up behind two million files you would happily delete if you knew they were there.
+
+So GitHub covered my code, the NAS covered the rest, and OneDrive's silent failure cost me a layer of redundancy rather than actual data. The lesson is not that I was fine. It is that I only survived because I happened to have two other layers, and the layer that lied to me would have been the whole story for anyone running it the way Microsoft nudges you to.
 
 ## What to actually do
 
