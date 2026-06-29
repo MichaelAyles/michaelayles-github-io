@@ -103,6 +103,8 @@ img {
   border-radius: 3px;
   padding: 0.15em 0.4em;
   font-size: 0.9em;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .prose pre {
