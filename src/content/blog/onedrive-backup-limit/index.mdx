@@ -8,12 +8,13 @@ featured: false
 ---
 
 import OneDriveFunnel from '@/components/blog/OneDriveFunnel';
+import InfoPopover from '@/components/blog/InfoPopover';
 
 My laptop battery was dying faster than it should have been. I expected a memory leak, some process slowly eating RAM until the machine swapped itself to death. That is the boring shape these things usually take. What I found was worse, and quieter, and had nothing to do with memory.
 
 OneDrive was trying to sync 2.46 million files.
 
-Microsoft's own documented recommendation is no more than 300,000. I was at roughly 8x that. Their restrictions and limitations page says performance issues can occur once you pass 300,000 items, even if you are not actively syncing all of them. Past that line the client starts losing. It lags, it throws errors, it silently gives up, and it does all of this without telling you in any way you would notice.
+Microsoft's own documented recommendation is no more than 300,000. I was at roughly 8x that. Their [restrictions and limitations page](https://support.microsoft.com/en-us/onedrive/restrictions-and-limitations-in-onedrive-and-sharepoint) says performance issues can occur once you pass 300,000 items, even if you are not actively syncing all of them <InfoPopover client:visible label="(there is a newer 1,000,000 cap, with caveats)" title="The 1M sync limit">Microsoft says it recommends syncing no more than **300,000 items** total for good performance, and warns that problems can show up beyond that even if you are not syncing all of them. A higher **1,000,000 items per device** ceiling exists, but only just: roll-out started **22 April 2026**, a month or two ago. It is a public preview, not the default. To get it you need a **preview build of Windows** (Windows 11 or Server 2022 via the OneDrive Insider programme) and a **mid-to-high-end machine**: 16 GB RAM minimum (32 GB recommended), an SSD, and a recent i5 / Ryzen 5 or better. No VDI support. Anything that does not meet the bar stays on the old 300,000 limit.</InfoPopover>. Past that line the client starts losing. It lags, it throws errors, it silently gives up, and it does all of this without telling you in any way you would notice.
 
 ## It was not my only backup
 
