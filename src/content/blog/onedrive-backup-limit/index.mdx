@@ -96,31 +96,19 @@ If any of this sounds like your setup, the order matters. Do not start by cleani
 
 And before any of that, if you just want to know whether you are in the 1.2 million, run one of these. They count every file in your OneDrive folder and tell you where you stand.
 
-**Windows (PowerShell), just the count:**
+**Windows (PowerShell):**
 
 ```powershell
 (Get-ChildItem $env:OneDrive -Recurse -File -Force -ErrorAction SilentlyContinue | Measure-Object).Count
 ```
 
-**Windows (PowerShell), with a verdict:**
-
-```powershell
-$n=(Get-ChildItem $env:OneDrive -Recurse -File -Force -EA SilentlyContinue | Measure-Object).Count; "{0:n0} files. {1}" -f $n, $(if($n -gt 300000){"COOKED, over the 300k limit"}else{"fine for now"})
-```
-
-**macOS / Linux / WSL (bash), just the count:**
+**macOS / Linux / WSL (bash):**
 
 ```bash
 find "${1:-$HOME/OneDrive}" -type f 2>/dev/null | wc -l
 ```
 
 Pass your actual sync folder as an argument if it lives somewhere else, for example `~/Library/CloudStorage/OneDrive-Personal` on macOS. Without an argument it guesses `~/OneDrive`.
-
-**macOS / Linux / WSL (bash), with a verdict:**
-
-```bash
-n=$(find "${1:-$HOME/OneDrive}" -type f 2>/dev/null | wc -l); echo "$n files. $([ "$n" -gt 300000 ] && echo 'COOKED, over the 300k limit' || echo 'fine for now')"
-```
 
 These will run for a few minutes on a large tree. If the number that comes back is anywhere near 300,000, the backup you think you have is not the backup you have. Go sort out an independent copy before you do anything clever with the rest of it.
 
