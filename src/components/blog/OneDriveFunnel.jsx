@@ -116,7 +116,7 @@ export default function OneDriveFunnel() {
       </div>
 
       <div style={{ fontFamily: SANS, fontSize: 12, color: "var(--text-dim)", marginTop: 18, lineHeight: 1.5 }}>
-        Each bar is the share of the 30M starting pool still in the trap; the grey figure is who peels off safe at that step.
+        Each bar is the share of the 30M starting pool still in the trap at that step; the grey figure is how many drop out of the trap there.
         Fractions are Fermi guesses with wide error bars but a solid direction. Mac and Linux OneDrive users hit the same
         300k trap, just at lower default adoption rates.
       </div>

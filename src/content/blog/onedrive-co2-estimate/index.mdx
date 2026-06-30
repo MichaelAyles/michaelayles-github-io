@@ -1,0 +1,114 @@
+---
+title: "Burning cycles for a backup that won't back up"
+description: "How much electricity, and how much CO2, does OneDrive burn grinding away at a backup it will never finish? A Fermi estimate, with one number finally measured."
+date: 2026-06-30
+tags: ["OneDrive", "Windows", "Sustainability", "Developer Tools"]
+draft: true
+featured: false
+---
+
+import OneDriveFunnel from '@/components/blog/OneDriveFunnel';
+
+There is a [companion post](/blog/onedrive-backup-limit) about how I found OneDrive silently failing to back up 2.46 million files on my laptop, and why something like 1.2 million other developers are probably in the same boat. Go read that one if you care about your data, it also explains why checking Task Manager for "OneDrive" can lie to you, the process doing the damage is not the one with the friendly tray icon. This post is about a smaller, stupider question that I could not let go of once the fan would not shut up: how much electricity, and how much CO2, does all that pointless grinding actually burn?
+
+Because here is what the grinding is. A sync client at 8x its file limit never reaches "done." It re-enumerates the tree, tries to reconcile it against a service that falls over past 300,000 items, fails, and starts again. It is a computer losing, continuously, and losing has a power bill. I went and watched it lose, in real time, with Task Manager open and the right process name this time.
+
+Let me Fermi it. Big error bars, honest about every guess, the point being to bound the thing rather than nail it. But one of the numbers in here is no longer a guess, it is a measurement, and that is new.
+
+## Catching it in the act
+
+The process you would instinctively check is OneDrive.exe, the tray icon. It was barely registering. Single-digit CPU-seconds, the kind of number you glance at and move on from. That is the trap, because OneDrive.exe is just the UI shell. The actual sync engine runs as a separate background process, OneDrive.Sync.Service, and that one told a different story entirely.
+
+```powershell
+Get-Process OneDrive.Sync.Service | Select-Object CPU, @{N='RAM_MB';E={[math]::Round($_.WorkingSet/1MB)}}
+```
+
+4,303 CPU-seconds over roughly 2.4 hours of uptime. Quick explainer on that first unit, since it is not one you bump into outside Task Manager: CPU-seconds is total processor time consumed, not wall-clock time. A process running flat-out on one core for one second of real time burns one CPU-second. Run two cores flat-out for a second and that is two CPU-seconds in the same one second of your life. It is a running total since the process started, not a current rate, which is exactly why it is useful here: it tells you cumulative damage, not just a snapshot. Divide the two and you get the rate: 4,303 CPU-seconds across 2.4 hours of uptime works out to a sustained 49% of one core, not a spike, the steady state, for the entire time the process had been alive. Everything else on the machine, Explorer, Chrome, the editor, was sitting in the double digits over the same window. This one process was an order of magnitude past anything near it.
+
+## Translating CPU into watts
+
+Half a modern mobile core under sustained load is not free, and it drags other things up with it. Roughly:
+
+| Component of the draw | Rough incremental power |
+|---|---|
+| The compute itself, half a core under load | ~4-8 W |
+| Knock-on: SSD kept active walking millions of files, RAM churn, CPU never reaching deep idle, fan spun up | ~2-4 W |
+| Total sustained overhead while plugged in and awake | ~6-11 W |
+
+Call the central estimate 8 W. Across an 8-hour day that is roughly 64 Wh spent doing nothing but failing to reconcile a file pile it will never finish reconciling. A laptop battery is typically 50 to 70 Wh total, so on battery alone this one process could plausibly eat over an hour of runtime, and the bigger real-world hit is what it prevents: the CPU and disk never get to idle down, so the whole platform sits in a high-power state and the fan never gets to rest. That is the exact "battery dying faster than it should" symptom the companion post opens with. Mine is at 46% health, and I am now reasonably comfortable putting some of that wear on OneDrive's tab.
+
+To be straight about the limits of this number: it is read from CPU share, not measured off a power rail with a meter. The actual wattage depends on the specific CPU and how aggressively it is being throttled. But the direction and the rough magnitude line up with the lived symptom, and it is a real measurement on a real machine doing real damage, not intuition dressed up as a number.
+
+One more thing worth saying plainly, because it is the same trap as the file count. Process naming for OneDrive has changed across versions. On this machine the engine is OneDrive.Sync.Service. Older builds did everything inside OneDrive.exe with no separate process. If you only check the modern split and see OneDrive.exe sitting quiet, you have not ruled anything out, you have just checked the wrong half. Check both.
+
+## The broad number
+
+Zoom out from my one machine to all of OneDrive, not just the dev pathology. The model is just:
+
+```
+CO2/yr = (active devices) x (wasted watts) x (hours on per day x 365) x (grid kgCO2 per kWh)
+```
+
+The inputs I will defend:
+
+**Active devices.** Microsoft had about 89 million consumer M365 subscribers at the end of their 2025 fiscal year, plus a commercial installed base around 450 million seats. Not all are sync-thrashing at once, so call it 250 million doing meaningful sync. A guess wearing the costume of a fact.
+
+**Wasted watts.** The avoidable overhead, the delta between OneDrive and a well-behaved client doing the same real work. For the general, well-behaved population, call it 1 W on average, this is for ordinary syncing, not the pathological case above. This is still the weakest number in this section, and given that most diagnosis of OneDrive's CPU use checks the wrong process entirely, I would not be shocked if the true average is higher than 1 W across the whole fleet. Nobody is measuring it properly, including, until an hour ago, me.
+
+**On time.** 8 hours a day of being powered and syncing.
+
+**Grid intensity.** The global average was about 445 grams of CO2 per kWh in 2024 per the IEA, so 0.45 kg per kWh. The one input I actually trust.
+
+Run it:
+
+```
+1 W x 8 h x 365 = 2.92 kWh per device per year
+2.92 kWh x 0.45 kg = 1.3 kg CO2 per device per year
+1.3 kg x 250,000,000 = roughly 330,000 tonnes CO2 per year
+```
+
+Now bound it, because that central guess deserves suspicion:
+
+| Scenario | Devices | Wasted W | On time | Grid | CO2/yr |
+|----------|---------|----------|---------|------|--------|
+| Low | 150M | 0.3 W | 6 h | 0.40 | ~40,000 t |
+| Central | 250M | 1 W | 8 h | 0.45 | ~330,000 t |
+| High | 350M | 3 W | 12 h | 0.50 | ~2,300,000 t |
+
+So, 40,000 to 2.3 million tonnes a year, central around 330,000. The factor-of-60 spread is almost entirely the wasted-watts term.
+
+Made tangible, the central 330,000 tonnes is roughly 72,000 petrol cars driven for a year, or a town of 30,000 people, or about 0.001% of global emissions of ~38 gigatonnes. Which is the deflating bit. In planetary terms it is a rounding error. Delete OneDrive from every machine on Earth and the global number does not visibly twitch.
+
+It still bothers me, because it is a rounding error that does nothing. The 38 gigatonnes includes hospitals and steel and getting people to work. This slice is pure deadweight, energy spent re-uploading files that already exist and keeping laptops warm enough to age their batteries early, for zero value to anyone. The offence is not the size. It is the ratio of size to usefulness, which is roughly infinite.
+
+## The concentrated dev core
+
+Now narrow to the machines that are actually pathological, the roughly 1.2 million dev boxes from the companion post that sit over the 300k file limit and never stop reconciling.
+
+<OneDriveFunnel client:visible />
+
+These are not drawing the polite 1 W I used for the general population above. They are doing what mine was doing when I caught it: a sustained chunk of a CPU core, hour after hour, because the job never finishes. Using the measured range from earlier, 6 to 11 W, central 8 W:
+
+```
+1,200,000 x 8 W x 10 h x 365 x 0.45 kg = roughly 15,800 tonnes CO2 per year
+```
+
+Bounded by the measured range, that is roughly 11,800 to 21,700 tonnes, a meaningful step up from the 5,000-tonne figure I would have gotten using my earlier guess of 2.5 W. That is the value of catching the right process red-handed instead of estimating from a vague sense that the fan was loud.
+
+This is a subset of the 330,000 tonnes above, not on top of it. The dev-specific hot core of the same problem, now resting on an actual reading rather than a guess. Still small in carbon terms, but it comes bundled with two costs that never show up as CO2:
+
+**Batteries.** A continuous fleet of laptops running hot, wearing their cells out faster. The embodied carbon of a replacement battery is real, and I have not even tried to count it.
+
+**Time.** If each of those 1.2 million devs loses just 5 minutes a day to sync sluggishness, file locks, and "why is this file showing a conflict," that is 1.2 million x 5 min x about 230 workdays, roughly 23 million person-hours a year. At developer rates that is comfortably a billion-dollar annual drag, almost all of it invisible because nobody ever blames "laptop feels slow" on an undocumented file-count limit, the same way nobody blames OneDrive.exe for a CPU drain that is actually happening one process over.
+
+## What is still a guess, and what is not
+
+The wasted-watts number for the pathological dev core stopped being a guess this week. It is now a real reading, 6 to 11 W, taken off a machine that is a textbook member of the population it is meant to represent, over the limit and perpetually reconciling. That is real progress.
+
+What it is not, yet, is a fleet average. My machine is roughly 8x over the recommended limit, which makes it a reasonable stand-in for "actively thrashing," but it says nothing about a dev who is, say, 1.5x over and merely sluggish rather than drowning. The honest next step is the same one I flagged before, baseline a few more machines across that range, ideally with an actual power meter on the wall rather than a CPU-share inference, and see whether 8 W holds as a fleet-wide center or whether it was specific to a particularly bad case.
+
+It is also worth being honest that the broad, whole-of-OneDrive 1 W figure is still exactly the guess it always was, and given how easy it is to check the wrong process and conclude everything is fine, I would not be surprised if it is quietly low.
+
+Treat the headline as order of magnitude. Hundreds of thousands of tonnes for OneDrive as a whole, somewhere in the low tens of thousands for the thrashing dev core specifically, and a productivity bill that probably dwarfs both in money terms. Most of it bounded guesses. One piece of it, now, an actual number caught live with the right process name on the screen.
+
+Which, if I am honest, is the most reliable engine of investigation I know. Check the right process.
