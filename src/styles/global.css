@@ -15,6 +15,7 @@
   --text-dim: #aaaaaa;
   --hover-bg: #fafafa;
   --modal-bg: rgba(255, 255, 255, 0.95);
+  --link: #ea580c;
 }
 
 [data-theme="dark"] {
@@ -28,6 +29,7 @@
   --text-dim: #525252;
   --hover-bg: #1a1a1a;
   --modal-bg: rgba(10, 10, 10, 0.95);
+  --link: #fb923c;
 }
 
 body {
@@ -85,6 +87,18 @@ img {
 
 .prose p {
   margin-bottom: 1.25rem;
+}
+
+.prose a {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  font-weight: 500;
+}
+
+.prose a:hover {
+  text-decoration-thickness: 2px;
 }
 
 .prose ul,
