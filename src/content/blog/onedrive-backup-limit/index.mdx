@@ -10,7 +10,7 @@ featured: false
 import OneDriveFunnel from '@/components/blog/OneDriveFunnel';
 import InfoPopover from '@/components/blog/InfoPopover';
 
-My laptop battery was dying faster than it should have been. I expected a memory leak, some process slowly eating RAM until the machine swapped itself to death. That is the boring shape these things usually take. What I found was worse, and quieter, and had nothing to do with memory.
+OneDrive has huge, blind hole if you're using it in/as your backup strategy. It silently fails if you have too many files. 
 
 OneDrive was trying to sync 2.46 million files.
 
@@ -18,7 +18,7 @@ Microsoft's own documented recommendation is no more than 300,000. I was at roug
 
 ## It was not my only backup
 
-"OneDrive ate my backup" is a much weaker story if OneDrive was my only backup. It was not. I have a NAS as my primary, running RAID 1 so one dead disk takes nothing with it, replicated to a second location so a fire or a burglary does not either. That is the actual safety net and it was never at risk.
+Thankfully, in this case, OneDrive isn't my only backup, it's just one layer in my strategy. I run a NAS as my primary, running RAID 1 so one dead disk takes nothing with it, replicated to a second location so a fire or a burglary does not either. That is the actual safety net and it was never at risk.
 
 OneDrive was the layer on top, doing two jobs. It caught the recent stuff, whatever I had changed since the last NAS sync, so today's work never existed only on the laptop. And it was a second independent offsite copy, the offsite for my offsite.
 
