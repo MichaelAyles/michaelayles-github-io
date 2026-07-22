@@ -56,7 +56,8 @@ that makes it fast. **Being dumb and being fast are the same property seen from 
 - **59,965.5 tok/s** at the fabric, measured on silicon, 16 streams, 16/16 bit-exact
   against the integer golden reference, three runs out of three.
 - The deployed chat you just used is a different, slower, *honest* build: one stream that
-  actually remembers your last turn, at ~16,000 tok/s of fabric.
+  actually remembers your last turn, at **~19,240 tok/s** of fabric (measured on silicon at
+  200 MHz).
 - The model is trained on text that has been compressed into telegraphic "Kevin-speak,"
   which is both the comedy and a real optimisation: fewer tokens means fewer weights
   streamed means more fits on-chip means faster.
@@ -216,24 +217,36 @@ meaningless, and those are the same property taken one step too far.
 
 So the deployed chat is a *different* build: one stream, N=1, with the model's full trained
 context window, KV caching that is bit-exact to a full recompute by causality. That build
-runs **~16,000 tok/s of fabric**, and it actually remembers your last couple of turns. That
+runs **~19,240 tok/s of fabric**, and it actually remembers your last couple of turns. That
 is the one serving the widget at the top. One stream that remembers, instead of sixteen that
 do not.
+
+It used to be slower. The faithful build was stuck at 166.7 MHz because the timing report
+collapsed under routing congestion at the higher clocks — the router simply gave up and
+stopped optimising for speed. The fix was not cleverness, it was tidiness: the LayerNorm
+input buffers were stored as a pile of per-lane arrays, which synthesises into a thicket of
+address multiplexers and enormous fan-out nets. Rewriting them as one wide word per row
+(the layout the rest of the design already used) freed about 11,900 flip-flops and 3,800
+lookup tables and killed two of the worst fan-out trees. That was enough for the router to
+close cleanly, and the design went from *failing* timing to closing with margin — and then
+overclocked bit-exact to **200 MHz** on silicon, the same greedy token stream at 142.857,
+166.7, and 200 MHz. (250 MHz is a hard wall: the fabric hangs.) The clock only comes in
+quantised steps of 1000/N MHz, so 200 is the last rung before the wall.
 
 This is the part most write-ups skip. The big number is real, the small number is also
 real, and they measure different things. Neither gets to borrow the other's headline.
 
 ## 7. Sampling without asking
 
-The faithful model decodes in about 7 milliseconds. The reply used to land in the browser
-in about 100. Almost none of that gap was the fabric. Most of it was one embarrassing loop
+The faithful model decodes a full reply in about 6.6 milliseconds of fabric time. The reply
+used to land in the browser in about 100. Almost none of that gap was the fabric. Most of it was one embarrassing loop
 nobody had measured.
 
 To get variety, the chat samples (temperature 0.85, top-k 40) instead of always picking the
 single best token. But the probabilities live in the fabric. So every token, the host read
 all 193 output <T id="logits">logits</T> back over `/dev/mem`, ran a softmax and a draw on
 the Arm core, and only then knew the next character. Measured, that readback was **about 58% of a reply**. We
-were serving a 16,000-token-per-second model through a 1,000-token-per-second straw.
+were serving a ~19,000-token-per-second model through a 1,000-token-per-second straw.
 
 <GumbelTax client:visible />
 
@@ -375,7 +388,7 @@ Some scars from the road, because they are the actual content of the work:
 
 The locked record stands: **59,965.5 tok/s at 200 MHz, measured, N=16, 16 of 16 streams
 bit-exact, three runs of three.** The deployed chat is the slower faithful build, one stream
-at ~16,000 fabric tok/s that remembers you, served live at
+at **~19,240 fabric tok/s** (200 MHz on silicon) that remembers you, served live at
 [chat.mikeayles.com](https://chat.mikeayles.com) and embedded right at the top of this post.
 A language model so starved of memory that it rediscovered Kevin Malone's communication
 philosophy, running entirely in FPGA fabric, where being dumb and being fast are the same
