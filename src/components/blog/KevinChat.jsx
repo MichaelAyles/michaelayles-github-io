@@ -37,6 +37,10 @@ export default function KevinChat({ height = 460 }) {
   const [input, setInput] = useState("");
   const [status, setStatus] = useState("connecting");
   const [stats, setStats] = useState(null);
+  // rotation: the server flips Kevin <-> a readable "legit" model on a timer and
+  // broadcasts {model, model_label, rotating, switch_in} in every stats frame.
+  const [rot, setRot] = useState(null);       // {model,label,rotating,switchIn,at}
+  const [, setTick] = useState(0);            // 1 Hz re-render to drive the countdown
 
   const wsRef = useRef(null);
   const seqRef = useRef(0);
@@ -105,6 +109,15 @@ export default function KevinChat({ height = 460 }) {
           break;
         case "stats":
           setStats(m);
+          if (m.rotating !== undefined) {
+            setRot({
+              model: m.model,
+              label: m.model_label,
+              rotating: !!m.rotating,
+              switchIn: m.switch_in, // seconds to next flip, or null
+              at: Date.now(),
+            });
+          }
           break;
         default:
           break;
@@ -138,6 +151,12 @@ export default function KevinChat({ height = 460 }) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  // 1 Hz tick so the "next model in mm:ss" countdown updates between stats frames
+  useEffect(() => {
+    const id = setInterval(() => setTick((t) => t + 1), 1000);
+    return () => clearInterval(id);
+  }, []);
 
   const send = useCallback(
     (raw) => {
@@ -185,8 +204,27 @@ export default function KevinChat({ height = 460 }) {
   const dot =
     status === "live" ? "#22c55e" : status === "connecting" ? "#eab308" : "#ef4444";
 
+  // --- rotation display: live countdown + "reconfiguring" window ---
+  const rotating = !!(rot && rot.rotating);
+  let remaining = null; // seconds to the next flip
+  if (rotating && rot.switchIn != null) {
+    remaining = Math.max(0, rot.switchIn - Math.floor((Date.now() - rot.at) / 1000));
+  }
+  // countdown hit zero -> the ~25 s FPGA reconfigure is in progress until a fresh
+  // stats frame lands with a new (larger) switch_in for the next model.
+  const switching = rotating && remaining === 0;
+  const canSend = status === "live" && !switching;
+  const isLegit = rotating && rot.model && rot.model !== "kevin";
+  const badgeColor = isLegit ? "#a855f7" : "#22c55e";
+  const shortLabel = rotating
+    ? (rot.label || "").split("—")[0].trim() || (isLegit ? "Legit" : "Kevin")
+    : null;
+  const mmss = (s) =>
+    `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+
   return (
     <figure style={{ margin: "2rem 0" }}>
+      <style>{`@keyframes kev-spin { to { transform: rotate(360deg); } } .kev-spin { animation: kev-spin 1.1s linear infinite; }`}</style>
       <div
         style={{
           border: "1px solid var(--border)",
@@ -208,25 +246,69 @@ export default function KevinChat({ height = 460 }) {
             fontSize: "0.8rem",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             <span
               style={{
                 width: 9,
                 height: 9,
                 borderRadius: "50%",
-                background: dot,
-                boxShadow: `0 0 6px ${dot}`,
+                background: switching ? "#eab308" : dot,
+                boxShadow: `0 0 6px ${switching ? "#eab308" : dot}`,
                 display: "inline-block",
               }}
             />
             <strong style={{ color: "var(--text-primary)" }}>kevin on kria</strong>
-            <span style={{ color: "var(--text-dim)" }}>
-              {status === "live"
-                ? "live from the fabric"
-                : status === "connecting"
-                ? "connecting..."
-                : "offline"}
-            </span>
+            {!rotating && (
+              <span style={{ color: "var(--text-dim)" }}>
+                {status === "live"
+                  ? "live from the fabric"
+                  : status === "connecting"
+                  ? "connecting..."
+                  : "offline"}
+              </span>
+            )}
+            {rotating && (
+              switching ? (
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 5,
+                    padding: "2px 9px",
+                    borderRadius: 999,
+                    fontSize: "0.72rem",
+                    color: "#eab308",
+                    border: "1px solid #eab308",
+                    background: "rgba(234,179,8,0.12)",
+                  }}
+                >
+                  <span className="kev-spin" style={{ display: "inline-block" }}>⟳</span>
+                  reconfiguring the FPGA…
+                </span>
+              ) : (
+                <span
+                  title={rot.label}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: "2px 9px",
+                    borderRadius: 999,
+                    fontSize: "0.72rem",
+                    color: badgeColor,
+                    border: `1px solid ${badgeColor}`,
+                    background: `${badgeColor}1f`,
+                  }}
+                >
+                  <strong>{shortLabel}</strong>
+                  {remaining != null && (
+                    <span style={{ color: "var(--text-dim)" }}>
+                      · next in {mmss(remaining)}
+                    </span>
+                  )}
+                </span>
+              )
+            )}
           </div>
           {stats && (
             <div style={{ color: "var(--text-secondary)", textAlign: "right" }}>
@@ -252,7 +334,7 @@ export default function KevinChat({ height = 460 }) {
             gap: 10,
           }}
         >
-          {status === "offline" && (
+          {(status === "offline" || switching) && (
             <div
               style={{
                 position: "absolute",
@@ -270,18 +352,34 @@ export default function KevinChat({ height = 460 }) {
                 opacity: 0.94,
               }}
             >
-              <div style={{ fontSize: "1.8rem" }}>😴</div>
-              <strong style={{ color: "var(--text-primary)", fontSize: "0.95rem" }}>
-                sorry, kevin is sleeping right now
-              </strong>
-              <span style={{ color: "var(--text-secondary)", fontSize: "0.8rem", maxWidth: 360 }}>
-                The Kria board is offline or resting between demos. The widget reconnects on its
-                own. Try again in a bit, or open the{" "}
-                <a href="https://chat.mikeayles.com" target="_blank" rel="noopener noreferrer">
-                  full demo
-                </a>
-                .
-              </span>
+              {switching ? (
+                <>
+                  <div className="kev-spin" style={{ fontSize: "1.8rem" }}>⟳</div>
+                  <strong style={{ color: "var(--text-primary)", fontSize: "0.95rem" }}>
+                    reconfiguring the FPGA, live
+                  </strong>
+                  <span style={{ color: "var(--text-secondary)", fontSize: "0.8rem", maxWidth: 380 }}>
+                    Swapping the whole model — a fresh bitstream is being loaded onto the chip
+                    (~25 s). One KV260 holds one model at a time, so everyone shares whichever is
+                    running. Back in a moment.
+                  </span>
+                </>
+              ) : (
+                <>
+                  <div style={{ fontSize: "1.8rem" }}>😴</div>
+                  <strong style={{ color: "var(--text-primary)", fontSize: "0.95rem" }}>
+                    sorry, kevin is sleeping right now
+                  </strong>
+                  <span style={{ color: "var(--text-secondary)", fontSize: "0.8rem", maxWidth: 360 }}>
+                    The Kria board is offline or resting between demos. The widget reconnects on its
+                    own. Try again in a bit, or open the{" "}
+                    <a href="https://chat.mikeayles.com" target="_blank" rel="noopener noreferrer">
+                      full demo
+                    </a>
+                    .
+                  </span>
+                </>
+              )}
             </div>
           )}
           {messages.map((m, i) => (
@@ -342,7 +440,7 @@ export default function KevinChat({ height = 460 }) {
             <button
               key={s}
               onClick={() => send(s)}
-              disabled={status !== "live"}
+              disabled={!canSend}
               style={{
                 fontFamily: mono,
                 fontSize: "0.72rem",
@@ -351,8 +449,8 @@ export default function KevinChat({ height = 460 }) {
                 border: "1px solid var(--border)",
                 borderRadius: 999,
                 padding: "3px 9px",
-                cursor: status === "live" ? "pointer" : "default",
-                opacity: status === "live" ? 1 : 0.5,
+                cursor: canSend ? "pointer" : "default",
+                opacity: canSend ? 1 : 0.5,
               }}
             >
               {s}
@@ -376,7 +474,8 @@ export default function KevinChat({ height = 460 }) {
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="say lot word..."
+            placeholder={switching ? "reconfiguring the chip…" : "say lot word..."}
+            disabled={!canSend}
             maxLength={512}
             style={{
               flex: 1,
@@ -392,7 +491,7 @@ export default function KevinChat({ height = 460 }) {
           />
           <button
             type="submit"
-            disabled={status !== "live"}
+            disabled={!canSend}
             style={{
               fontFamily: mono,
               fontSize: "0.85rem",
@@ -400,9 +499,9 @@ export default function KevinChat({ height = 460 }) {
               padding: "8px 16px",
               borderRadius: 8,
               border: "none",
-              background: status === "live" ? "#3b82f6" : "var(--border)",
+              background: canSend ? "#3b82f6" : "var(--border)",
               color: "#fff",
-              cursor: status === "live" ? "pointer" : "default",
+              cursor: canSend ? "pointer" : "default",
             }}
           >
             send
@@ -420,7 +519,9 @@ export default function KevinChat({ height = 460 }) {
       >
         A real conversation with a 3.16M-parameter model living entirely inside the
         on-chip memory of a $250 Kria KV260 FPGA. No GPU, no DDR in the token loop. Output
-        is deliberately telegraphic: the compression is the speed. If the dot is red the
+        is deliberately telegraphic: the compression is the speed. When two models are in
+        rotation the badge shows which is live and counts down to the next swap — at zero,
+        the whole chip is reprogrammed with the other model (~25 s). If the dot is red the
         board is asleep or under load. {" "}
         <a href="https://chat.mikeayles.com" target="_blank" rel="noopener noreferrer">
           Open the full demo
