@@ -1,0 +1,147 @@
+---
+import { getCollection } from 'astro:content';
+import { cleanSlug } from '../utils';
+
+interface Props {
+  currentSlug?: string;
+}
+
+const { currentSlug } = Astro.props;
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const sorted = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+function monthLabel(date: Date): string {
+  return date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+}
+
+const groups: { label: string; posts: typeof sorted }[] = [];
+for (const post of sorted) {
+  const label = monthLabel(post.data.date);
+  const last = groups[groups.length - 1];
+  if (last && last.label === label) {
+    last.posts.push(post);
+  } else {
+    groups.push({ label, posts: [post] });
+  }
+}
+---
+
+<aside class="sidebar">
+  <nav aria-label="Post archive">
+    <div class="sidebar-top">
+      <span class="sidebar-heading">Archive</span>
+      <span class="sidebar-links">
+        <a href="/blog/">All posts</a>
+        <span class="sep" aria-hidden="true">&middot;</span>
+        <a href="/rss.xml">RSS</a>
+      </span>
+    </div>
+    {groups.map(group => (
+      <div class="sidebar-group">
+        <div class="sidebar-month">{group.label}</div>
+        <ul class="sidebar-list">
+          {group.posts.map(post => {
+            const slug = cleanSlug(post.id);
+            const isCurrent = slug === currentSlug;
+            return (
+              <li>
+                <a
+                  href={`/blog/${slug}/`}
+                  class:list={['sidebar-link', { current: isCurrent }]}
+                  aria-current={isCurrent ? 'page' : undefined}
+                >
+                  {post.data.title}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    ))}
+  </nav>
+</aside>
+
+<style>
+  .sidebar {
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .sidebar-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-heading {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-dim, var(--text-secondary));
+  }
+
+  .sidebar-links {
+    font-size: 0.75rem;
+    color: var(--text-dim, var(--text-secondary));
+  }
+
+  .sidebar-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  .sidebar-links a:hover {
+    color: var(--text-primary);
+    text-decoration: underline;
+  }
+
+  .sep {
+    margin: 0 0.25rem;
+  }
+
+  .sidebar-group + .sidebar-group {
+    margin-top: 1.1rem;
+  }
+
+  .sidebar-month {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim, var(--text-secondary));
+    margin-bottom: 0.35rem;
+  }
+
+  .sidebar-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sidebar-list li + li {
+    margin-top: 0.3rem;
+  }
+
+  .sidebar-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    display: block;
+  }
+
+  .sidebar-link:hover {
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .sidebar-link.current {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+</style>
