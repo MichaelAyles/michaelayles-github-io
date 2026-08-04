@@ -5,38 +5,77 @@
 }
 
 :root {
-  --primary: #000000;
-  --secondary: #444444;
-  --background: #ffffff;
-  --surface: #f9f9f9;
-  --border: #e5e5e5;
-  --text-primary: #111111;
-  --text-secondary: #666666;
-  --text-dim: #aaaaaa;
-  --hover-bg: #fafafa;
-  --modal-bg: rgba(255, 255, 255, 0.95);
-  --link: #ea580c;
+  /* Typography */
+  --font-heading: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Warm palette (light) */
+  --paper: #f6f4ef;
+  --ink: #22242a;
+  --muted: #66696f;
+  --border: #e6e0d6;
+  --accent: #ba4a12;
+  --heading: #17181c;
+  --inline-code-bg: #efece5;
+  --inline-code-border: #e2dccf;
+  --inline-code-ink: #9a3d0f;
+  --chip-bg: #f7ece4;
+  --chip-border: #e6d4c4;
+
+  /* Legacy aliases: the rest of the site (nav, footer, index pages,
+     React blog components) reads these names. Keep them mapped to the
+     warm palette so nothing else needs editing. */
+  --primary: var(--heading);
+  --secondary: #55575d;
+  --background: var(--paper);
+  --surface: #efece5;
+  --text-primary: var(--ink);
+  --text-secondary: var(--muted);
+  --text-dim: #a8a294;
+  --hover-bg: #f0ede6;
+  --modal-bg: rgba(246, 244, 239, 0.95);
+  --link: var(--accent);
 }
 
 [data-theme="dark"] {
-  --primary: #ffffff;
-  --secondary: #bbbbbb;
-  --background: #0a0a0a;
-  --surface: #141414;
-  --border: #2a2a2a;
-  --text-primary: #f0f0f0;
-  --text-secondary: #999999;
-  --text-dim: #525252;
-  --hover-bg: #1a1a1a;
-  --modal-bg: rgba(10, 10, 10, 0.95);
-  --link: #fb923c;
+  --paper: #161310;
+  --ink: #e8e2d6;
+  --muted: #948e82;
+  --border: #2c2721;
+  --accent: #f0782e;
+  --heading: #f4eee3;
+  --inline-code-bg: #221e18;
+  --inline-code-border: #342d24;
+  --inline-code-ink: #f0a860;
+  --chip-bg: #2a1f16;
+  --chip-border: #4a2f1c;
+
+  /* Aliases that are not pure var() remaps get their own dark values */
+  --secondary: #beb7aa;
+  --surface: #1d1915;
+  --text-dim: #5f584d;
+  --hover-bg: #241f1a;
+  --modal-bg: rgba(22, 19, 16, 0.95);
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  line-height: 1.6;
-  color: var(--text-primary);
-  background: var(--background);
+  font-family: var(--font-body);
+  line-height: 1.7;
+  color: var(--ink);
+  background: var(--paper);
+  transition: background 0.25s ease;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  color: var(--heading);
+  text-wrap: pretty;
 }
 
 a {
@@ -55,45 +94,50 @@ img {
 
 /* Prose styling for blog content */
 .prose {
-  max-width: 800px;
-  font-size: 1rem;
-  line-height: 1.8;
-  color: var(--text-primary);
+  max-width: 620px;
+  margin: 0 auto;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: var(--ink);
 }
 
 .prose h1 {
-  font-size: 2.5rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  margin-bottom: 1rem;
-  margin-top: 3rem;
+  font-family: var(--font-heading);
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  color: var(--heading);
+  margin: 0 0 1rem;
 }
 
 .prose h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid var(--border);
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 600;
+  margin: 2.4rem 0 1rem;
   padding-bottom: 0.5rem;
+  display: inline-block;
+  border-bottom: 2px solid var(--accent);
 }
 
 .prose h3 {
-  font-size: 1.2rem;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
   font-weight: 600;
-  margin-top: 2rem;
-  margin-bottom: 0.75rem;
+  margin: 2rem 0 0.75rem;
 }
 
 .prose p {
-  margin-bottom: 1.25rem;
+  margin: 0 0 1.35rem;
+  text-wrap: pretty;
 }
 
 .prose a {
-  color: var(--link);
+  color: var(--accent);
   text-decoration: underline;
   text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
+  text-underline-offset: 0.15em;
   font-weight: 500;
 }
 
@@ -103,26 +147,31 @@ img {
 
 .prose ul,
 .prose ol {
-  margin-left: 2rem;
-  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+  margin: 0 0 1.35rem;
 }
 
 .prose li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.45rem;
 }
 
 .prose code {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  padding: 0.15em 0.4em;
-  font-size: 0.9em;
+  font-family: var(--font-mono);
+  font-size: 0.84em;
+  background: var(--inline-code-bg);
+  border: 1px solid var(--inline-code-border);
+  border-radius: 4px;
+  padding: 0.12em 0.4em;
+  color: var(--inline-code-ink);
   overflow-wrap: anywhere;
   word-break: break-word;
 }
 
+/* Code blocks keep a fixed dark chrome in both themes.
+   !important beats the inline background shiki writes on pre.astro-code. */
 .prose pre {
-  background: var(--surface);
+  background: #1b1f23 !important;
+  color: #c9d1d9;
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 1.25rem;
@@ -131,10 +180,15 @@ img {
 }
 
 .prose pre code {
+  font-family: var(--font-mono);
   background: none;
   border: none;
+  border-radius: 0;
   padding: 0;
   font-size: 0.85em;
+  color: inherit;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 /* Enhanced code blocks: language label + copy button (injected in BaseLayout) */
@@ -157,12 +211,12 @@ img {
   align-items: center;
   justify-content: space-between;
   padding: 0.4rem 0.5rem 0.4rem 0.85rem;
-  background: #1b1f23;
+  background: #14181c;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .code-block-head .code-lang {
-  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.72rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -170,7 +224,7 @@ img {
 }
 
 .code-block-head .code-copy {
-  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.72rem;
   color: #c9d1d9;
   background: rgba(255, 255, 255, 0.06);
@@ -195,14 +249,15 @@ img {
 .prose blockquote {
   border-left: 3px solid var(--border);
   padding-left: 1rem;
-  color: var(--text-secondary);
-  margin-bottom: 1.25rem;
+  color: var(--muted);
+  margin-bottom: 1.35rem;
   font-style: italic;
 }
 
 .prose table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 0.88em;
   margin-bottom: 1.5rem;
 }
 
@@ -214,8 +269,17 @@ img {
 }
 
 .prose th {
-  background: var(--surface);
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  background: var(--inline-code-bg);
+}
+
+.prose td {
+  font-variant-numeric: tabular-nums;
 }
 
 .prose strong {
@@ -229,14 +293,18 @@ img {
 }
 
 /* Mobile: tighten everything so more text fits per screen */
-@media (max-width: 700px) {
+@media (max-width: 640px) {
   .prose {
-    font-size: 0.95rem;
-    line-height: 1.6;
+    max-width: none;
+    font-size: 1.0625rem;
   }
 
   .prose p {
-    margin-bottom: 1rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .prose h1 {
+    font-size: 1.9rem;
   }
 
   .prose h2 {
@@ -245,13 +313,13 @@ img {
   }
 
   .prose h3 {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     margin-top: 1.5rem;
   }
 
   .prose ul,
   .prose ol {
-    margin-left: 1.2rem;
+    padding-left: 1.2rem;
   }
 
   .prose table {
@@ -270,12 +338,13 @@ img {
 
 /* Section title */
 .section-title {
+  font-family: var(--font-mono);
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--text-secondary);
   margin-bottom: 2rem;
-  font-weight: 600;
+  font-weight: 500;
   border-bottom: 1px solid var(--border);
   padding-bottom: 1rem;
 }

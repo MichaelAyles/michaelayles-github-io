@@ -4,7 +4,7 @@ import Nav from '../../components/Nav.astro';
 import ThemeToggle from '../../components/ThemeToggle.astro';
 import Footer from '../../components/Footer.astro';
 import { getCollection, render } from 'astro:content';
-import { cleanSlug, formatDate } from '../../utils';
+import { cleanSlug } from '../../utils';
 
 export async function getStaticPaths() {
   // Build a page for every post, including drafts, so drafts are reachable at
@@ -24,6 +24,16 @@ const { Content } = await render(post);
 const allProjects = await getCollection('projects');
 const slug = cleanSlug(post.id);
 const relatedProject = allProjects.find(p => p.data.blogPost === slug);
+
+// Date/category pill: "NOV 27, 2025 · HARDWARE" (uppercased via CSS)
+const pillDate = post.data.date.toLocaleDateString('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+});
+const pillLabel = post.data.tags.length > 0
+  ? `${pillDate} · ${post.data.tags[0]}`
+  : pillDate;
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
@@ -32,7 +42,7 @@ const relatedProject = allProjects.find(p => p.data.blogPost === slug);
   <main class="main">
     <article class="article">
       <header class="article-header">
-        <time class="article-date">{formatDate(post.data.date)}</time>
+        <span class="article-pill">{pillLabel}</span>
         <h1 class="article-title">{post.data.title}</h1>
         <p class="article-desc">{post.data.description}</p>
         <div class="article-tags">
@@ -74,45 +84,66 @@ const relatedProject = allProjects.find(p => p.data.blogPost === slug);
     padding: 3rem 2rem;
   }
 
-  .article-header {
-    margin-bottom: 3rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--border);
+  .article {
+    max-width: 620px;
+    margin: 0 auto;
+    font-size: 1.125rem;
   }
 
-  .article-date {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    display: block;
-    margin-bottom: 0.75rem;
+  .article-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .article-pill {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.66em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--chip-bg);
+    border: 1px solid var(--chip-border);
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
   }
 
   .article-title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-    margin-bottom: 1rem;
+    font-family: var(--font-heading);
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    color: var(--heading);
+    margin: 0 0 1rem;
+    text-wrap: pretty;
   }
 
   .article-desc {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin-bottom: 1rem;
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.5;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.75rem;
+    text-wrap: pretty;
   }
 
   .article-tags {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
   }
 
   .tag {
-    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
     padding: 0.2rem 0.5rem;
     border: 1px solid var(--border);
-    border-radius: 3px;
-    color: var(--text-secondary);
+    border-radius: 4px;
+    color: var(--muted);
   }
 
   .related-project {
@@ -124,6 +155,7 @@ const relatedProject = allProjects.find(p => p.data.blogPost === slug);
   }
 
   .related-project h3 {
+    font-family: var(--font-mono);
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -159,19 +191,23 @@ const relatedProject = allProjects.find(p => p.data.blogPost === slug);
     border-bottom-color: var(--text-primary);
   }
 
-  @media (max-width: 700px) {
+  @media (max-width: 640px) {
     .main {
-      padding: 2rem 1rem;
+      padding: 2rem 20px;
+    }
+    .article {
+      max-width: none;
     }
     .article-title {
-      font-size: 1.8rem;
+      font-size: 1.9rem;
     }
     .article-header {
       margin-bottom: 2rem;
-      padding-bottom: 1.5rem;
     }
     .article-desc {
       font-size: 1rem;
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
     }
   }
 </style>
