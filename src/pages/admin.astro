@@ -1,0 +1,174 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+import { cleanSlug, formatDate } from '../utils';
+
+// Every post, drafts included, newest first
+const allPosts = await getCollection('blog');
+const posts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const liveCount = posts.filter(p => !p.data.draft).length;
+const draftCount = posts.length - liveCount;
+---
+
+<BaseLayout title="Admin" description="Post status overview" noindex>
+  <Nav current=""><ThemeToggle /></Nav>
+
+  <main class="main">
+    <h1 class="page-title">Posts</h1>
+    <p class="summary">{posts.length} total, {liveCount} live, {draftCount} draft</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Slug</th>
+          </tr>
+        </thead>
+        <tbody>
+          {posts.map(post => {
+            const slug = cleanSlug(post.id);
+            return (
+              <tr>
+                <td class="date">{formatDate(post.data.date)}</td>
+                <td>
+                  <a href={`/blog/${slug}/`} class="post-link">{post.data.title}</a>
+                  {post.data.featured && <span class="badge featured">Featured</span>}
+                </td>
+                <td>
+                  {post.data.draft
+                    ? <span class="badge draft">Draft</span>
+                    : <span class="badge live">Live</span>}
+                </td>
+                <td class="slug">{slug}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+
+    <Footer />
+  </main>
+</BaseLayout>
+
+<style>
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+  }
+
+  .summary {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  th {
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  tr:hover td {
+    background: var(--hover-bg);
+  }
+
+  .date {
+    white-space: nowrap;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+  }
+
+  .post-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .post-link:hover {
+    text-decoration: underline;
+  }
+
+  .slug {
+    color: var(--text-secondary);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.8rem;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .badge.live {
+    color: #22863a;
+    border: 1px solid #22863a;
+  }
+
+  .badge.draft {
+    color: #b08800;
+    border: 1px solid #b08800;
+  }
+
+  .badge.featured {
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    margin-left: 0.5rem;
+  }
+
+  :global([data-theme="dark"]) .badge.live {
+    color: #4ade80;
+    border-color: #4ade80;
+  }
+
+  :global([data-theme="dark"]) .badge.draft {
+    color: #fbbf24;
+    border-color: #fbbf24;
+  }
+
+  @media (max-width: 700px) {
+    .slug {
+      display: none;
+    }
+  }
+</style>
