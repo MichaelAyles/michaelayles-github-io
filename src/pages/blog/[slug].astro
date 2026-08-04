@@ -25,6 +25,13 @@ const allProjects = await getCollection('projects');
 const slug = cleanSlug(post.id);
 const relatedProject = allProjects.find(p => p.data.blogPost === slug);
 
+// Adjacent live posts, newest first. Drafts have no index here, so they get no nav.
+const livePosts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const currentIndex = livePosts.findIndex(p => cleanSlug(p.id) === slug);
+const newerPost = currentIndex > 0 ? livePosts[currentIndex - 1] : undefined;
+const olderPost = currentIndex >= 0 ? livePosts[currentIndex + 1] : undefined;
+
 // Date/category pill: "NOV 27, 2025 · HARDWARE" (uppercased via CSS)
 const pillDate = post.data.date.toLocaleDateString('en-US', {
   month: 'short',
@@ -70,6 +77,23 @@ const pillLabel = post.data.tags.length > 0
             )}
           </div>
         </aside>
+      )}
+
+      {(newerPost || olderPost) && (
+        <nav class="post-nav" aria-label="Adjacent posts">
+          {newerPost ? (
+            <a href={`/blog/${cleanSlug(newerPost.id)}/`} class="post-nav-link newer">
+              <span class="post-nav-label">&larr; Newer</span>
+              <span class="post-nav-title">{newerPost.data.title}</span>
+            </a>
+          ) : <span />}
+          {olderPost && (
+            <a href={`/blog/${cleanSlug(olderPost.id)}/`} class="post-nav-link older">
+              <span class="post-nav-label">Older &rarr;</span>
+              <span class="post-nav-title">{olderPost.data.title}</span>
+            </a>
+          )}
+        </nav>
       )}
     </article>
 
@@ -189,6 +213,48 @@ const pillLabel = post.data.tags.length > 0
 
   .rp-links a:hover {
     border-bottom-color: var(--text-primary);
+  }
+
+  .post-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .post-nav-link {
+    display: block;
+    max-width: 45%;
+    text-decoration: none;
+  }
+
+  .post-nav-link.older {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .post-nav-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+
+  .post-nav-title {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--text-primary);
+  }
+
+  .post-nav-link:hover .post-nav-title {
+    color: var(--accent);
   }
 
   @media (max-width: 640px) {
