@@ -1,0 +1,169 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { cleanSlug } from '../utils';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { posts } = Astro.props;
+
+function monthLabel(date: Date): string {
+  return date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+}
+
+function shortDate(date: Date): string {
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+}
+
+// Group consecutive posts by month-year, preserving the given order.
+const groups: { label: string; posts: CollectionEntry<'blog'>[] }[] = [];
+for (const post of posts) {
+  const label = monthLabel(post.data.date);
+  const last = groups[groups.length - 1];
+  if (last && last.label === label) {
+    last.posts.push(post);
+  } else {
+    groups.push({ label, posts: [post] });
+  }
+}
+---
+
+<div class="feed">
+  {groups.map(group => (
+    <section class="month-group">
+      <h2 class="month-heading">{group.label}</h2>
+      {group.posts.map(post => (
+        <article class="entry">
+          <time class="entry-date" datetime={post.data.date.toISOString()}>
+            {shortDate(post.data.date)}
+          </time>
+          <div class="entry-body">
+            <h3 class="entry-title">
+              <a href={`/blog/${cleanSlug(post.id)}/`}>{post.data.title}</a>
+              {post.data.featured && <span class="featured-marker">Featured</span>}
+            </h3>
+            <p class="entry-desc">{post.data.description}</p>
+            {post.data.tags.length > 0 && (
+              <ul class="entry-tags">
+                {post.data.tags.map(tag => (
+                  <li class="tag">{tag}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </article>
+      ))}
+    </section>
+  ))}
+</div>
+
+<style>
+  .feed {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .month-group {
+    padding: 1.75rem 0 0.5rem;
+  }
+
+  .month-group + .month-group {
+    border-top: 1px solid var(--border);
+    margin-top: 1rem;
+  }
+
+  .month-heading {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-dim, var(--text-secondary));
+    margin: 0 0 1.5rem;
+  }
+
+  .entry {
+    display: grid;
+    grid-template-columns: 3.75rem 1fr;
+    column-gap: 1.25rem;
+    align-items: baseline;
+  }
+
+  .entry + .entry {
+    margin-top: 2rem;
+  }
+
+  .entry-date {
+    font-size: 0.8rem;
+    color: var(--text-dim, var(--text-secondary));
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  .entry-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    margin: 0 0 0.4rem;
+  }
+
+  .entry-title a {
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  .entry-title a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .featured-marker {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0.1rem 0.4rem;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  .entry-desc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin: 0 0 0.6rem;
+  }
+
+  .entry-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.45rem;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 640px) {
+    .entry {
+      grid-template-columns: 1fr;
+      row-gap: 0.2rem;
+    }
+
+    .entry-date {
+      text-align: left;
+    }
+  }
+</style>

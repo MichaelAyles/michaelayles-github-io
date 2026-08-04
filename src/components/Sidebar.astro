@@ -11,119 +11,137 @@ const { currentSlug } = Astro.props;
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const sorted = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-// Group chronologically by month
-const groups: { label: string; posts: { slug: string; title: string; day: number }[] }[] = [];
+function monthLabel(date: Date): string {
+  return date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+}
+
+const groups: { label: string; posts: typeof sorted }[] = [];
 for (const post of sorted) {
-  const label = post.data.date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
-  const entry = {
-    slug: cleanSlug(post.id),
-    title: post.data.title,
-    day: post.data.date.getDate(),
-  };
+  const label = monthLabel(post.data.date);
   const last = groups[groups.length - 1];
   if (last && last.label === label) {
-    last.posts.push(entry);
+    last.posts.push(post);
   } else {
-    groups.push({ label, posts: [entry] });
+    groups.push({ label, posts: [post] });
   }
 }
 ---
 
 <aside class="sidebar">
-  <h2 class="sidebar-title">All posts</h2>
-  {groups.map(group => (
-    <section class="month-group">
-      <h3 class="month-label">{group.label}</h3>
-      <ul class="month-posts">
-        {group.posts.map(post => (
-          <li>
-            <a
-              href={`/blog/${post.slug}/`}
-              class:list={['sidebar-link', { current: post.slug === currentSlug }]}
-              aria-current={post.slug === currentSlug ? 'page' : undefined}
-            >
-              <span class="day">{post.day}</span>
-              <span class="link-title">{post.title}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-  ))}
+  <nav aria-label="Post archive">
+    <div class="sidebar-top">
+      <span class="sidebar-heading">Archive</span>
+      <span class="sidebar-links">
+        <a href="/blog/">All posts</a>
+        <span class="sep" aria-hidden="true">&middot;</span>
+        <a href="/rss.xml">RSS</a>
+      </span>
+    </div>
+    {groups.map(group => (
+      <div class="sidebar-group">
+        <div class="sidebar-month">{group.label}</div>
+        <ul class="sidebar-list">
+          {group.posts.map(post => {
+            const slug = cleanSlug(post.id);
+            const isCurrent = slug === currentSlug;
+            return (
+              <li>
+                <a
+                  href={`/blog/${slug}/`}
+                  class:list={['sidebar-link', { current: isCurrent }]}
+                  aria-current={isCurrent ? 'page' : undefined}
+                >
+                  {post.data.title}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    ))}
+  </nav>
 </aside>
 
 <style>
   .sidebar {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
   }
 
-  .sidebar-title {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-secondary);
+  .sidebar-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-bottom: 0.75rem;
     margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--border);
   }
 
-  .month-group {
-    margin-bottom: 1.25rem;
-  }
-
-  .month-label {
-    font-size: 0.75rem;
+  .sidebar-heading {
+    font-size: 0.7rem;
     font-weight: 600;
-    color: var(--text-secondary);
-    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-dim, var(--text-secondary));
   }
 
-  .month-posts {
+  .sidebar-links {
+    font-size: 0.75rem;
+    color: var(--text-dim, var(--text-secondary));
+  }
+
+  .sidebar-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  .sidebar-links a:hover {
+    color: var(--text-primary);
+    text-decoration: underline;
+  }
+
+  .sep {
+    margin: 0 0.25rem;
+  }
+
+  .sidebar-group + .sidebar-group {
+    margin-top: 1.1rem;
+  }
+
+  .sidebar-month {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim, var(--text-secondary));
+    margin-bottom: 0.35rem;
+  }
+
+  .sidebar-list {
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  .month-posts li {
-    margin-bottom: 0.15rem;
+  .sidebar-list li + li {
+    margin-top: 0.3rem;
   }
 
   .sidebar-link {
-    display: flex;
-    gap: 0.5rem;
-    align-items: baseline;
-    padding: 0.2rem 0.4rem;
-    margin-left: -0.4rem;
-    border-radius: 4px;
-    text-decoration: none;
     color: var(--text-secondary);
-    line-height: 1.4;
-    transition: color 0.15s ease, background 0.15s ease;
+    text-decoration: none;
+    display: block;
   }
 
   .sidebar-link:hover {
     color: var(--text-primary);
-    background: var(--hover-bg);
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 
   .sidebar-link.current {
     color: var(--text-primary);
     font-weight: 600;
-    background: var(--hover-bg);
-  }
-
-  .day {
-    flex-shrink: 0;
-    width: 1.2rem;
-    text-align: right;
-    font-size: 0.75rem;
-    font-variant-numeric: tabular-nums;
-    color: var(--text-secondary);
-    opacity: 0.7;
-  }
-
-  .link-title {
-    flex: 1;
   }
 </style>
