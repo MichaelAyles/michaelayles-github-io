@@ -16,6 +16,8 @@ import T, { GlossaryStyles } from '@/components/blog/Term';
 
 I put a language model inside the <T id="fabric">fabric</T> of a $250 <T id="fpga">FPGA</T>. Every weight lives in on-chip memory. Nothing touches external RAM in the token loop, not the weights, not the activations, not the KV cache.
 
+![The AMD Kria KV260 on the bench. The language model lives under that fan.](./kv260-board.jpeg)
+
 The headline, bit-exact and measured on silicon: **59,965 tokens per second** on the fabric. The same model on this board's own Arm cores manages 11 tok/s. My laptop's RTX 3050 Ti manages 719.
 
 This is the same bet Taalas made, the startup AMD just acquired: if single-user inference is bound by how fast you can read the weights, stop fetching them from far away. Taalas etches a model's weights into custom silicon as transistors and gets 17,000 tok/s out of a Llama 8B. I loaded mine into the UltraRAM of AMD's own $250 Kria KV260 dev board. Theirs needs a foundry re-spin to change models. Mine reprograms in 25 seconds. Theirs is 8 billion parameters and can spell. Mine is 3 million parameters and talks like Kevin Malone. We'll get to why.
