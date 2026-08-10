@@ -5,6 +5,10 @@ import G from "./glossary.js";
 // the popover is driven entirely by the CSS in <GlossaryStyles/>, included once).
 //
 // Usage in MDX:  <T id="uram">URAM</T>   (children = what shows in the text)
+// Each instance gets a unique CSS anchor-name (stamped at build time, this is
+// static HTML): a shared name resolves to the wrong element when a term
+// appears more than once, which flings the tip off-screen.
+let seq = 0;
 export default function T({ id, children }) {
   const def = G[id];
   const label = children ?? (id ? id.toUpperCase() : "");
@@ -12,12 +16,18 @@ export default function T({ id, children }) {
   // Unknown id: render plain text so a typo never breaks the prose.
   if (!def) return <span>{label}</span>;
 
+  const anchor = `--kg${++seq}`;
   return (
     <span className="kg-term">
-      <button type="button" className="kg-anchor" aria-label={`Definition: ${label}`}>
+      <button
+        type="button"
+        className="kg-anchor"
+        aria-label={`Definition: ${label}`}
+        style={{ anchorName: anchor }}
+      >
         {label}
       </button>
-      <span role="tooltip" className="kg-tip">
+      <span role="tooltip" className="kg-tip" style={{ positionAnchor: anchor }}>
         <b className="kg-tip-label">{label}: </b>
         {def}
       </span>
@@ -50,18 +60,23 @@ export function GlossaryStyles() {
       .kg-tip-label { display: none; }
       .kg-term:hover .kg-tip,
       .kg-term:focus-within .kg-tip { opacity: 1; visibility: visible; }
-      /* Small screens: a centered popover on the anchor can hang off the
-         viewport edge, so pin the definition to the bottom of the screen as a
-         sheet instead, and name the term since it's no longer attached to it. */
-      @media (max-width: 640px) {
+      /* Where CSS anchor positioning exists (all evergreen browsers), pin the
+         tip to its own term via its unique inline anchor-name.
+         anchor-center alignment auto-shifts to keep the tip inside the
+         viewport, which is exactly the left/right clamp a centered popover
+         can't do by itself; flip-block drops it below the word when there is
+         no room above. Older browsers keep the plain centered popover. */
+      @supports (position-area: top) {
         .kg-tip {
-          position: fixed; left: 12px; right: 12px; top: auto;
-          bottom: calc(12px + env(safe-area-inset-bottom));
-          width: auto; transform: none;
-          font-size: 0.85rem; padding: 10px 12px;
-          box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+          position: fixed;
+          position-area: top;
+          position-try-fallbacks: flip-block;
+          justify-self: anchor-center;
+          left: auto; bottom: auto; transform: none;
+          margin: 0 8px 6px;
+          width: max-content;
+          max-width: min(280px, calc(100vw - 32px));
         }
-        .kg-tip-label { display: inline; }
       }
     `}</style>
   );
