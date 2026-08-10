@@ -476,7 +476,6 @@ export default function KevinChat({ height = 460 }) {
                       background: "rgba(34,197,94,0.1)",
                     }}
                   >
-                    <span aria-hidden="true">🔥</span>
                     generated in {fmtSec(fabricNumbers(m).sec)} •{" "}
                     {fabricNumbers(m).tokS.toLocaleString()} tok/s
                   </span>
