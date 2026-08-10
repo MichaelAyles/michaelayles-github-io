@@ -43,6 +43,7 @@ export default function KevinChat({ height = 460 }) {
   const [, setTick] = useState(0);            // 1 Hz re-render to drive the countdown
 
   const wsRef = useRef(null);
+  const statsRef = useRef(null); // latest stats frame, for per-reply fabric numbers
   const seqRef = useRef(0);
   const pendingRef = useRef(null); // index of the in-flight kevin bubble
   const sentAtRef = useRef(0);
@@ -112,6 +113,7 @@ export default function KevinChat({ height = 460 }) {
           }));
           break;
         case "stats":
+          statsRef.current = m;
           setStats(m);
           if (m.rotating !== undefined) {
             setRot({
@@ -139,6 +141,7 @@ export default function KevinChat({ height = 460 }) {
     if (i == null) return;
     pendingRef.current = null;
     const rttMs = Math.round(performance.now() - sentAtRef.current);
+    const fabricTokS = statsRef.current?.fabric_tok_s ?? null;
     setMessages((prev) => {
       if (i >= prev.length) return prev;
       const next = prev.slice();
@@ -146,6 +149,7 @@ export default function KevinChat({ height = 460 }) {
         ...next[i],
         ...(updater ? updater(next[i]) : {}),
         rttMs,
+        fabricTokS,
         streaming: false,
         thinking: false,
       };
@@ -248,18 +252,22 @@ export default function KevinChat({ height = 460 }) {
   const mmss = (s) =>
     `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
-  // per-reply generation badge. Preferred source: the server's infer_ms (true
-  // fabric decode time). The streamed path does not carry it, so the fallback is
-  // the client-measured round trip: reply chars over send-to-done wall time
-  // (char-level model, so one char is one token).
-  const fmtMs = (ms) =>
-    ms >= 1000
-      ? `${(ms / 1000).toFixed(2)} s`
-      : ms >= 10
-      ? `${Math.round(ms)} ms`
-      : `${ms.toFixed(1)} ms`;
-  const tokS = (chars, ms) =>
-    ms > 0 && chars > 0 ? Math.round(chars / (ms / 1000)) : null;
+  // Per-reply fabric badge. Preferred source: the server's infer_ms (true
+  // fabric decode time for this reply). The streamed path does not carry it,
+  // so the fallback derives fabric time from the live measured fabric rate
+  // (fabric_tok_s in the stats broadcast): chars / rate. Char-level model, so
+  // one char is one token. Round trip is relegated to the hover tooltip.
+  const fmtSec = (sec) =>
+    `${sec.toFixed(sec < 0.01 ? 4 : sec < 1 ? 3 : 2)}s`;
+  const fabricNumbers = (m) => {
+    if (m.inferMs > 0 && m.text.length > 0) {
+      return { sec: m.inferMs / 1000, tokS: Math.round(m.text.length / (m.inferMs / 1000)) };
+    }
+    if (m.fabricTokS > 0 && m.text.length > 0) {
+      return { sec: m.text.length / m.fabricTokS, tokS: Math.round(m.fabricTokS) };
+    }
+    return null;
+  };
 
   return (
     <figure style={{ margin: "2rem 0" }}>
@@ -450,69 +458,28 @@ export default function KevinChat({ height = 460 }) {
                   m.text
                 )}
               </div>
-              {m.role === "kevin" && (m.inferMs != null || m.rttMs != null) && (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    gap: 8,
-                    marginTop: 4,
-                    marginLeft: 2,
-                  }}
-                >
-                  {m.inferMs != null ? (
-                    <>
-                      <span
-                        title="time the fabric spent decoding this reply, and the speed that implies"
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 5,
-                          padding: "2px 9px",
-                          borderRadius: 6,
-                          fontSize: "0.68rem",
-                          color: "#22c55e",
-                          border: "1px solid #22c55e",
-                          background: "rgba(34,197,94,0.1)",
-                        }}
-                      >
-                        <span aria-hidden="true">🔥</span>
-                        generated in {fmtMs(m.inferMs)}
-                        {tokS(m.text.length, m.inferMs) != null && (
-                          <> • {tokS(m.text.length, m.inferMs).toLocaleString()} tok/s</>
-                        )}
-                      </span>
-                      {m.rttMs != null && (
-                        <span style={{ fontSize: "0.68rem", color: "var(--text-dim)" }}>
-                          round-trip {m.rttMs} ms
-                        </span>
-                      )}
-                    </>
-                  ) : (
-                    m.rttMs != null && (
-                      <span
-                        title="measured in your browser: reply length over the full send-to-done round trip (fabric + host + network)"
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 5,
-                          padding: "2px 9px",
-                          borderRadius: 6,
-                          fontSize: "0.68rem",
-                          color: "var(--text-secondary)",
-                          border: "1px solid var(--border)",
-                          background: "rgba(127,127,127,0.08)",
-                        }}
-                      >
-                        <span aria-hidden="true">⚡</span>
-                        {m.text.length} tok in {fmtMs(m.rttMs)}
-                        {tokS(m.text.length, m.rttMs) != null && (
-                          <> • {tokS(m.text.length, m.rttMs).toLocaleString()} tok/s round trip</>
-                        )}
-                      </span>
-                    )
-                  )}
+              {m.role === "kevin" && fabricNumbers(m) != null && (
+                <div style={{ marginTop: 4, marginLeft: 2 }}>
+                  <span
+                    title={`fabric decode time for this reply${
+                      m.inferMs != null ? " (measured on the board)" : " (reply length over the live measured fabric rate)"
+                    }${m.rttMs != null ? ` · full round trip ${m.rttMs} ms` : ""}`}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 5,
+                      padding: "2px 9px",
+                      borderRadius: 6,
+                      fontSize: "0.68rem",
+                      color: "#22c55e",
+                      border: "1px solid #22c55e",
+                      background: "rgba(34,197,94,0.1)",
+                    }}
+                  >
+                    <span aria-hidden="true">🔥</span>
+                    generated in {fmtSec(fabricNumbers(m).sec)} •{" "}
+                    {fabricNumbers(m).tokS.toLocaleString()} tok/s
+                  </span>
                 </div>
               )}
             </div>
