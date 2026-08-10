@@ -14,29 +14,31 @@ import T, { GlossaryStyles } from '@/components/blog/Term';
 
 <GlossaryStyles />
 
-I put a language model inside the <T id="fabric">fabric</T> of a $250 <T id="fpga">FPGA</T>. Every weight lives in on-chip memory. Nothing touches external RAM in the token loop, not the weights, not the activations, not the <T id="kv">KV cache</T>.
+I was so impressed by the [chatjimmy.ai](https://chatjimmy.ai) demo by Taalas, I wanted to see what I could squeeze inside the <T id="fabric">fabric</T> of a $250 <T id="fpga">FPGA</T>. By not using the (4 GB available) <T id="ddr">DDR</T>, and keeping everything in <T id="uram">URAM</T>/<T id="bram">BRAM</T>, I set myself a target of 100,000 tok/s.
 
 ![The AMD Kria KV260 on the bench. The language model lives under that fan.](./kv260-board.jpeg)
 
 The headline, bit-exact and measured on silicon: **59,965 tokens per second** on the fabric. The same model on this board's own Arm cores manages 11 tok/s. My laptop's RTX 3050 Ti manages 719.
 
-This is the same bet Taalas made, the startup AMD just acquired: if single-user inference is bound by how fast you can read the weights, stop fetching them from far away. Taalas etches a model's weights into custom silicon as transistors and gets 17,000 tok/s out of a Llama 8B. I loaded mine into the <T id="uram">UltraRAM</T> of AMD's own $250 <T id="kria">Kria KV260</T> dev board. Theirs needs a foundry re-spin to change models. Mine reprograms in 25 seconds. Theirs is 8 billion parameters and can spell. Mine is 3 million parameters and talks like Kevin Malone. We'll get to why.
+Taalas managed to bake Llama 3.1 8B into their chip, and have a usable chat. I had ~3 MB of memory to work with, which means the most powerful model we can fit is a <T id="tinystories">TinyStories</T>-class one: 3.16M parameters, ~1.5 MB at INT4. Initially, I wanted to shrink it further by <T id="lemmatise">lemmatising</T> the training corpus and making it sound like Kevin Malone, 'why use many word when few do trick', but since this didn't actually make the model any smaller, it just speeds it up by ~30%, I went back on myself and just allowed the hardware to flip-flop between both models.
 
 First, talk to it.
 
 ## The live demo
 
-This widget is a real <T id="websocket">WebSocket</T> connection to the board. Your words go through a Cloudflare tunnel, to a serving box, to the Kria, into the fabric, and back. If the status dot is green, you are talking to transistors. It's a story generator, not an assistant. It doesn't understand questions. Give it "once upon a time" and it finishes it.
+This widget is a real <T id="websocket">WebSocket</T> connection to the board. Your words go through a Cloudflare tunnel, to a serving box, to the Kria, into the fabric, and back. If the status dot is green, you are talking to a single FPGA in Wales. It's a story generator, not an assistant. It doesn't understand questions. Give it "once upon a time" and it finishes it.
 
 <KevinChat client:visible />
 
-Yes, the output is bad. It has to be, and the reason it has to be is the actual engineering content of this post.
+I hope you didn't get your hopes up, there's only so much you can do with ~1.5 MB of weights.
 
 ## Why I even had this board
 
+This is all running on my AMD KV260 dev board, featuring the K26 <T id="som">SOM</T>. This is one of the latest SoCs in the Zynq line (specifically the Zynq UltraScale+ ZU5CG/ZU5EV, catchy eh?), the successor to the OG 7000s. God, how I wanted a dev board for one of those 10 years ago.
+
 I bought the KV260 for a different side project, a deterministic vision pipeline. The board is sold as a "vision AI starter kit," but the <T id="vitis">Vitis</T> object detection runs on the quad core <T id="a53">A53</T>s, and the A53 is a weak core with no hardware matmul. The Vitis libraries turned out to be basically OpenCV on Linux rather than anything that pushes the fabric. If I wanted probabilistic AI running on a CPU, I sure as heck wouldn't choose a quad core A53.
 
-So the fabric was sitting there, and then I saw the Taalas demo. I wondered how far I could push a consumer board toward the same idea.
+I did manage to get my deterministic depth engine running in Verilog on the fabric, but since it's a robotics project, the hardware has a lot of downtime for safety reasons. So I put a fresh Linux image on a spare SD card and set up SSH so I can work on this from anywhere in what little free time I have (it very quickly spiralled out of control: another remote machine now has JTAG access to it, and the PSU is on a Zigbee relay so I can force reboots remotely).
 
 ## The wall
 
@@ -50,17 +52,17 @@ On the KV260, the A53s and the fabric share one <T id="ddr">DDR</T> controller a
 
 ## Making the model small enough (this is where Kevin comes in)
 
-A 3.16M-parameter <T id="int4">INT4</T> transformer fits in ~1.5 MB. That's the budget met, but every byte still counts, and the last lever toward speed kept turning out to be "make the model dumber."
+A 3.16M-parameter <T id="int4">INT4</T> transformer fits in ~1.5 MB. That's the budget met, but every byte still counts, and the last lever toward speed kept turning out to be "make the model dumber." (or so I thought)
 
-So the training corpus (TinyStories) is run through a tool that strips English to its content words. "Why waste time saying a lot of words when a few words do the trick" becomes "why waste time say lot word when few word do trick." Yes, that's Kevin Malone's communication philosophy from The Office, and yes, the model consequently talks like him. Across the full corpus the compression takes 371.7M words down to 260.5M, about 70%, measured.
+So the training corpus (TinyStories) is run through a tool that strips English to its content words. "Why waste time saying a lot of words when a few words do the trick" becomes "why waste time say lot word when few word do trick," inspired by Kevin Malone's communication philosophy from The Office, and yes, the model consequently talks like him. Across the full corpus the compression takes 371.7M words down to 260.5M, about 70%, measured.
 
-I expected the compressed-corpus model to come out smaller. It came out exactly the same size, and in hindsight that's obvious: the parameter count is fixed by the architecture, not the corpus. What the compression does is shrink the output distribution. The same story takes ~30% fewer characters to tell, so effective speed goes up even though the per-token rate is identical. The dumbness is the optimisation.
+I expected the compressed-corpus model to come out smaller. It came out exactly the same size, and in hindsight that's obvious: the parameter count is fixed by the architecture, not the corpus. What the compression does is shrink the output distribution. The same story takes ~30% fewer characters to tell, so effective speed goes up even though the per-token rate is identical. 
 
-Honest version: the lemmatised corpus buys about 1.5x. The order-of-magnitude win is on-chip versus DDR. Kevin is the garnish, not the meal.
+Honest version: the lemmatised corpus buys about 1.5x. The order-of-magnitude win is on-chip versus DDR. Kevin is the garnish on the chilli, not the meal.
 
 ## Chasing 100k
 
-My goal was 100,000 tok/s. I didn't get there, and the shape of the failure is the most interesting part.
+My goal was 100,000 tok/s. I didn't get there, but I gave it a bloody good go, eventually even compromising the usability by reducing the attention window to T=1 to remove as many round trips and race conditions as possible.
 
 The record build is 16 parallel streams sharing one weight pass, entirely sequenced in the fabric, CPU touching nothing. It measures **59,965.5 tok/s at 200 MHz**, 16 of 16 streams bit-exact against the integer reference, three runs of three. The confession: those sixteen streams remember *nothing*. Each decodes with an attention window of one token. A chat built on it emits one faithful character and falls down the stairs, "he he he he he." It is fast and it is meaningless, and those are the same property taken one step too far.
 
@@ -70,7 +72,7 @@ The path from 11 tok/s to 60k was a ladder, every rung measured on silicon:
 
 <SpeedLadder client:visible />
 
-And the ceiling is proven, not assumed. There's a script that falsifies packing a third <T id="mac">MAC</T> into a <T id="dsp">DSP48E2</T> over 1.2M randomised products, and N=32 needs 2,048 DSPs the chip doesn't have. The real limit of this architecture on this silicon is 62k to 78k. 100k was a fantasy and I've disowned it.
+And the ceiling is proven, not assumed. There's a script that falsifies packing a third <T id="mac">MAC</T> into a <T id="dsp">DSP48E2</T> over 1.2M randomised products, and N=32 needs 2,048 DSPs the chip doesn't have. The real limit of this architecture on this silicon is 62k to 78k. 100k was a finger-in-the-air guess before I even started, I just thought it would be a funny target number. Hitting 60k is close enough for me, and >20k *usable* beat the Taalas number, which was another goal I set myself.
 
 ## Where it loses
 
@@ -87,10 +89,15 @@ Everything above is the story. The engineering is in the sub-articles, and every
 - **[Serving an FPGA to strangers](/blog/kevin-serving-strangers/)**, the tunnel, the serving box, and why the dashboard deliberately lives off the board.
 - **[War stories and the method](/blog/kevin-war-stories/)**, where iverilog lies, why silicon beats the timing report by 1.3 to 1.76x, and the optimisation I won and stopped anyway.
 
-It's all hand-written Verilog, no <T id="hls">HLS</T>. Claude Code did a moderate amount, it's a side project on a side project after all, though pushing an FPGA to its limit is definitely not as comfortable for it as writing a CRUD app in TypeScript.
+It's all hand-written Verilog, no <T id="hls">HLS</T>. Claude Code did a solid amount, it's a side project on a side project after all, though pushing an FPGA to its limit is definitely not as comfortable for it as writing a CRUD app in TypeScript. I would probably put the balance at:
+
+- Architecting: me 80%, Claude Code 20%
+- Implementing: me 20%, Claude Code 80%
+
+And despite saying it's not that comfortable writing <T id="hdl">HDL</T>, it flipping did it. Outside of the stereo vision project, the last time I touched an FPGA was either a Lattice iCE40 about 10 years ago, or an even older Altera Cyclone IV on a DE0-Nano.
+
+I haven't investigated OSS synthesis and bitstream generators, but my workflow didn't involve opening <T id="vivado">Vivado</T> once. It was all called via the CLI. On my 20-core i7 with 32 GB of RAM, a full run was around 30 minutes. Place and route slowed right down as I got closer to 100% memory usage, but it's still amazing what can be done.
 
 ## The receipt
 
 **59,965.5 tok/s at 200 MHz, measured, N=16, bit-exact, three runs of three.** The deployed chat is the faithful build at 19,242 fabric tok/s by counted cycles, ~21,300 measured live under a 2,000-connection load test, live at [chat.mikeayles.com](https://chat.mikeayles.com) and right here. Same thesis as the startup AMD just bought, on AMD's own $250 board, reprogrammable in 25 seconds.
-
-Possible, practical, and measurable.

@@ -130,6 +130,12 @@ const G = {
     "The compile step that turns RTL into a netlist of actual gates and FPGA primitives, before place-and-route.",
   vitis:
     "AMD/Xilinx's application development stack for their boards. The KV260's 'vision AI' demos run on it, mostly on the Arm cores rather than the fabric.",
+  tinystories:
+    "A synthetic corpus of about 2.1 million very simple children's stories, designed so that even tiny models can learn coherent English from it. The training data here.",
+  lemmatise:
+    "Reduce each word to its dictionary root ('saying' to 'say', 'words' to 'word'). The Keviniser lemmatises the corpus down to content words, about 30% fewer characters for the same story.",
+  hdl:
+    "Hardware Description Language (Verilog, VHDL): code that describes circuits rather than instructions to execute. This project is Verilog throughout.",
 };
 
 export default G;
