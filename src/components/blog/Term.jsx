@@ -18,6 +18,7 @@ export default function T({ id, children }) {
         {label}
       </button>
       <span role="tooltip" className="kg-tip">
+        <b className="kg-tip-label">{label}: </b>
         {def}
       </span>
     </span>
@@ -36,7 +37,8 @@ export function GlossaryStyles() {
       }
       .kg-tip {
         position: absolute; bottom: calc(100% + 8px); left: 50%;
-        transform: translateX(-50%); width: min(280px, 78vw); z-index: 60;
+        transform: translateX(-50%); width: min(280px, calc(100vw - 24px));
+        z-index: 60;
         background: var(--surface, #1a1a1a); color: var(--text-primary, #eee);
         border: 1px solid var(--border, #444); border-radius: 8px;
         padding: 8px 10px; font-size: 0.78rem; font-weight: 400;
@@ -45,8 +47,22 @@ export function GlossaryStyles() {
         opacity: 0; visibility: hidden; transition: opacity 0.12s ease;
         pointer-events: none; white-space: normal;
       }
+      .kg-tip-label { display: none; }
       .kg-term:hover .kg-tip,
       .kg-term:focus-within .kg-tip { opacity: 1; visibility: visible; }
+      /* Small screens: a centered popover on the anchor can hang off the
+         viewport edge, so pin the definition to the bottom of the screen as a
+         sheet instead, and name the term since it's no longer attached to it. */
+      @media (max-width: 640px) {
+        .kg-tip {
+          position: fixed; left: 12px; right: 12px; top: auto;
+          bottom: calc(12px + env(safe-area-inset-bottom));
+          width: auto; transform: none;
+          font-size: 0.85rem; padding: 10px 12px;
+          box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+        }
+        .kg-tip-label { display: inline; }
+      }
     `}</style>
   );
 }
