@@ -263,8 +263,12 @@ export default function KevinChat({ height = 460 }) {
     if (m.inferMs > 0 && m.text.length > 0) {
       return { sec: m.inferMs / 1000, tokS: Math.round(m.text.length / (m.inferMs / 1000)) };
     }
-    if (m.fabricTokS > 0 && m.text.length > 0) {
-      return { sec: m.text.length / m.fabricTokS, tokS: Math.round(m.fabricTokS) };
+    // rate captured when the reply finished; if the reply beat the first
+    // stats broadcast (fresh connection), fall back to the live rate so the
+    // badge still appears once stats arrive
+    const rate = m.fabricTokS > 0 ? m.fabricTokS : stats?.fabric_tok_s;
+    if (rate > 0 && m.text.length > 0) {
+      return { sec: m.text.length / rate, tokS: Math.round(rate) };
     }
     return null;
   };
