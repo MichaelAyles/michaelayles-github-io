@@ -7,8 +7,9 @@ import { C, HAND, MONO, Caption } from "./excali.jsx";
 // overlap; tap/click a rung to see what that step removed.
 //
 // Data is a hand-synced copy of fabric/progress.py LADDER (single source of truth
-// over there; keep the numbers identical). All rungs MEASURED on silicon except
-// the one SIM rung, exactly as tagged upstream.
+// over there; keep the numbers identical), plus a final rung from the live
+// 2,000-connection bench. All rungs MEASURED on silicon except the one SIM rung,
+// exactly as tagged upstream.
 
 const MIN = 0.04; // left edge of the log scale
 const MAX = 1e6; // right edge (headroom so end labels never clip)
@@ -273,15 +274,26 @@ const ERAS = [
         sub: "the route-congestion kill",
         tps: 19242.0,
         tag: "MEASURED",
-        badge: "the faithful record",
+        badge: "the counted-cycle record",
         removed:
           "The congestion wall that capped the clock at 166.7: the LayerNorm " +
           "flip-flop arrays became wide-word LUTRAM, timing closed, and silicon " +
           "runs bit-exact at 200 MHz (10,394 cyc/tok). 250 MHz is a hard wall. " +
-          "19,242 is the conservative counted-cycle figure over a full 127-token " +
-          "message; a live bench sweep holds ~21,300 tok/s flat from 1 to 2,000 " +
-          "concurrent connections (peak 21,479, ~12,000 replies, zero errors). " +
-          "Longer replies amortize the fixed per-inference overhead.",
+          "19,242 is the conservative deterministic figure over a full " +
+          "127-token message.",
+      },
+      {
+        name: "Live bench, 200 MHz",
+        sub: "the 2,000-connection sweep",
+        tps: 21300.0,
+        tag: "MEASURED",
+        badge: "the operating record",
+        removed:
+          "Nothing in the fabric: same bitstream, measured in operation. The " +
+          "readable-English build's longer replies amortize the fixed " +
+          "per-inference overhead, and the rate holds flat from 1 to 2,000 " +
+          "concurrent connections: ~21,300 tok/s across the whole sweep, peak " +
+          "21,479, ~12,000 replies, zero errors.",
       },
     ],
   },
@@ -550,12 +562,12 @@ export default function SpeedLadder() {
         ))}
       </div>
       <Caption>
-        The full ladder from the repo's <code>fabric/progress.py</code>, 27 rungs. Tap or
-        click a rung for what that step removed. Acts I to III count aggregate tokens
-        across parallel streams; Act IV is the faithful single-stream metric with full
-        context, ending at 19,242 tok/s at 200 MHz by counted cycles; the
-        live-measured operating throughput is ~21,300 tok/s, held flat from 1 to
-        2,000 concurrent connections (peak 21,479, zero errors).
+        The full ladder from the repo's <code>fabric/progress.py</code> plus the live
+        bench, 28 rungs. Tap or click a rung for what that step removed. Acts I to III
+        count aggregate tokens across parallel streams; Act IV is the faithful
+        single-stream metric with full context, ending at the live operating record of
+        ~21,300 tok/s, held flat from 1 to 2,000 concurrent connections (peak 21,479,
+        zero errors; counted-cycle record 19,242 at 200 MHz).
       </Caption>
     </figure>
   );
