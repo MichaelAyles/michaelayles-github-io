@@ -112,6 +112,24 @@ const G = {
     "Systolic array: a grid of MAC units that stream data through in lockstep. The classic matrix-multiply-on-silicon structure.",
   operandpack:
     "Operand packing: fitting more than one multiply into a single DSP by placing two small operands side by side in its wide multiplier.",
+  hls:
+    "High-Level Synthesis: tools that compile C/C++ into hardware so you don't write Verilog by hand. This project has none; every block is hand-written RTL.",
+  websocket:
+    "A persistent two-way connection between browser and server, unlike ordinary HTTP's request-then-hang-up. What lets the chat stream characters live.",
+  temperature:
+    "Sampling knob that rescales the logits before a token is drawn: low values play it safe, high values take risks. Zero collapses to always picking the best token.",
+  topk:
+    "Top-k sampling: only the k most likely tokens are allowed into the draw, so the long tail of nonsense can never be picked.",
+  greedy:
+    "Decoding by always taking the single most likely next token. Deterministic and repeatable, which makes it ideal for bit-exact verification, and boring, which is why the chat samples instead.",
+  autoregressive:
+    "Generating one token at a time, each conditioned on everything before it. The reason typing a prompt forward is append-only work.",
+  prefill:
+    "Processing the whole prompt before the first output token can appear; usually the dominant share of a chatbot's time-to-first-token.",
+  synthesis:
+    "The compile step that turns RTL into a netlist of actual gates and FPGA primitives, before place-and-route.",
+  vitis:
+    "AMD/Xilinx's application development stack for their boards. The KV260's 'vision AI' demos run on it, mostly on the Arm cores rather than the fabric.",
 };
 
 export default G;

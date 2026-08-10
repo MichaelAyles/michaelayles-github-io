@@ -17,13 +17,13 @@ import T, { GlossaryStyles } from '@/components/blog/Term';
 
 The faithful model decodes a full reply in about 6.6 milliseconds of fabric time. The reply used to land in the browser in about 100. Almost none of that gap was the fabric. Most of it was one embarrassing loop nobody had measured.
 
-To get variety, the chat samples (temperature 0.85, top-k 40) instead of always picking the single best token. But the probabilities live in the fabric. So every token, the host read all 193 output <T id="logits">logits</T> back over `/dev/mem`, ran a softmax and a draw on the Arm core, and only then knew the next character. Measured, that readback was **about 58% of a reply**. We were serving a ~19,000-token-per-second model through a 1,000-token-per-second straw.
+To get variety, the chat samples (<T id="temperature">temperature</T> 0.85, <T id="topk">top-k</T> 40) instead of always picking the single best token. But the probabilities live in the fabric. So every token, the host read all 193 output <T id="logits">logits</T> back over <T id="devmem">`/dev/mem`</T>, ran a <T id="softmax">softmax</T> and a draw on the Arm core, and only then knew the next character. Measured, that readback was **about 58% of a reply**. We were serving a ~19,000-token-per-second model through a 1,000-token-per-second straw.
 
 <GumbelTax client:visible />
 
-The fix is a lovely identity. Sampling from `softmax(logit / T)` is exactly the same as taking the argmax of `logit + T * g`, where `g` is Gumbel noise. This is the <T id="gumbel">Gumbel-max</T> trick. The thing that picks the sample is an argmax, and the fabric already has an argmax. So the sampler is not new hardware: it is the existing argmax with a precomputed noise value added to each logit, and the host's job collapses from 193 reads per token to **one seed write per request**. As a bonus, seed = 0 zeroes the noise, which makes the sampler bit-identical to greedy decode. One datapath, two behaviours.
+The fix is a lovely identity. Sampling from `softmax(logit / T)` is exactly the same as taking the <T id="argmax">argmax</T> of `logit + T * g`, where `g` is Gumbel noise. This is the <T id="gumbel">Gumbel-max</T> trick. The thing that picks the sample is an argmax, and the fabric already has an argmax. So the sampler is not new hardware: it is the existing argmax with a precomputed noise value added to each logit, and the host's job collapses from 193 reads per token to **one seed write per request**. As a bonus, seed = 0 zeroes the noise, which makes the sampler bit-identical to <T id="greedy">greedy</T> decode. One datapath, two behaviours.
 
-That moved the localhost round-trip ceiling from ~1,000 to ~5,600 tok/s, about 5.6x, with the fabric record completely untouched. The public number through the Cloudflare tunnel sits around 1,658, and that remainder is honest network distance, not silicon.
+That moved the localhost round-trip ceiling from ~1,000 to ~5,600 tok/s, about 5.6x, with the fabric record completely untouched. The public number through the Cloudflare <T id="tunnel">tunnel</T> sits around 1,658, and that remainder is honest network distance, not silicon.
 
 ## The two ceilings
 

@@ -14,19 +14,19 @@ import T, { GlossaryStyles } from '@/components/blog/Term';
 
 <GlossaryStyles />
 
-I put a language model inside the <T id="fabric">fabric</T> of a $250 <T id="fpga">FPGA</T>. Every weight lives in on-chip memory. Nothing touches external RAM in the token loop, not the weights, not the activations, not the KV cache.
+I put a language model inside the <T id="fabric">fabric</T> of a $250 <T id="fpga">FPGA</T>. Every weight lives in on-chip memory. Nothing touches external RAM in the token loop, not the weights, not the activations, not the <T id="kv">KV cache</T>.
 
 ![The AMD Kria KV260 on the bench. The language model lives under that fan.](./kv260-board.jpeg)
 
 The headline, bit-exact and measured on silicon: **59,965 tokens per second** on the fabric. The same model on this board's own Arm cores manages 11 tok/s. My laptop's RTX 3050 Ti manages 719.
 
-This is the same bet Taalas made, the startup AMD just acquired: if single-user inference is bound by how fast you can read the weights, stop fetching them from far away. Taalas etches a model's weights into custom silicon as transistors and gets 17,000 tok/s out of a Llama 8B. I loaded mine into the UltraRAM of AMD's own $250 Kria KV260 dev board. Theirs needs a foundry re-spin to change models. Mine reprograms in 25 seconds. Theirs is 8 billion parameters and can spell. Mine is 3 million parameters and talks like Kevin Malone. We'll get to why.
+This is the same bet Taalas made, the startup AMD just acquired: if single-user inference is bound by how fast you can read the weights, stop fetching them from far away. Taalas etches a model's weights into custom silicon as transistors and gets 17,000 tok/s out of a Llama 8B. I loaded mine into the <T id="uram">UltraRAM</T> of AMD's own $250 <T id="kria">Kria KV260</T> dev board. Theirs needs a foundry re-spin to change models. Mine reprograms in 25 seconds. Theirs is 8 billion parameters and can spell. Mine is 3 million parameters and talks like Kevin Malone. We'll get to why.
 
 First, talk to it.
 
 ## The live demo
 
-This widget is a real WebSocket connection to the board. Your words go through a Cloudflare tunnel, to a serving box, to the Kria, into the fabric, and back. If the status dot is green, you are talking to transistors. It's a story generator, not an assistant. It doesn't understand questions. Give it "once upon a time" and it finishes it.
+This widget is a real <T id="websocket">WebSocket</T> connection to the board. Your words go through a Cloudflare tunnel, to a serving box, to the Kria, into the fabric, and back. If the status dot is green, you are talking to transistors. It's a story generator, not an assistant. It doesn't understand questions. Give it "once upon a time" and it finishes it.
 
 <KevinChat client:visible />
 
@@ -34,7 +34,7 @@ Yes, the output is bad. It has to be, and the reason it has to be is the actual 
 
 ## Why I even had this board
 
-I bought the KV260 for a different side project, a deterministic vision pipeline. The board is sold as a "vision AI starter kit," but the Vitis object detection runs on the quad core A53s, and the A53 is a weak core with no hardware matmul. The Vitis libraries turned out to be basically OpenCV on Linux rather than anything that pushes the fabric. If I wanted probabilistic AI running on a CPU, I sure as heck wouldn't choose a quad core A53.
+I bought the KV260 for a different side project, a deterministic vision pipeline. The board is sold as a "vision AI starter kit," but the <T id="vitis">Vitis</T> object detection runs on the quad core <T id="a53">A53</T>s, and the A53 is a weak core with no hardware matmul. The Vitis libraries turned out to be basically OpenCV on Linux rather than anything that pushes the fabric. If I wanted probabilistic AI running on a CPU, I sure as heck wouldn't choose a quad core A53.
 
 So the fabric was sitting there, and then I saw the Taalas demo. I wondered how far I could push a consumer board toward the same idea.
 
@@ -42,7 +42,7 @@ So the fabric was sitting there, and then I saw the Taalas demo. I wondered how 
 
 One fact drives everything. Generating one token at a time is **memory bound, not compute bound**. To produce the next token you read every weight in the model once. The arithmetic is cheap, the reading is the cost.
 
-On the KV260, the A53s and the fabric share one DDR controller at roughly 20 GB/s. If the model lives in DDR, the fabric and the CPU drink through the same straw and the fabric buys you nothing. The round trip to DDR or CPU over AXI kills you. The only escape is a model small enough that all of it fits in on-chip memory, where bandwidth is hundreds of GB/s. This is Taalas' insight, and Groq's, and Cerebras': the memory wall is the enemy and on-chip weights are the escape. They spend hundreds of millions of dollars enlarging the on-chip budget. The KV260 gives you about 3 MB.
+On the KV260, the A53s and the fabric share one <T id="ddr">DDR</T> controller at roughly 20 GB/s. If the model lives in DDR, the fabric and the CPU drink through the same straw and the fabric buys you nothing. The round trip to DDR or CPU over <T id="axi">AXI</T> kills you. The only escape is a model small enough that all of it fits in on-chip memory, where bandwidth is hundreds of GB/s. This is Taalas' insight, and Groq's, and Cerebras': the memory wall is the enemy and on-chip weights are the escape. They spend hundreds of millions of dollars enlarging the on-chip budget. The KV260 gives you about 3 MB.
 
 <BandwidthWall client:visible />
 
@@ -50,7 +50,7 @@ On the KV260, the A53s and the fabric share one DDR controller at roughly 20 GB/
 
 ## Making the model small enough (this is where Kevin comes in)
 
-A 3.16M-parameter INT4 transformer fits in ~1.5 MB. That's the budget met, but every byte still counts, and the last lever toward speed kept turning out to be "make the model dumber."
+A 3.16M-parameter <T id="int4">INT4</T> transformer fits in ~1.5 MB. That's the budget met, but every byte still counts, and the last lever toward speed kept turning out to be "make the model dumber."
 
 So the training corpus (TinyStories) is run through a tool that strips English to its content words. "Why waste time saying a lot of words when a few words do the trick" becomes "why waste time say lot word when few word do trick." Yes, that's Kevin Malone's communication philosophy from The Office, and yes, the model consequently talks like him. Across the full corpus the compression takes 371.7M words down to 260.5M, about 70%, measured.
 
@@ -70,7 +70,7 @@ The path from 11 tok/s to 60k was a ladder, every rung measured on silicon:
 
 <SpeedLadder client:visible />
 
-And the ceiling is proven, not assumed. There's a script that falsifies packing a third MAC into a DSP48E2 over 1.2M randomised products, and N=32 needs 2,048 DSPs the chip doesn't have. The real limit of this architecture on this silicon is 62k to 78k. 100k was a fantasy and I've disowned it.
+And the ceiling is proven, not assumed. There's a script that falsifies packing a third <T id="mac">MAC</T> into a <T id="dsp">DSP48E2</T> over 1.2M randomised products, and N=32 needs 2,048 DSPs the chip doesn't have. The real limit of this architecture on this silicon is 62k to 78k. 100k was a fantasy and I've disowned it.
 
 ## Where it loses
 
@@ -87,7 +87,7 @@ Everything above is the story. The engineering is in the sub-articles, and every
 - **[Serving an FPGA to strangers](/blog/kevin-serving-strangers/)**, the tunnel, the serving box, and why the dashboard deliberately lives off the board.
 - **[War stories and the method](/blog/kevin-war-stories/)**, where iverilog lies, why silicon beats the timing report by 1.3 to 1.76x, and the optimisation I won and stopped anyway.
 
-It's all hand-written Verilog, no HLS. Claude Code did a moderate amount, it's a side project on a side project after all, though pushing an FPGA to its limit is definitely not as comfortable for it as writing a CRUD app in TypeScript.
+It's all hand-written Verilog, no <T id="hls">HLS</T>. Claude Code did a moderate amount, it's a side project on a side project after all, though pushing an FPGA to its limit is definitely not as comfortable for it as writing a CRUD app in TypeScript.
 
 ## The receipt
 
