@@ -113,7 +113,7 @@ const G = {
   operandpack:
     "Operand packing: fitting more than one multiply into a single DSP by placing two small operands side by side in its wide multiplier.",
   hls:
-    "High-Level Synthesis: tools that compile C/C++ into hardware so you don't write Verilog by hand. This project has none; every block is hand-written RTL.",
+    "High-Level Synthesis: tools that compile C/C++ into hardware so you don't write Verilog by hand. This project has none; every block is RTL written directly, by me and by Claude Code, never compiled from C.",
   websocket:
     "A persistent two-way connection between browser and server, unlike ordinary HTTP's request-then-hang-up. What lets the chat stream characters live.",
   temperature:

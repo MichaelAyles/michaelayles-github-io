@@ -15,7 +15,7 @@ import SpeedLadder from '@/components/blog/SpeedLadder';
 
 ---
 
-The rule is: **bit-honest before fast.** Every block is proven bit-exact (or cosine > 0.9999 for the transcendental approximations) against a Python reference before anyone runs a <T id="synthesis">synthesis</T> or quotes a speed. The toolchain is hand-written <T id="rtl">RTL</T> (there is no <T id="hls">HLS</T> on the build box), gated in <T id="iverilog">iverilog</T> simulation, then implemented in <T id="vivado">Vivado</T>, then verified on the board with three matching runs.
+The rule is: **bit-honest before fast.** Every block is proven bit-exact (or cosine > 0.9999 for the transcendental approximations) against a Python reference before anyone runs a <T id="synthesis">synthesis</T> or quotes a speed. The toolchain is hand and LLM written <T id="rtl">RTL</T> (there is no <T id="hls">HLS</T> on the build box), gated in <T id="iverilog">iverilog</T> simulation, then implemented in <T id="vivado">Vivado</T>, then verified on the board with three matching runs.
 
 Some scars from the road, because they are the actual content of the work:
 
