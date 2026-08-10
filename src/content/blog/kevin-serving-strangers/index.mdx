@@ -27,7 +27,7 @@ There are two public hostnames doing two completely different jobs. `chat.mikeay
 
 A live chatbot has two speeds, and conflating them is the fastest way to lie to yourself about how good your demo is. **Fabric tok/s** is how fast the silicon decodes: pure logic cycles over the clock, nothing else. **Round-trip tok/s** is how fast a reply lands in your browser: the fabric *plus* the host loop *plus* the network *plus* the tunnel. On this system they differ by more than an order of magnitude, and the gap is entirely the parts that are not the chip.
 
-Concretely, the faithful chat decodes a full reply in about **6.6 ms** of fabric time, at ~19,240 fabric tok/s. That is the red sliver below. Everything else in the bar is tax the fabric never sees.
+Concretely, the faithful chat decodes a full reply in about **6.6 ms** of fabric time, at ~19,240 fabric tok/s by counted cycles (~21,300 measured live, see the load test below). That is the red sliver below. Everything else in the bar is tax the fabric never sees.
 
 <RoundTripTiming client:visible />
 
@@ -53,9 +53,26 @@ Single-user decode is the fabric's *weakest* case. One person typing makes each 
 
 The ceiling on B is memory, not compute. Each concurrent stream needs its own KV cache, those caches live on-chip beside the model, and the short context the design already mandates is what keeps each one small enough that a fair few fit. Within batch capacity everyone is served at full speed; past it, requests queue and per-user latency grows with queue depth. Watching that queue form on the live dashboard is the drama.
 
+## The load test
+
+That queueing model is now measured, not just predicted. A bench sweep against the readable-English build at 200 MHz, 1 to 2,000 concurrent connections, roughly 12,000 replies in total:
+
+| Conns | Completed | Errors | p95 latency | Fabric tok/s |
+|---|---|---|---|---|
+| 1 | 461 | 0 | 30 ms | 21,479 (peak) |
+| 100 | 1,786 | 0 | 545 ms | 21,185 |
+| 250 | 1,968 | 0 | 1.3 s | 21,188 |
+| 500 | 2,329 | 0 | 2.4 s | 21,292 |
+| 1,000 | 2,823 | 0 | 4.4 s | 21,371 |
+| 2,000 | 3,702 | 0 | 9.4 s | 21,344 |
+
+The two interesting columns tell the whole story. Fabric throughput is **flat**: ~21,300 tok/s at one connection and ~21,300 at two thousand. It was never a lone-user number. And p95 latency grows exactly the way a queue grows, 30 ms at one connection to 9.4 seconds at two thousand: that is queue depth felt from the outside, precisely the behaviour predicted above. Zero errors, zero empty replies, zero drops across the sweep, and the serving box peaked at a load of 0.62 on 12 cores. The chip never noticed the crowd. The crowd just formed a line.
+
+A note on the number: the conservative counted-cycle figure for the faithful build is **19,242 tok/s** over a full 127-token message, and that stands as the deterministic quote. The live operating throughput comes out higher because the readable-English model writes longer grammatical sentences, and a longer reply amortizes the fixed per-inference overhead over more characters. Kevin, telegraphic by design, benched ~19,500 on the same bitstream for exactly the mirrored reason.
+
 ## The honest bottleneck
 
-Named in advance: if this ever gets a real crowd, the thing that breaks first is almost certainly the Arm core's network stack holding thousands of concurrent WebSocket connections, not the fabric running out of inference. The fabric does single-digit-microsecond tokens from on-chip and has enormous headroom; the single gigabit port and four A53 cores in front of it do not. So the experiment honestly produces two numbers, not one: the **inference ceiling** (the fabric under synthetic local load, large) and the **serving ceiling** (the whole board under real traffic through its own network stack, modest). I built something so fast that the slow part is handling the sockets, and the gap between those two numbers is the actual result.
+Named in advance: if this ever gets a real crowd, the thing that breaks first is almost certainly the Arm core's network stack holding thousands of concurrent WebSocket connections, not the fabric running out of inference. The fabric does single-digit-microsecond tokens from on-chip and has enormous headroom; the single gigabit port and four A53 cores in front of it do not. So the experiment honestly produces two numbers, not one: the **inference ceiling** (the fabric under synthetic local load, large) and the **serving ceiling** (the whole board under real traffic through its own network stack, modest). I built something so fast that the slow part is handling the sockets, and the gap between those two numbers is the actual result. The sweep above puts a floor under the serving ceiling: wherever it is, it sits past 2,000 concurrent connections, and the inference side never flinched on the way there.
 
 ![The load dashboard under stress](./kevchat_overload.png)
 

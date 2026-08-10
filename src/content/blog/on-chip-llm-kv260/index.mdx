@@ -64,7 +64,7 @@ My goal was 100,000 tok/s. I didn't get there, and the shape of the failure is t
 
 The record build is 16 parallel streams sharing one weight pass, entirely sequenced in the fabric, CPU touching nothing. It measures **59,965.5 tok/s at 200 MHz**, 16 of 16 streams bit-exact against the integer reference, three runs of three. The confession: those sixteen streams remember *nothing*. Each decodes with an attention window of one token. A chat built on it emits one faithful character and falls down the stairs, "he he he he he." It is fast and it is meaningless, and those are the same property taken one step too far.
 
-So the deployed chat is a different, honest build. One stream, full trained context window, KV caching bit-exact to a full recompute. That one runs **~19,240 tok/s of fabric** and remembers your last couple of turns. It's the one in the widget above. Neither number gets to borrow the other's headline.
+So the deployed chat is a different, honest build. One stream, full trained context window, KV caching bit-exact to a full recompute. That one runs **19,242 tok/s of fabric** by counted cycles, and **~21,300 tok/s measured live**, a number that held flat from 1 to 2,000 concurrent connections in a [load sweep](/blog/kevin-serving-strangers/) with zero errors (peak observed 21,479). It remembers your last couple of turns, and it's the one in the widget above. Neither number gets to borrow the record's headline.
 
 The path from 11 tok/s to 60k was a ladder, every rung measured on silicon:
 
@@ -91,6 +91,6 @@ It's all hand-written Verilog, no <T id="hls">HLS</T>. Claude Code did a moderat
 
 ## The receipt
 
-**59,965.5 tok/s at 200 MHz, measured, N=16, bit-exact, three runs of three.** The deployed chat is the faithful build at ~19,240 fabric tok/s, live at [chat.mikeayles.com](https://chat.mikeayles.com) and right here. Same thesis as the startup AMD just bought, on AMD's own $250 board, reprogrammable in 25 seconds.
+**59,965.5 tok/s at 200 MHz, measured, N=16, bit-exact, three runs of three.** The deployed chat is the faithful build at 19,242 fabric tok/s by counted cycles, ~21,300 measured live under a 2,000-connection load test, live at [chat.mikeayles.com](https://chat.mikeayles.com) and right here. Same thesis as the startup AMD just bought, on AMD's own $250 board, reprogrammable in 25 seconds.
 
 Possible, practical, and measurable.

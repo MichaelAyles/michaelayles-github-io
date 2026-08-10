@@ -278,8 +278,10 @@ const ERAS = [
           "The congestion wall that capped the clock at 166.7: the LayerNorm " +
           "flip-flop arrays became wide-word LUTRAM, timing closed, and silicon " +
           "runs bit-exact at 200 MHz (10,394 cyc/tok). 250 MHz is a hard wall. " +
-          "The quoted number is a full 127-token message; the live demo's " +
-          "per-reply stats read up to ~21.5k tok/s on shorter replies.",
+          "19,242 is the conservative counted-cycle figure over a full 127-token " +
+          "message; a live bench sweep holds ~21,300 tok/s flat from 1 to 2,000 " +
+          "concurrent connections (peak 21,479, ~12,000 replies, zero errors). " +
+          "Longer replies amortize the fixed per-inference overhead.",
       },
     ],
   },
@@ -551,9 +553,9 @@ export default function SpeedLadder() {
         The full ladder from the repo's <code>fabric/progress.py</code>, 27 rungs. Tap or
         click a rung for what that step removed. Acts I to III count aggregate tokens
         across parallel streams; Act IV is the faithful single-stream metric with full
-        context, ending at the current record of 19,242 tok/s at 200 MHz (a full
-        127-token message; live per-reply readings on the demo reach ~21.5k on
-        shorter replies).
+        context, ending at 19,242 tok/s at 200 MHz by counted cycles; the
+        live-measured operating throughput is ~21,300 tok/s, held flat from 1 to
+        2,000 concurrent connections (peak 21,479, zero errors).
       </Caption>
     </figure>
   );
