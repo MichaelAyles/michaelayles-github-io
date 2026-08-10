@@ -100,11 +100,17 @@ export default function KevinChat({ height = 460 }) {
           }));
           break;
         case "stream_end":
-          if (m.completion) setKevin(() => ({ text: m.completion }));
+          setKevin((b) => ({
+            ...(m.completion ? { text: m.completion } : {}),
+            ...(m.infer_ms != null ? { inferMs: m.infer_ms } : {}),
+          }));
           finishReply();
           break;
         case "authoritative":
-          setKevin(() => ({ text: m.completion || "(kevin say nothing)" }));
+          setKevin(() => ({
+            text: m.completion || "(kevin say nothing)",
+            ...(m.infer_ms != null ? { inferMs: m.infer_ms } : {}),
+          }));
           finishReply();
           break;
         case "stats":
@@ -221,6 +227,17 @@ export default function KevinChat({ height = 460 }) {
     : null;
   const mmss = (s) =>
     `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+
+  // per-reply generation badge: fabric decode time from the server's infer_ms,
+  // tok/s derived from it (char-level model, so one char is one token)
+  const fmtMs = (ms) =>
+    ms >= 1000
+      ? `${(ms / 1000).toFixed(2)} s`
+      : ms >= 10
+      ? `${Math.round(ms)} ms`
+      : `${ms.toFixed(1)} ms`;
+  const replyTokS = (m) =>
+    m.inferMs > 0 ? Math.round(m.text.length / (m.inferMs / 1000)) : null;
 
   return (
     <figure style={{ margin: "2rem 0" }}>
@@ -411,16 +428,44 @@ export default function KevinChat({ height = 460 }) {
                   m.text
                 )}
               </div>
-              {m.role === "kevin" && m.rttMs != null && (
+              {m.role === "kevin" && (m.inferMs != null || m.rttMs != null) && (
                 <div
                   style={{
-                    fontSize: "0.68rem",
-                    color: "var(--text-dim)",
-                    marginTop: 3,
+                    display: "flex",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    gap: 8,
+                    marginTop: 4,
                     marginLeft: 2,
                   }}
                 >
-                  round-trip {m.rttMs} ms
+                  {m.inferMs != null && (
+                    <span
+                      title="time the fabric spent decoding this reply, and the speed that implies"
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 5,
+                        padding: "2px 9px",
+                        borderRadius: 6,
+                        fontSize: "0.68rem",
+                        color: "#22c55e",
+                        border: "1px solid #22c55e",
+                        background: "rgba(34,197,94,0.1)",
+                      }}
+                    >
+                      <span aria-hidden="true">🔥</span>
+                      generated in {fmtMs(m.inferMs)}
+                      {replyTokS(m) != null && (
+                        <> • {replyTokS(m).toLocaleString()} tok/s</>
+                      )}
+                    </span>
+                  )}
+                  {m.rttMs != null && (
+                    <span style={{ fontSize: "0.68rem", color: "var(--text-dim)" }}>
+                      round-trip {m.rttMs} ms
+                    </span>
+                  )}
                 </div>
               )}
             </div>
