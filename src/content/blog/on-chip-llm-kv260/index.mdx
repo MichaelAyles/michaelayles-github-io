@@ -9,6 +9,7 @@ draft: true
 
 import KevinChat from '@/components/blog/KevinChat';
 import BandwidthWall from '@/components/blog/BandwidthWall';
+import SpeedLadder from '@/components/blog/SpeedLadder';
 import T, { GlossaryStyles } from '@/components/blog/Term';
 
 <GlossaryStyles />
@@ -65,14 +66,7 @@ So the deployed chat is a different, honest build. One stream, full trained cont
 
 The path from 11 tok/s to 60k was a ladder, every rung measured on silicon:
 
-| Step | tok/s | The idea |
-|---|---|---|
-| A53 char chat | 11 | the CPU baseline |
-| HW sequencer @40 MHz | 44 | take the CPU out of the loop entirely |
-| wide P-lane datapath | 1,883 | one URAM word feeds 128+ lanes |
-| N=8 single-pass | 19,276 | one weight pass serves 8 streams |
-| split-brain N=14 | 36,971 | two 7-stream cohorts on the dual-port URAM |
-| **N=16 split-brain @ 200 MHz** | **59,965.5** | **the record (two cohorts of 8)** |
+<SpeedLadder client:visible />
 
 And the ceiling is proven, not assumed. There's a script that falsifies packing a third MAC into a DSP48E2 over 1.2M randomised products, and N=32 needs 2,048 DSPs the chip doesn't have. The real limit of this architecture on this silicon is 62k to 78k. 100k was a fantasy and I've disowned it.
 
@@ -98,5 +92,3 @@ It's all hand-written Verilog, no HLS. Claude Code did a moderate amount, it's a
 **59,965.5 tok/s at 200 MHz, measured, N=16, bit-exact, three runs of three.** The deployed chat is the faithful build at ~19,240 fabric tok/s, live at [chat.mikeayles.com](https://chat.mikeayles.com) and right here. Same thesis as the startup AMD just bought, on AMD's own $250 board, reprogrammable in 25 seconds.
 
 Possible, practical, and measurable.
-
-<KevinChat client:visible height={360} />
