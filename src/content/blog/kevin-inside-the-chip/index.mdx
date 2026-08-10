@@ -1,0 +1,49 @@
+---
+title: "On-Chip LLM: Inside the Chip"
+description: "The datapath of a 3.16M-parameter transformer living in FPGA fabric: wide-word GEMV, the dual-port split-brain, and the proof that 16 streams is a hard wall."
+date: 2026-08-10
+tags: ["FPGA", "Hardware"]
+draft: true
+---
+
+import PLBlock from '@/components/blog/PLBlock';
+import T, { GlossaryStyles } from '@/components/blog/Term';
+
+<GlossaryStyles />
+
+*Part of the [on-chip LLM on a $250 FPGA](/blog/on-chip-llm-kv260/) series. This is the hardware. Read the main post first for why any of this exists.*
+
+---
+
+Here is what is actually in the fabric.
+
+<PLBlock client:visible />
+
+The pieces:
+
+- **The weight image** is one resident INT4 blob, ~12.6 Mbit, sitting in <T id="uram">UltraRAM</T>. It is loaded once at boot (UltraRAM cannot be initialised from the bitstream, so "resident," not "baked in"). Every layer reads its slice of this one memory.
+- **<T id="gemv">GEMV</T> the wide-word way.** The naive layout gives each compute <T id="pe">lane</T> its own memory bank, which caps you at about 64 lanes before the fabric runs out of banks. Instead the weights are stored transposed, so a single wide UltraRAM word (1024 bits is 256 INT4 nibbles) feeds 256 lanes the same column, all sharing one activation. That one change is what unlocks the wide datapath. The record build runs 128 lanes, the faithful chat build runs 256.
+- **Two cohorts, the split-brain.** UltraRAM is genuinely dual-ported. So the design runs two independent 8-stream cohorts, each reading the same weight image through its own port, sharing only the weights and an arbitrated set of non-linear units. Eight plus eight is N=16. Because a cohort never shares a weight pass with the other, an entire class of stream-synchronisation bugs simply does not exist.
+- **The non-linear bricks.** <T id="layernorm">LayerNorm</T> (with a reciprocal-square-root done by a seed table plus Newton-Raphson), <T id="softmax">softmax</T> (running-max, no overflow), <T id="gelu">GELU</T> (lookup table plus linear interpolation), and per-channel dequant. Each is P-wide and each was proven bit-exact in simulation before it was allowed near silicon.
+- **The sampler** is the <T id="argmax">argmax</T> hardware the greedy decoder already had, plus on-chip Gumbel noise. That story is its own article: [Sampling without asking](/blog/kevin-gumbel-max/).
+- **The host interface** is <T id="axilite">AXI-Lite</T> for registers (poked from the Arm side over <T id="devmem">`/dev/mem`</T>) and <T id="axidma">AXI-DMA</T> to stream the weights in at boot. After boot, in the fast path, the host writes one register per request and otherwise stays out of the way.
+
+## Getting the CPU out of the loop
+
+The single most important architectural move in the whole project was the jump from 11 tok/s to 44, and it is not about going wide or going fast. It is about getting the CPU out of the inner loop. A <T id="sequencer">sequencer</T> state machine (<T id="fsm">FSM</T>) in the fabric runs the entire per-token forward pass (embedding, four transformer blocks, final layernorm, the output head, the sample, appending to the <T id="kv">KV cache</T>, loop) with the Arm core touching nothing. The CPU-in-the-loop versions all asymptote to the A53's own speed, because every handoff over the AXI-Lite register interface costs a full transaction. Once the fabric runs itself, the bandwidth wall is the only wall left.
+
+## Why it stops at 16 streams
+
+The obvious next move from N=16 is N=32, or packing more multiply-accumulates into each DSP. Both are impossible on this chip, and the project proved it rather than assuming it.
+
+Each <T id="dsp">DSP48E2</T> can do two INT4-by-<T id="int8">INT8</T> <T id="mac">multiply-accumulates</T> using Xilinx's <T id="operandpack">operand-packing</T> trick. Could it do three? No, on two independent walls: three non-overlapping nibble products need 28 bits but the DSP port is 27 bits wide, and three 1024-element neurons hold 66 bits of accumulator against a 48-bit accumulator. There is a script, `dsp3_pack_proof.py`, that falsifies the three-MAC scheme over 1.2 million randomised lane products and confirms the two-MAC scheme with zero mismatches. Going wider on streams would need 2,048 DSPs the KV260 does not have.
+
+So past the stream ceiling, the levers stopped being "more streams" and became "fewer cycles" and "higher clock." This is the honest shape of optimisation on real silicon: you prove the doors that are closed, then you stop pushing on them.
+
+## The clock ceiling
+
+The faithful build was stuck at 166.7 MHz because the timing report collapsed under routing congestion at the higher clocks, the router simply gave up and stopped optimising for speed. The fix was not cleverness, it was tidiness: the LayerNorm input buffers were stored as a pile of per-lane arrays, which synthesises into a thicket of address multiplexers and enormous fan-out nets. Rewriting them as one wide word per row (the layout the rest of the design already used) freed about 11,900 flip-flops and 3,800 lookup tables and killed two of the worst fan-out trees. That was enough for the router to close cleanly. The design went from failing timing to closing with margin, then overclocked bit-exact to **200 MHz** on silicon: the same greedy token stream, identical, at 142.857, 166.7, and 200 MHz. The clock only comes in quantised steps of 1000/N MHz (N = 7, 6, 5), so 200 is the last rung before 250 MHz (N=4), which is a hard wall where the fabric hangs.
+
+---
+
+*Next: [Sampling without asking](/blog/kevin-gumbel-max/), or back to [the main post](/blog/on-chip-llm-kv260/).*

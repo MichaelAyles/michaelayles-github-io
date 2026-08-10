@@ -222,13 +222,13 @@ is the one serving the widget at the top. One stream that remembers, instead of 
 do not.
 
 It used to be slower. The faithful build was stuck at 166.7 MHz because the timing report
-collapsed under routing congestion at the higher clocks — the router simply gave up and
+collapsed under routing congestion at the higher clocks; the router simply gave up and
 stopped optimising for speed. The fix was not cleverness, it was tidiness: the LayerNorm
 input buffers were stored as a pile of per-lane arrays, which synthesises into a thicket of
 address multiplexers and enormous fan-out nets. Rewriting them as one wide word per row
 (the layout the rest of the design already used) freed about 11,900 flip-flops and 3,800
 lookup tables and killed two of the worst fan-out trees. That was enough for the router to
-close cleanly, and the design went from *failing* timing to closing with margin — and then
+close cleanly, and the design went from *failing* timing to closing with margin, and then
 overclocked bit-exact to **200 MHz** on silicon, the same greedy token stream at 142.857,
 166.7, and 200 MHz. (250 MHz is a hard wall: the fabric hangs.) The clock only comes in
 quantised steps of 1000/N MHz, so 200 is the last rung before the wall.

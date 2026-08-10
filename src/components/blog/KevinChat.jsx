@@ -359,7 +359,7 @@ export default function KevinChat({ height = 460 }) {
                     reconfiguring the FPGA, live
                   </strong>
                   <span style={{ color: "var(--text-secondary)", fontSize: "0.8rem", maxWidth: 380 }}>
-                    Swapping the whole model — a fresh bitstream is being loaded onto the chip
+                    Swapping the whole model: a fresh bitstream is being loaded onto the chip
                     (~25 s). One KV260 holds one model at a time, so everyone shares whichever is
                     running. Back in a moment.
                   </span>
@@ -520,7 +520,7 @@ export default function KevinChat({ height = 460 }) {
         A real conversation with a 3.16M-parameter model living entirely inside the
         on-chip memory of a $250 Kria KV260 FPGA. No GPU, no DDR in the token loop. Output
         is deliberately telegraphic: the compression is the speed. When two models are in
-        rotation the badge shows which is live and counts down to the next swap — at zero,
+        rotation the badge shows which is live and counts down to the next swap; at zero,
         the whole chip is reprogrammed with the other model (~25 s). If the dot is red the
         board is asleep or under load. {" "}
         <a href="https://chat.mikeayles.com" target="_blank" rel="noopener noreferrer">

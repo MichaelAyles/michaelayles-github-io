@@ -1,0 +1,40 @@
+---
+title: "On-Chip LLM: Sampling Without Asking"
+description: "The FPGA decoded a reply in 6.6ms. It landed in the browser in 100. The gap was one unmeasured loop, and the fix was the Gumbel-max trick."
+date: 2026-08-10
+tags: ["FPGA", "Machine Learning"]
+draft: true
+---
+
+import GumbelTax from '@/components/blog/GumbelTax';
+import T, { GlossaryStyles } from '@/components/blog/Term';
+
+<GlossaryStyles />
+
+*Part of the [on-chip LLM on a $250 FPGA](/blog/on-chip-llm-kv260/) series. A lesson in profiling the whole round trip, not the kernel you are proud of.*
+
+---
+
+The faithful model decodes a full reply in about 6.6 milliseconds of fabric time. The reply used to land in the browser in about 100. Almost none of that gap was the fabric. Most of it was one embarrassing loop nobody had measured.
+
+To get variety, the chat samples (temperature 0.85, top-k 40) instead of always picking the single best token. But the probabilities live in the fabric. So every token, the host read all 193 output <T id="logits">logits</T> back over `/dev/mem`, ran a softmax and a draw on the Arm core, and only then knew the next character. Measured, that readback was **about 58% of a reply**. We were serving a ~19,000-token-per-second model through a 1,000-token-per-second straw.
+
+<GumbelTax client:visible />
+
+The fix is a lovely identity. Sampling from `softmax(logit / T)` is exactly the same as taking the argmax of `logit + T * g`, where `g` is Gumbel noise. This is the <T id="gumbel">Gumbel-max</T> trick. The thing that picks the sample is an argmax, and the fabric already has an argmax. So the sampler is not new hardware: it is the existing argmax with a precomputed noise value added to each logit, and the host's job collapses from 193 reads per token to **one seed write per request**. As a bonus, seed = 0 zeroes the noise, which makes the sampler bit-identical to greedy decode. One datapath, two behaviours.
+
+That moved the localhost round-trip ceiling from ~1,000 to ~5,600 tok/s, about 5.6x, with the fabric record completely untouched. The public number through the Cloudflare tunnel sits around 1,658, and that remainder is honest network distance, not silicon.
+
+## The two ceilings
+
+A live chatbot has two speeds, and conflating them is the easiest way to lie to yourself.
+
+**Fabric tok/s** is how fast the silicon decodes: pure logic cycles over the clock. **Round-trip tok/s** is how fast a reply lands in your browser: the fabric plus the host loop plus the network plus the tunnel. They are wildly different numbers.
+
+![The ceiling stack: fabric versus round-trip](./ceilings.png)
+
+This is the part most write-ups skip. The big number is real, the small number is also real, and they measure different things. The lesson worth keeping: **profile the whole round-trip, not the kernel you are proud of.**
+
+---
+
+*Next: [Serving an FPGA to strangers](/blog/kevin-serving-strangers/), or back to [the main post](/blog/on-chip-llm-kv260/).*
