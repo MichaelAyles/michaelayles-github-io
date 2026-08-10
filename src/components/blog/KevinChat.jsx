@@ -228,16 +228,18 @@ export default function KevinChat({ height = 460 }) {
   const mmss = (s) =>
     `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
-  // per-reply generation badge: fabric decode time from the server's infer_ms,
-  // tok/s derived from it (char-level model, so one char is one token)
+  // per-reply generation badge. Preferred source: the server's infer_ms (true
+  // fabric decode time). The streamed path does not carry it, so the fallback is
+  // the client-measured round trip: reply chars over send-to-done wall time
+  // (char-level model, so one char is one token).
   const fmtMs = (ms) =>
     ms >= 1000
       ? `${(ms / 1000).toFixed(2)} s`
       : ms >= 10
       ? `${Math.round(ms)} ms`
       : `${ms.toFixed(1)} ms`;
-  const replyTokS = (m) =>
-    m.inferMs > 0 ? Math.round(m.text.length / (m.inferMs / 1000)) : null;
+  const tokS = (chars, ms) =>
+    ms > 0 && chars > 0 ? Math.round(chars / (ms / 1000)) : null;
 
   return (
     <figure style={{ margin: "2rem 0" }}>
@@ -439,32 +441,57 @@ export default function KevinChat({ height = 460 }) {
                     marginLeft: 2,
                   }}
                 >
-                  {m.inferMs != null && (
-                    <span
-                      title="time the fabric spent decoding this reply, and the speed that implies"
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 5,
-                        padding: "2px 9px",
-                        borderRadius: 6,
-                        fontSize: "0.68rem",
-                        color: "#22c55e",
-                        border: "1px solid #22c55e",
-                        background: "rgba(34,197,94,0.1)",
-                      }}
-                    >
-                      <span aria-hidden="true">🔥</span>
-                      generated in {fmtMs(m.inferMs)}
-                      {replyTokS(m) != null && (
-                        <> • {replyTokS(m).toLocaleString()} tok/s</>
+                  {m.inferMs != null ? (
+                    <>
+                      <span
+                        title="time the fabric spent decoding this reply, and the speed that implies"
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 5,
+                          padding: "2px 9px",
+                          borderRadius: 6,
+                          fontSize: "0.68rem",
+                          color: "#22c55e",
+                          border: "1px solid #22c55e",
+                          background: "rgba(34,197,94,0.1)",
+                        }}
+                      >
+                        <span aria-hidden="true">🔥</span>
+                        generated in {fmtMs(m.inferMs)}
+                        {tokS(m.text.length, m.inferMs) != null && (
+                          <> • {tokS(m.text.length, m.inferMs).toLocaleString()} tok/s</>
+                        )}
+                      </span>
+                      {m.rttMs != null && (
+                        <span style={{ fontSize: "0.68rem", color: "var(--text-dim)" }}>
+                          round-trip {m.rttMs} ms
+                        </span>
                       )}
-                    </span>
-                  )}
-                  {m.rttMs != null && (
-                    <span style={{ fontSize: "0.68rem", color: "var(--text-dim)" }}>
-                      round-trip {m.rttMs} ms
-                    </span>
+                    </>
+                  ) : (
+                    m.rttMs != null && (
+                      <span
+                        title="measured in your browser: reply length over the full send-to-done round trip (fabric + host + network)"
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 5,
+                          padding: "2px 9px",
+                          borderRadius: 6,
+                          fontSize: "0.68rem",
+                          color: "var(--text-secondary)",
+                          border: "1px solid var(--border)",
+                          background: "rgba(127,127,127,0.08)",
+                        }}
+                      >
+                        <span aria-hidden="true">⚡</span>
+                        {m.text.length} tok in {fmtMs(m.rttMs)}
+                        {tokS(m.text.length, m.rttMs) != null && (
+                          <> • {tokS(m.text.length, m.rttMs).toLocaleString()} tok/s round trip</>
+                        )}
+                      </span>
+                    )
                   )}
                 </div>
               )}
