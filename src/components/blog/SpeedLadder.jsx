@@ -274,7 +274,6 @@ const ERAS = [
         sub: "the route-congestion kill",
         tps: 19242.0,
         tag: "MEASURED",
-        badge: "the counted-cycle record",
         removed:
           "The congestion wall that capped the clock at 166.7: the LayerNorm " +
           "flip-flop arrays became wide-word LUTRAM, timing closed, and silicon " +
