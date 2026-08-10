@@ -100,18 +100,16 @@ export default function KevinChat({ height = 460 }) {
           }));
           break;
         case "stream_end":
-          setKevin((b) => ({
+          finishReply(() => ({
             ...(m.completion ? { text: m.completion } : {}),
             ...(m.infer_ms != null ? { inferMs: m.infer_ms } : {}),
           }));
-          finishReply();
           break;
         case "authoritative":
-          setKevin(() => ({
+          finishReply(() => ({
             text: m.completion || "(kevin say nothing)",
             ...(m.infer_ms != null ? { inferMs: m.infer_ms } : {}),
           }));
-          finishReply();
           break;
         case "stats":
           setStats(m);
@@ -131,11 +129,29 @@ export default function KevinChat({ height = 460 }) {
     };
   }, [setKevin]);
 
-  const finishReply = useCallback(() => {
-    const rtt = performance.now() - sentAtRef.current;
-    setKevin((b) => ({ rttMs: Math.round(rtt) }));
+  // Close out the in-flight bubble in ONE state update. The index must be
+  // captured synchronously: React runs the setMessages updater later, so
+  // clearing pendingRef after a queued setKevin makes that update a no-op
+  // (this is exactly the bug that ate the round-trip line and the tidied
+  // stream_end completion).
+  const finishReply = useCallback((updater) => {
+    const i = pendingRef.current;
+    if (i == null) return;
     pendingRef.current = null;
-  }, [setKevin]);
+    const rttMs = Math.round(performance.now() - sentAtRef.current);
+    setMessages((prev) => {
+      if (i >= prev.length) return prev;
+      const next = prev.slice();
+      next[i] = {
+        ...next[i],
+        ...(updater ? updater(next[i]) : {}),
+        rttMs,
+        streaming: false,
+        thinking: false,
+      };
+      return next;
+    });
+  }, []);
 
   useEffect(() => {
     connect();
@@ -194,14 +210,18 @@ export default function KevinChat({ height = 460 }) {
         })
       );
 
-      // Safety: if no reply lands, release the lock.
+      // Safety: if no reply lands, release the lock. Same rule as finishReply:
+      // capture the index before clearing pendingRef.
       setTimeout(() => {
-        if (pendingRef.current != null) {
-          setKevin((b) =>
-            b.text ? {} : { text: "(kevin quiet. try again.)" }
-          );
-          pendingRef.current = null;
-        }
+        const i = pendingRef.current;
+        if (i == null) return;
+        pendingRef.current = null;
+        setMessages((prev) => {
+          if (i >= prev.length || prev[i].text) return prev;
+          const next = prev.slice();
+          next[i] = { ...next[i], text: "(kevin quiet. try again.)", thinking: false };
+          return next;
+        });
       }, 15000);
     },
     [input, setKevin]
