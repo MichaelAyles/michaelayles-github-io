@@ -7,6 +7,7 @@ draft: true
 ---
 
 import T, { GlossaryStyles } from '@/components/blog/Term';
+import SpeedLadder from '@/components/blog/SpeedLadder';
 
 <GlossaryStyles />
 
@@ -27,7 +28,7 @@ Some scars from the road, because they are the actual content of the work:
 
 Every green rung is measured on silicon, three runs, token stream bit-exact against the integer reference.
 
-![The speed ladder, every rung measured on silicon](./progress.png)
+<SpeedLadder client:visible />
 
 | Step | tok/s | The idea |
 |---|---|---|

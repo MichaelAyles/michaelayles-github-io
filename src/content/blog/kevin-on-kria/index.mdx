@@ -12,6 +12,7 @@ import NetworkTopology from '@/components/blog/NetworkTopology';
 import PLBlock from '@/components/blog/PLBlock';
 import BandwidthWall from '@/components/blog/BandwidthWall';
 import GumbelTax from '@/components/blog/GumbelTax';
+import SpeedLadder from '@/components/blog/SpeedLadder';
 import T, { GlossaryStyles } from '@/components/blog/Term';
 
 <GlossaryStyles />
@@ -121,7 +122,7 @@ Nothing here was ever claimed without a measurement. The project kept a ladder, 
 green rung is measured on silicon, three runs, token stream bit-exact against the integer
 reference.
 
-![The speed ladder, every rung measured on silicon](./progress.png)
+<SpeedLadder client:visible />
 
 A few rungs worth calling out, because each one is a different idea:
 
