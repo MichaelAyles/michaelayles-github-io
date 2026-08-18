@@ -372,6 +372,25 @@ export default function KevinChat({ height = 460 }) {
           )}
         </div>
 
+        {/* downtime notice: testing the new engine (mamba2 SSM, bigger model) */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "8px 14px",
+            borderBottom: "1px solid rgba(234,179,8,0.5)",
+            background: "rgba(234,179,8,0.12)",
+            fontSize: "0.75rem",
+            color: "var(--text-primary)",
+          }}
+        >
+          <span aria-hidden="true">⚠️</span>
+          <span>
+            there may be some downtime while I test a new engine
+          </span>
+        </div>
+
         {/* messages */}
         <div
           ref={scrollRef}
