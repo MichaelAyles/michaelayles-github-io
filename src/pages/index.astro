@@ -11,7 +11,7 @@ const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const sorted = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
-<BaseLayout title="Michael Ayles" description="Blog & Portfolio - Electronics & Embedded Systems Engineer">
+<BaseLayout title="Mike Ayles" description="Blog & Portfolio - Electronics & Embedded Systems Engineer">
   <Nav current="blog"><ThemeToggle /></Nav>
 
   <main class="main">

@@ -2,7 +2,12 @@
 ---
 
 <footer class="site-footer">
-  &copy; {new Date().getFullYear()} Michael Ayles.
+  <span>&copy; {new Date().getFullYear()} Mike Ayles.</span>
+  <nav class="footer-links">
+    <a href="https://github.com/MichaelAyles" rel="me">GitHub</a>
+    <a href="https://linkedin.com/in/mayles" rel="me">LinkedIn</a>
+    <a href="mailto:mike@mikeayles.com">Email</a>
+  </nav>
 </footer>
 
 <style>
@@ -12,5 +17,25 @@
     font-size: 0.8rem;
     color: var(--text-secondary);
     border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  .footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  .footer-links a:hover {
+    color: var(--text-primary);
+    text-decoration: underline;
   }
 </style>

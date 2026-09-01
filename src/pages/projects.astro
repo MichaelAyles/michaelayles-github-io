@@ -13,7 +13,7 @@ const allFeatured = await getCollection('featured');
 const featuredByProject = new Map(allFeatured.map(f => [f.data.project, cleanSlug(f.id)]));
 ---
 
-<BaseLayout title="Projects" description="Selected projects by Michael Ayles">
+<BaseLayout title="Projects" description="Selected projects by Mike Ayles">
   <Nav current="projects"><ThemeToggle /></Nav>
 
   <main class="main">

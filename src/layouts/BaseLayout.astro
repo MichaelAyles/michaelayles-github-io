@@ -5,15 +5,17 @@ interface Props {
   noindex?: boolean;
 }
 
-const { title = 'Michael Ayles', description = 'Electronics & Embedded Systems Engineer', noindex = false } = Astro.props;
-const pageTitle = title === 'Michael Ayles' ? title : `${title} | Michael Ayles`;
+const { title = 'Mike Ayles', description = 'Electronics & Embedded Systems Engineer', noindex = false } = Astro.props;
+const pageTitle = title === 'Mike Ayles' ? title : `${title} | Mike Ayles`;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
-  name: 'Michael Ayles',
-  alternateName: 'Mike Ayles',
+  name: 'Mike Ayles',
+  alternateName: 'Michael Ayles',
   url: 'https://www.mikeayles.com',
+  email: 'mailto:mike@mikeayles.com',
   jobTitle: 'Head of Product Development',
   worksFor: {
     '@type': 'Organization',
@@ -51,6 +53,11 @@ const personSchema = {
   <title>{pageTitle}</title>
   <meta name="description" content={description} />
   {noindex && <meta name="robots" content="noindex, nofollow" />}
+  <link rel="canonical" href={canonicalURL} />
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonicalURL} />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
