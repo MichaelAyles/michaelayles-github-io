@@ -26,6 +26,14 @@ const SUGGESTIONS = [
   "the dog run fast",
   "kevin like eat",
 ];
+// Big Kev (model "bigkev"): a prototype 1-bit 8B on the same board, weights streamed
+// from DDR every token. The server goes Enter-only for it and serves one reply at a time.
+const BIG_SUGGESTIONS = [
+  "what is an FPGA?",
+  "why is the sky blue?",
+  "tell me a joke about chips",
+  "how do you run on 1-bit weights?",
+];
 
 export default function KevinChat({ height = 460 }) {
   const [messages, setMessages] = useState([
@@ -49,6 +57,7 @@ export default function KevinChat({ height = 460 }) {
   const sentAtRef = useRef(0);
   const scrollRef = useRef(null);
   const retryRef = useRef(null);
+  const bigRef = useRef(false); // Big Kev live? (read by the send() timeout)
 
   const setKevin = useCallback((updater) => {
     setMessages((prev) => {
@@ -115,6 +124,7 @@ export default function KevinChat({ height = 460 }) {
         case "stats":
           statsRef.current = m;
           setStats(m);
+          bigRef.current = m.model === "bigkev";
           if (m.rotating !== undefined) {
             setRot({
               model: m.model,
@@ -150,6 +160,7 @@ export default function KevinChat({ height = 460 }) {
         ...(updater ? updater(next[i]) : {}),
         rttMs,
         fabricTokS,
+        big: bigRef.current,
         streaming: false,
         thinking: false,
       };
@@ -226,7 +237,7 @@ export default function KevinChat({ height = 460 }) {
           next[i] = { ...next[i], text: "(kevin quiet. try again.)", thinking: false };
           return next;
         });
-      }, 15000);
+      }, bigRef.current ? 180000 : 15000); // Big Kev: ~10 tok/s and a queue
     },
     [input, setKevin]
   );
@@ -245,7 +256,9 @@ export default function KevinChat({ height = 460 }) {
   const switching = rotating && remaining === 0;
   const canSend = status === "live" && !switching;
   const isLegit = rotating && rot.model && rot.model !== "kevin";
-  const badgeColor = isLegit ? "#a855f7" : "#22c55e";
+  const isBig = !!(rot && rot.model === "bigkev");
+  const badgeColor = isBig ? "#f97316" : isLegit ? "#a855f7" : "#22c55e";
+  const queue = stats?.queue || 0;
   const shortLabel = rotating
     ? (rot.label || "").split("—")[0].trim() || (isLegit ? "Legit" : "Kevin")
     : null;
@@ -260,6 +273,14 @@ export default function KevinChat({ height = 460 }) {
   const fmtSec = (sec) =>
     `${sec.toFixed(sec < 0.01 ? 4 : sec < 1 ? 3 : 2)}s`;
   const fabricNumbers = (m) => {
+    // Big Kev's tokens are BPE pieces, not chars: show the measured wall time of the
+    // reply and the live fabric rate (weight passes per second) instead.
+    if (m.big) {
+      const rate = m.fabricTokS > 0 ? m.fabricTokS : stats?.fabric_tok_s;
+      return m.rttMs > 0 && m.text.length > 0
+        ? { sec: m.rttMs / 1000, tokS: Math.round(rate || 0), big: true }
+        : null;
+    }
     if (m.inferMs > 0 && m.text.length > 0) {
       return { sec: m.inferMs / 1000, tokS: Math.round(m.text.length / (m.inferMs / 1000)) };
     }
@@ -308,7 +329,7 @@ export default function KevinChat({ height = 460 }) {
                 display: "inline-block",
               }}
             />
-            <strong style={{ color: "var(--text-primary)" }}>kevin on kria</strong>
+            <strong style={{ color: "var(--text-primary)" }}>{isBig ? "big kev on kria" : "kevin on kria"}</strong>
             {!rotating && (
               <span style={{ color: "var(--text-dim)" }}>
                 {status === "live"
@@ -385,9 +406,11 @@ export default function KevinChat({ height = 460 }) {
             color: "var(--text-primary)",
           }}
         >
-          <span aria-hidden="true">⚠️</span>
+          <span aria-hidden="true">{isBig ? "🐘" : "⚠️"}</span>
           <span>
-            there may be some downtime while I test a new engine
+            {isBig
+              ? "right now this is Big Kev, a prototype: Bonsai-8B (1-bit, 8B params) on the same KV260, its 1.06 GB of weights streamed from DDR for every token. ~10 tok/s, one person at a time, so you may queue. Not the on-chip Kevin this post is about."
+              : "there may be some downtime while I test a new engine"}
           </span>
         </div>
 
@@ -476,15 +499,21 @@ export default function KevinChat({ height = 460 }) {
                 }}
               >
                 {m.thinking && !m.text ? (
-                  <span style={{ color: "var(--text-dim)" }}>kevin think...</span>
+                  <span style={{ color: "var(--text-dim)" }}>
+                    {!isBig
+                      ? "kevin think..."
+                      : queue > 0
+                      ? `big kev is busy: ${queue} in the queue...`
+                      : "big kev is thinking..."}
+                  </span>
                 ) : (
                   m.text
                 )}
               </div>
-              {m.role === "kevin" && fabricNumbers(m) != null && (
+              {m.role === "kevin" && m.rttMs != null && fabricNumbers(m) != null && (
                 <div style={{ marginTop: 4, marginLeft: 2 }}>
                   <span
-                    title={`fabric decode time for this reply${
+                    title={m.big ? `wall time for this reply, prompt to last word (incl. queue + prefill); fabric = 8B weight passes per second from DDR` : `fabric decode time for this reply${
                       m.inferMs != null ? " (measured on the board)" : " (reply length over the live measured fabric rate)"
                     }${m.rttMs != null ? ` · full round trip ${m.rttMs} ms` : ""}`}
                     style={{
@@ -499,8 +528,10 @@ export default function KevinChat({ height = 460 }) {
                       background: "rgba(34,197,94,0.1)",
                     }}
                   >
-                    generated in {fmtSec(fabricNumbers(m).sec)} •{" "}
+                    {fabricNumbers(m).big ? "replied in " : "generated in "}
+                    {fmtSec(fabricNumbers(m).sec)} •{" "}
                     {fabricNumbers(m).tokS.toLocaleString()} tok/s
+                    {fabricNumbers(m).big ? " fabric" : ""}
                   </span>
                 </div>
               )}
@@ -517,7 +548,7 @@ export default function KevinChat({ height = 460 }) {
             padding: "0 14px 8px",
           }}
         >
-          {SUGGESTIONS.map((s) => (
+          {(isBig ? BIG_SUGGESTIONS : SUGGESTIONS).map((s) => (
             <button
               key={s}
               onClick={() => send(s)}
@@ -555,7 +586,7 @@ export default function KevinChat({ height = 460 }) {
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={switching ? "reconfiguring the chip…" : "say lot word..."}
+            placeholder={switching ? "reconfiguring the chip…" : isBig ? "ask big kev anything..." : "say lot word..."}
             disabled={!canSend}
             maxLength={512}
             style={{
@@ -603,7 +634,9 @@ export default function KevinChat({ height = 460 }) {
         is deliberately telegraphic: the compression is the speed. When two models are in
         rotation the badge shows which is live and counts down to the next swap; at zero,
         the whole chip is reprogrammed with the other model (~25 s). If the dot is red the
-        board is asleep or under load. {" "}
+        board is asleep or under load. When the badge says Big Kev, the same board is
+        running a prototype 8B instead: weights streamed from DDR, ~10 tok/s, one
+        reply at a time. {" "}
         <a href="https://chat.mikeayles.com" target="_blank" rel="noopener noreferrer">
           Open the full demo
         </a>
