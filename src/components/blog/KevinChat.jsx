@@ -387,8 +387,8 @@ export default function KevinChat({ height = 460 }) {
           {stats && (
             <div style={{ color: "var(--text-secondary)", textAlign: "right" }}>
               {stats.fabric_tok_s != null && (
-                <span title="raw fabric decode speed">
-                  fabric {fmtRate(stats.fabric_tok_s)} tok/s
+                <span title={isBig ? "full passes over the 8B weights per second of fabric time (1.06 GB from DDR each; ceiling ~14.4). A pass can yield several tokens when drafts are accepted." : "raw fabric decode speed"}>
+                  {isBig ? `weights ${fmtRate(stats.fabric_tok_s)} passes/s` : `fabric ${fmtRate(stats.fabric_tok_s)} tok/s`}
                 </span>
               )}
             </div>
@@ -515,7 +515,7 @@ export default function KevinChat({ height = 460 }) {
               {m.role === "kevin" && m.rttMs != null && fabricNumbers(m) != null && (
                 <div style={{ marginTop: 4, marginLeft: 2 }}>
                   <span
-                    title={m.big ? `wall time for this reply, prompt to last word (incl. queue + prefill); fabric = 8B weight passes per second from DDR` : `fabric decode time for this reply${
+                    title={m.big ? `wall time for this reply, prompt to last word (incl. queue + prefill); weights = full passes over the 8B weights per second of fabric time (a pass can yield several tokens)` : `fabric decode time for this reply${
                       m.inferMs != null ? " (measured on the board)" : " (reply length over the live measured fabric rate)"
                     }${m.rttMs != null ? ` · full round trip ${m.rttMs} ms` : ""}`}
                     style={{
@@ -532,8 +532,9 @@ export default function KevinChat({ height = 460 }) {
                   >
                     {fabricNumbers(m).big ? "replied in " : "generated in "}
                     {fmtSec(fabricNumbers(m).sec)} •{" "}
-                    {fmtRate(fabricNumbers(m).tokS)} tok/s
-                    {fabricNumbers(m).big ? " fabric" : ""}
+                    {fabricNumbers(m).big
+                      ? `weights ${fmtRate(fabricNumbers(m).tokS)} passes/s`
+                      : `${fmtRate(fabricNumbers(m).tokS)} tok/s`}
                   </span>
                 </div>
               )}
