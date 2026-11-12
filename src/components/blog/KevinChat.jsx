@@ -270,6 +270,8 @@ export default function KevinChat({ height = 460 }) {
   // so the fallback derives fabric time from the live measured fabric rate
   // (fabric_tok_s in the stats broadcast): chars / rate. Char-level model, so
   // one char is one token. Round trip is relegated to the hover tooltip.
+  // rates: one decimal below 100 tok/s (Big Kev's ~14), whole numbers above (Kevin's 16k)
+  const fmtRate = (r) => (r < 100 ? r.toFixed(1) : Math.round(r).toLocaleString());
   const fmtSec = (sec) =>
     `${sec.toFixed(sec < 0.01 ? 4 : sec < 1 ? 3 : 2)}s`;
   const fabricNumbers = (m) => {
@@ -278,18 +280,18 @@ export default function KevinChat({ height = 460 }) {
     if (m.big) {
       const rate = m.fabricTokS > 0 ? m.fabricTokS : stats?.fabric_tok_s;
       return m.rttMs > 0 && m.text.length > 0
-        ? { sec: m.rttMs / 1000, tokS: Math.round(rate || 0), big: true }
+        ? { sec: m.rttMs / 1000, tokS: rate || 0, big: true }
         : null;
     }
     if (m.inferMs > 0 && m.text.length > 0) {
-      return { sec: m.inferMs / 1000, tokS: Math.round(m.text.length / (m.inferMs / 1000)) };
+      return { sec: m.inferMs / 1000, tokS: m.text.length / (m.inferMs / 1000) };
     }
     // rate captured when the reply finished; if the reply beat the first
     // stats broadcast (fresh connection), fall back to the live rate so the
     // badge still appears once stats arrive
     const rate = m.fabricTokS > 0 ? m.fabricTokS : stats?.fabric_tok_s;
     if (rate > 0 && m.text.length > 0) {
-      return { sec: m.text.length / rate, tokS: Math.round(rate) };
+      return { sec: m.text.length / rate, tokS: rate };
     }
     return null;
   };
@@ -386,7 +388,7 @@ export default function KevinChat({ height = 460 }) {
             <div style={{ color: "var(--text-secondary)", textAlign: "right" }}>
               {stats.fabric_tok_s != null && (
                 <span title="raw fabric decode speed">
-                  fabric {Math.round(stats.fabric_tok_s).toLocaleString()} tok/s
+                  fabric {fmtRate(stats.fabric_tok_s)} tok/s
                 </span>
               )}
             </div>
@@ -530,7 +532,7 @@ export default function KevinChat({ height = 460 }) {
                   >
                     {fabricNumbers(m).big ? "replied in " : "generated in "}
                     {fmtSec(fabricNumbers(m).sec)} •{" "}
-                    {fabricNumbers(m).tokS.toLocaleString()} tok/s
+                    {fmtRate(fabricNumbers(m).tokS)} tok/s
                     {fabricNumbers(m).big ? " fabric" : ""}
                   </span>
                 </div>
